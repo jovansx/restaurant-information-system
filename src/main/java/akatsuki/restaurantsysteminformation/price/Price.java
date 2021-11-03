@@ -20,18 +20,13 @@ public class Price {
     public Price() {
     }
 
-    public Price(Long id, LocalDateTime createdAt, double value) {
-        this.id = id;
+    public Price(LocalDateTime createdAt, double value) {
         this.createdAt = createdAt;
         this.value = value;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreatedAt() {

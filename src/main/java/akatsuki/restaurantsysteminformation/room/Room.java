@@ -19,14 +19,13 @@ public class Room {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<RestaurantTable> restaurantTables;
 
     public Room() {
     }
 
-    public Room(Long id, String name, boolean isDeleted, List<RestaurantTable> restaurantTables) {
-        this.id = id;
+    public Room(String name, boolean isDeleted, List<RestaurantTable> restaurantTables) {
         this.name = name;
         this.isDeleted = isDeleted;
         this.restaurantTables = restaurantTables;
@@ -34,10 +33,6 @@ public class Room {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

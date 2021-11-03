@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MyOrderItem")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class OrderItem {
 
     @Id
@@ -28,8 +29,7 @@ public abstract class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long id, String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state) {
-        this.id = id;
+    public OrderItem(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state) {
         this.notes = notes;
         this.createdAt = createdAt;
         this.isDeleted = isDeleted;
@@ -38,10 +38,6 @@ public abstract class OrderItem {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNotes() {

@@ -1,9 +1,12 @@
 package akatsuki.restaurantsysteminformation.order;
 
+import akatsuki.restaurantsysteminformation.dishitem.DishItem;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "MyOrder")
@@ -27,4 +30,83 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UnregisteredUser waiter;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DishItem> dishes;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DrinkItems> drinks;
+
+    public Order() {
+    }
+
+    public Order(double totalPrice, LocalDateTime createdAt, boolean isDiscarded, boolean isActive, UnregisteredUser waiter, List<DishItem> dishes, List<DrinkItems> drinks) {
+        this.totalPrice = totalPrice;
+        this.createdAt = createdAt;
+        this.isDiscarded = isDiscarded;
+        this.isActive = isActive;
+        this.waiter = waiter;
+        this.dishes = dishes;
+        this.drinks = drinks;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<DishItem> getDishes() {
+        return dishes;
+    }
+
+    public void setDishes(List<DishItem> dishes) {
+        this.dishes = dishes;
+    }
+
+    public List<DrinkItems> getDrinks() {
+        return drinks;
+    }
+
+    public void setDrinks(List<DrinkItems> drinks) {
+        this.drinks = drinks;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean isDiscarded() {
+        return isDiscarded;
+    }
+
+    public void setDiscarded(boolean discarded) {
+        isDiscarded = discarded;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public UnregisteredUser getWaiter() {
+        return waiter;
+    }
+
+    public void setWaiter(UnregisteredUser waiter) {
+        this.waiter = waiter;
+    }
 }

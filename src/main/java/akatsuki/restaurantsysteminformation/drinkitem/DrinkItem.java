@@ -21,18 +21,13 @@ public class DrinkItem {
     public DrinkItem() {
     }
 
-    public DrinkItem(Long id, int amount, Item item) {
-        this.id = id;
+    public DrinkItem(int amount, Item item) {
         this.amount = amount;
         this.item = item;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getAmount() {

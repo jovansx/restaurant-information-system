@@ -33,8 +33,7 @@ public class RestaurantTable {
     public RestaurantTable() {
     }
 
-    public RestaurantTable(Long id, String name, TableState state, TableShape shape, boolean isDeleted, Order activeOrder) {
-        this.id = id;
+    public RestaurantTable(String name, TableState state, TableShape shape, boolean isDeleted, Order activeOrder) {
         this.name = name;
         this.state = state;
         this.shape = shape;
@@ -44,10 +43,6 @@ public class RestaurantTable {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
