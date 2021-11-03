@@ -25,7 +25,7 @@ public class Item {
     private String description;
 
     @Column(name = "icon_base_64", nullable = false)
-    private String iconBase64;
+    private byte[] iconBase64;
 
     @Column(name = "is_currently_active", nullable = false)
     private boolean isCurrentlyActive;
@@ -42,14 +42,13 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     private ItemCategory itemCategory;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Price> prices;
 
     public Item() {
     }
 
-    public Item(Long id, String code, String name, String description, String iconBase64, boolean isCurrentlyActive, boolean isDeleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
-        this.id = id;
+    public Item(String code, String name, String description, byte[] iconBase64, boolean isCurrentlyActive, boolean isDeleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
         this.code = code;
         this.name = name;
         this.description = description;
@@ -64,10 +63,6 @@ public class Item {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCode() {
@@ -94,11 +89,11 @@ public class Item {
         this.description = description;
     }
 
-    public String getIconBase64() {
+    public byte[] getIconBase64() {
         return iconBase64;
     }
 
-    public void setIconBase64(String iconBase64) {
+    public void setIconBase64(byte[] iconBase64) {
         this.iconBase64 = iconBase64;
     }
 

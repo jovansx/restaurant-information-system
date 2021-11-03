@@ -16,14 +16,14 @@ public class DrinkItems extends OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private UnregisteredUser bartender;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItem> drinkItemList;
 
     public DrinkItems() {
     }
 
-    public DrinkItems(Long id, String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItems) {
-        super(id, notes, createdAt, isDeleted, state);
+    public DrinkItems(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItems) {
+        super(notes, createdAt, isDeleted, state);
         this.bartender = bartender;
         this.drinkItemList = drinkItems;
     }
