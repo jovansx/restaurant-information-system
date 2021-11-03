@@ -18,8 +18,8 @@ public class RegisteredUser extends User {
     public RegisteredUser() {
     }
 
-    public RegisteredUser(Long id, String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean idDeleted, String username, String password) {
-        super(id, firstName, lastName, emailAddress, phoneNumber, salary, type, idDeleted);
+    public RegisteredUser(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean isDeleted, String username, String password) {
+        super(firstName, lastName, emailAddress, phoneNumber, salary, type, isDeleted);
         this.username = username;
         this.password = password;
     }
