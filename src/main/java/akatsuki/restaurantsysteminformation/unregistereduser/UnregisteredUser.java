@@ -15,8 +15,8 @@ public class UnregisteredUser extends User {
     public UnregisteredUser() {
     }
 
-    public UnregisteredUser(Long id, String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean idDeleted, String pinCode) {
-        super(id, firstName, lastName, emailAddress, phoneNumber, salary, type, idDeleted);
+    public UnregisteredUser(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean idDeleted, String pinCode) {
+        super(firstName, lastName, emailAddress, phoneNumber, salary, type, idDeleted);
         this.pinCode = pinCode;
     }
 

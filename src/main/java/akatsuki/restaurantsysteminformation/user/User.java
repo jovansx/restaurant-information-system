@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "MyUser")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
     @Id
@@ -36,8 +37,7 @@ public abstract class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean idDeleted) {
-        this.id = id;
+    public User(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean idDeleted) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
@@ -49,10 +49,6 @@ public abstract class User {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getFirstName() {
