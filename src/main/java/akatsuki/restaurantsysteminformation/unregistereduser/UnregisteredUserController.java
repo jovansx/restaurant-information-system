@@ -13,4 +13,5 @@ public class UnregisteredUserController {
     public UnregisteredUserController(UnregisteredUserService unregisteredUserService) {
         this.unregisteredUserService = unregisteredUserService;
     }
+
 }

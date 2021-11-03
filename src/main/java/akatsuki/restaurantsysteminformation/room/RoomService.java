@@ -1,14 +1,5 @@
 package akatsuki.restaurantsysteminformation.room;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+public interface RoomService {
 
-@Service
-public class RoomService {
-    private RoomRepository roomRepository;
-
-    @Autowired
-    public void setRoomRepository(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
-    }
 }
