@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("item-category")
 public class ItemCategoryController {
-    private ItemCategoryServiceImpl itemCategoryService;
+    private final ItemCategoryServiceImpl itemCategoryService;
 
     @Autowired
     public ItemCategoryController(ItemCategoryServiceImpl itemCategoryService) {

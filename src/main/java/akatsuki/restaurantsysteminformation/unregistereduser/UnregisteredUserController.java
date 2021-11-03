@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("unregistered-user")
+@RequestMapping("/public/unregistered-user")
 public class UnregisteredUserController {
-    private UnregisteredUserServiceImpl unregisteredUserService;
+    private final UnregisteredUserServiceImpl unregisteredUserService;
 
     @Autowired
     public UnregisteredUserController(UnregisteredUserServiceImpl unregisteredUserService) {
