@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("drink-item")
 public class DrinkItemController {
-    private DrinkItemService drinkItemService;
+    private DrinkItemServiceImpl drinkItemService;
 
     @Autowired
-    public DrinkItemController(DrinkItemService drinkItemService) {
+    public DrinkItemController(DrinkItemServiceImpl drinkItemService) {
         this.drinkItemService = drinkItemService;
     }
 }

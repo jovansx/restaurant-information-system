@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("price")
 public class PriceController {
-    private PriceService priceService;
+    private PriceServiceImpl priceService;
 
     @Autowired
-    public PriceController(PriceService priceService) {
+    public PriceController(PriceServiceImpl priceService) {
         this.priceService = priceService;
     }
 }

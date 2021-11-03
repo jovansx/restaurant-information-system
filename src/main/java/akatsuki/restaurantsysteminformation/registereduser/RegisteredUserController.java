@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("registered-user")
 public class RegisteredUserController {
-    private RegisteredUserService registeredUserService;
+    private RegisteredUserServiceImpl registeredUserService;
 
     @Autowired
-    public RegisteredUserController(RegisteredUserService registeredUserService) {
+    public RegisteredUserController(RegisteredUserServiceImpl registeredUserService) {
         this.registeredUserService = registeredUserService;
     }
 }

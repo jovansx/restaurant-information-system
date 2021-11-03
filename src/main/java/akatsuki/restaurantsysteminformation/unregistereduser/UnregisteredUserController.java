@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("unregistered-user")
 public class UnregisteredUserController {
-    private UnregisteredUserService unregisteredUserService;
+    private UnregisteredUserServiceImpl unregisteredUserService;
 
     @Autowired
-    public UnregisteredUserController(UnregisteredUserService unregisteredUserService) {
+    public UnregisteredUserController(UnregisteredUserServiceImpl unregisteredUserService) {
         this.unregisteredUserService = unregisteredUserService;
     }
 

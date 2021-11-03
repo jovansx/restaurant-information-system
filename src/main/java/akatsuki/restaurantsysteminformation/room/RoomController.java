@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("room")
 public class RoomController {
-    private RoomService roomService;
+    private RoomServiceImpl roomService;
 
     @Autowired
-    public RoomController(RoomService roomService) {
+    public RoomController(RoomServiceImpl roomService) {
         this.roomService = roomService;
     }
 }

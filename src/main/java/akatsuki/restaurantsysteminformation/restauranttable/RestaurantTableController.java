@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("restaurant-table")
 public class RestaurantTableController {
-    private RestaurantTableService restaurantTableService;
+    private RestaurantTableServiceImpl restaurantTableService;
 
     @Autowired
-    public RestaurantTableController(RestaurantTableService restaurantTableService) {
+    public RestaurantTableController(RestaurantTableServiceImpl restaurantTableService) {
         this.restaurantTableService = restaurantTableService;
     }
 }

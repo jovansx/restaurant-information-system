@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("item")
 public class ItemController {
-    private ItemService itemService;
+    private ItemServiceImpl itemService;
 
     @Autowired
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemServiceImpl itemService) {
         this.itemService = itemService;
     }
 }

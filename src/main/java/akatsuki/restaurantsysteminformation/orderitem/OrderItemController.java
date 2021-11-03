@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("order-item")
 public class OrderItemController {
-    private OrderItemService orderItemService;
+    private OrderItemServiceImpl orderItemService;
 
     @Autowired
-    public OrderItemController(OrderItemService orderItemService) {
+    public OrderItemController(OrderItemServiceImpl orderItemService) {
         this.orderItemService = orderItemService;
     }
 }

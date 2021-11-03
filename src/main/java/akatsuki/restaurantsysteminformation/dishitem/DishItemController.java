@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("dish-tem")
 public class DishItemController {
-    private DishItemService dishItemService;
+    private DishItemServiceImpl dishItemService;
 
     @Autowired
-    public DishItemController(DishItemService dishItemService) {
+    public DishItemController(DishItemServiceImpl dishItemService) {
         this.dishItemService = dishItemService;
     }
 
