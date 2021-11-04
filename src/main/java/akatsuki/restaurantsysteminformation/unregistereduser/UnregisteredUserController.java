@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/public/unregistered-user")
+@RequestMapping("/api/unregistered-user")
 public class UnregisteredUserController {
     private final UnregisteredUserServiceImpl unregisteredUserService;
 
@@ -20,7 +20,6 @@ public class UnregisteredUserController {
         return unregisteredUserService.getOne(id);
     }
 
-    @ResponseBody
     @PostMapping
     public UnregisteredUser create(@RequestBody UnregisteredCreateUserDTO unregisteredCreateUserDTO) {
         UnregisteredUser user = Mapper.convertUnregisteredCreateUserDTOToUnregisteredUser(unregisteredCreateUserDTO);

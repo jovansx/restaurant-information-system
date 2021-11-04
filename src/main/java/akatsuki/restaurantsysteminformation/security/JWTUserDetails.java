@@ -1,10 +1,14 @@
 package akatsuki.restaurantsysteminformation.security;
 
+import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class JWTUserDetails implements UserDetails {
 
@@ -16,7 +20,9 @@ public class JWTUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("REGISTERED_USER"));
+        return authorities;
     }
 
     @Override
@@ -52,5 +58,9 @@ public class JWTUserDetails implements UserDetails {
     // Sta god hocemo da bude u tokenu definisemo ovako i zatim jos u fajlu JWTTokenUtil
     public long getId() {
         return user.getId();
+    }
+
+    public UserType getType() {
+        return user.getType();
     }
 }
