@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.unregistereduser.dto;
 
-import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.user.dto.CreateUserDTO;
 
 public class UnregisteredUserDTO extends CreateUserDTO {

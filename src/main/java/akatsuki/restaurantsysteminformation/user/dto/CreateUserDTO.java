@@ -1,7 +1,5 @@
 package akatsuki.restaurantsysteminformation.user.dto;
 
-import akatsuki.restaurantsysteminformation.enums.UserType;
-
 public class CreateUserDTO {
     private String firstName;
     private String lastName;

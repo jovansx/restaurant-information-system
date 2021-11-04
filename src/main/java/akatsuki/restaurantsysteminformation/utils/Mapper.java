@@ -8,14 +8,14 @@ public class Mapper {
 
     public static UnregisteredUser convertUnregisteredUserDTOToUnregisteredUser(UnregisteredUserDTO unregisteredCreateUserDTO) {
         return new UnregisteredUser(
-            unregisteredCreateUserDTO.getFirstName(),
-            unregisteredCreateUserDTO.getLastName(),
-            unregisteredCreateUserDTO.getEmailAddress(),
-            unregisteredCreateUserDTO.getPhoneNumber(),
-            unregisteredCreateUserDTO.getSalary(),
-            UserType.valueOf(unregisteredCreateUserDTO.getType()),
-            false,
-            unregisteredCreateUserDTO.getPinCode()
+                unregisteredCreateUserDTO.getFirstName(),
+                unregisteredCreateUserDTO.getLastName(),
+                unregisteredCreateUserDTO.getEmailAddress(),
+                unregisteredCreateUserDTO.getPhoneNumber(),
+                unregisteredCreateUserDTO.getSalary(),
+                UserType.valueOf(unregisteredCreateUserDTO.getType()),
+                false,
+                unregisteredCreateUserDTO.getPinCode()
         );
     }
 }

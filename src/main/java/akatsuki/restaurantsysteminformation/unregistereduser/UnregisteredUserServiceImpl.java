@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private final UnregisteredUserRepository unregisteredUserRepository;
     private final UserService userService;

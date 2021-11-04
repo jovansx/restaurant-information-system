@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("order-item")
 public class OrderItemController {
-    private OrderItemServiceImpl orderItemService;
+    private final OrderItemServiceImpl orderItemService;
 
     @Autowired
     public OrderItemController(OrderItemServiceImpl orderItemService) {

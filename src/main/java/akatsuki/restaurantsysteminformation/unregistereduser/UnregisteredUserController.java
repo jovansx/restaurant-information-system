@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("unregistered-user")
+@RequestMapping("/api/unregistered-user")
 public class UnregisteredUserController {
     private final UnregisteredUserService unregisteredUserService;
 
