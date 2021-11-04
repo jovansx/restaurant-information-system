@@ -1,7 +1,8 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
-import akatsuki.restaurantsysteminformation.unregistereduser.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.unregistereduser.exception.UserNotFoundException;
+import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
+import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
+import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,20 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         checkPinCodeExistence(unregisteredUser.getPinCode());
         checkEmailExistence(unregisteredUser.getEmailAddress());
         unregisteredUserRepository.save(unregisteredUser);
+    }
+
+    @Override
+    public void delete(long id) {
+        Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
+        // TODO sta ako imaju stavke
+        if(user.isEmpty()) {
+            throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
+        }
+        if(user.get().isDeleted()) {
+            throw new UserDeletedException("User with the id " + id + " already deleted.");
+        }
+        user.get().setDeleted(true);
+        unregisteredUserRepository.save(user.get());
     }
 
     @Override

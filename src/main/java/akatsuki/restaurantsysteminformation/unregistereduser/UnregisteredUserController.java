@@ -43,4 +43,10 @@ public class UnregisteredUserController {
         UnregisteredUser user = Mapper.convertUnregisteredUserDTOToUnregisteredUser(unregisteredUserDTO);
         unregisteredUserService.update(user, id);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable long id) {
+        unregisteredUserService.delete(id);
+    }
 }
