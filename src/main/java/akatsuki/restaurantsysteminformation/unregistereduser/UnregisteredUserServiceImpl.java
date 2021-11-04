@@ -1,8 +1,10 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredCreateUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UserNotFoundException;
+import akatsuki.restaurantsysteminformation.user.User;
+import akatsuki.restaurantsysteminformation.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UnregisteredUserServiceImpl implements UnregisteredUserService {
-    private UnregisteredUserRepository unregisteredUserRepository;
+    private final UnregisteredUserRepository unregisteredUserRepository;
+    private final UserService userService;
 
     @Autowired
-    public void setUnregisteredUserRepository(UnregisteredUserRepository unregisteredUserRepository) {
+    public UnregisteredUserServiceImpl(UnregisteredUserRepository unregisteredUserRepository, UserService userService) {
         this.unregisteredUserRepository = unregisteredUserRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -27,11 +32,54 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
 
     @Override
     public void create(UnregisteredUser unregisteredUser) {
-        Optional<UnregisteredUser> user = unregisteredUserRepository.findByPinCode(unregisteredUser.getPinCode());
+        checkPinCodeExistence(unregisteredUser.getPinCode());
+        checkEmailExistence(unregisteredUser.getEmailAddress());
+        unregisteredUserRepository.save(unregisteredUser);
+    }
+
+    @Override
+    public void update(UnregisteredUser unregisteredUser, long id) {
+        Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
         if(user.isEmpty()) {
-            unregisteredUserRepository.save(unregisteredUser);
-        } else {
+            throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
+        }
+        validateUpdate(id, unregisteredUser);
+
+        UnregisteredUser foundUser = user.get();
+        foundUser.setFirstName(unregisteredUser.getFirstName());
+        foundUser.setLastName(unregisteredUser.getLastName());
+        foundUser.setEmailAddress(unregisteredUser.getEmailAddress());
+        foundUser.setPhoneNumber(unregisteredUser.getPhoneNumber());
+        foundUser.setSalary(unregisteredUser.getSalary());
+        foundUser.setPinCode(unregisteredUser.getPinCode());
+
+        unregisteredUserRepository.save(foundUser);
+    }
+
+    private void validateUpdate(long id, UnregisteredUser unregisteredUser) {
+        Optional<UnregisteredUser> userByPinCode = unregisteredUserRepository.findByPinCode(unregisteredUser.getPinCode());
+        Optional<User> userByEmail = userService.findByEmail(unregisteredUser.getEmailAddress());
+
+        if(userByPinCode.isPresent() && id != userByPinCode.get().getId()) {
             throw new UserExistsException("User with the pin code " + unregisteredUser.getPinCode() + " already exists in the database.");
+        }
+
+        if(userByEmail.isPresent() && id != userByEmail.get().getId()) {
+            throw new UserExistsException("User with the email " + unregisteredUser.getEmailAddress() + " already exists in the database.");
+        }
+    }
+
+    private void checkPinCodeExistence(String pinCode) {
+        Optional<UnregisteredUser> user = unregisteredUserRepository.findByPinCode(pinCode);
+        if(user.isPresent()) {
+            throw new UserExistsException("User with the pin code " + pinCode + " already exists in the database.");
+        }
+    }
+
+    private void checkEmailExistence(String email) {
+        Optional<User> user = userService.findByEmail(email);
+        if(user.isPresent()) {
+            throw new UserExistsException("User with the email " + email + " already exists in the database.");
         }
     }
 

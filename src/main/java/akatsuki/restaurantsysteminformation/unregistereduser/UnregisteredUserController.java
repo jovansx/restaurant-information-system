@@ -1,6 +1,6 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredCreateUserDTO;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,10 +11,10 @@ import java.util.List;
 @RestController
 @RequestMapping("unregistered-user")
 public class UnregisteredUserController {
-    private UnregisteredUserServiceImpl unregisteredUserService;
+    private final UnregisteredUserService unregisteredUserService;
 
     @Autowired
-    public UnregisteredUserController(UnregisteredUserServiceImpl unregisteredUserService) {
+    public UnregisteredUserController(UnregisteredUserService unregisteredUserService) {
         this.unregisteredUserService = unregisteredUserService;
     }
 
@@ -30,11 +30,17 @@ public class UnregisteredUserController {
         return unregisteredUserService.getOne(id);
     }
 
-    @ResponseBody
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody UnregisteredCreateUserDTO unregisteredCreateUserDTO) {
-        UnregisteredUser user = Mapper.convertUnregisteredCreateUserDTOToUnregisteredUser(unregisteredCreateUserDTO);
+    public void create(@RequestBody UnregisteredUserDTO unregisteredUserDTO) {
+        UnregisteredUser user = Mapper.convertUnregisteredUserDTOToUnregisteredUser(unregisteredUserDTO);
         unregisteredUserService.create(user);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@RequestBody UnregisteredUserDTO unregisteredUserDTO, @PathVariable long id) {
+        UnregisteredUser user = Mapper.convertUnregisteredUserDTOToUnregisteredUser(unregisteredUserDTO);
+        unregisteredUserService.update(user, id);
     }
 }
