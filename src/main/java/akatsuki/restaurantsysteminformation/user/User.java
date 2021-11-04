@@ -32,23 +32,27 @@ public abstract class User {
     private UserType type;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean idDeleted;
+    private boolean isDeleted;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean idDeleted) {
+    public User(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean isDeleted) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
         this.salary = salary;
         this.type = type;
-        this.idDeleted = idDeleted;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -99,11 +103,11 @@ public abstract class User {
         this.type = type;
     }
 
-    public boolean isIdDeleted() {
-        return idDeleted;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setIdDeleted(boolean idDeleted) {
-        this.idDeleted = idDeleted;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
