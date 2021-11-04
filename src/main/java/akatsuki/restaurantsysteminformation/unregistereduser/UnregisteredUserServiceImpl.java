@@ -32,20 +32,16 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     @Override
     public void create(UnregisteredUser unregisteredUser) {
         checkPinCodeExistence(unregisteredUser.getPinCode());
-        checkEmailExistence(unregisteredUser.getEmailAddress());
+        userService.checkEmailExistence(unregisteredUser.getEmailAddress());
         unregisteredUserRepository.save(unregisteredUser);
     }
 
     @Override
     public void delete(long id) {
+        userService.deleteValidation(id);
         Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
         // TODO sta ako imaju stavke
-        if(user.isEmpty()) {
-            throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        }
-        if(user.get().isDeleted()) {
-            throw new UserDeletedException("User with the id " + id + " already deleted.");
-        }
+
         user.get().setDeleted(true);
         unregisteredUserRepository.save(user.get());
     }
@@ -55,6 +51,8 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
         if(user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
+        } else if(user.get().isDeleted()) {
+            throw new UserDeletedException("User with the id " + id + " is deleted.");
         }
         validateUpdate(id, unregisteredUser);
 
@@ -72,6 +70,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private void validateUpdate(long id, UnregisteredUser unregisteredUser) {
         Optional<UnregisteredUser> userByPinCode = unregisteredUserRepository.findByPinCode(unregisteredUser.getPinCode());
         Optional<User> userByEmail = userService.findByEmail(unregisteredUser.getEmailAddress());
+        Optional<User> userByPhoneNumber = userService.findByPhoneNumber(unregisteredUser.getPhoneNumber());
 
         if(userByPinCode.isPresent() && id != userByPinCode.get().getId()) {
             throw new UserExistsException("User with the pin code " + unregisteredUser.getPinCode() + " already exists in the database.");
@@ -80,19 +79,16 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         if(userByEmail.isPresent() && id != userByEmail.get().getId()) {
             throw new UserExistsException("User with the email " + unregisteredUser.getEmailAddress() + " already exists in the database.");
         }
+
+        if(userByPhoneNumber.isPresent() && id != userByPhoneNumber.get().getId()) {
+            throw new UserExistsException("User with the phone number " + unregisteredUser.getPhoneNumber() + " already exists in the database.");
+        }
     }
 
     private void checkPinCodeExistence(String pinCode) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findByPinCode(pinCode);
         if(user.isPresent()) {
             throw new UserExistsException("User with the pin code " + pinCode + " already exists in the database.");
-        }
-    }
-
-    private void checkEmailExistence(String email) {
-        Optional<User> user = userService.findByEmail(email);
-        if(user.isPresent()) {
-            throw new UserExistsException("User with the email " + email + " already exists in the database.");
         }
     }
 
