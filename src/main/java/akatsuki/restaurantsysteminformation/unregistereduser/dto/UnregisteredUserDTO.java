@@ -1,8 +1,8 @@
 package akatsuki.restaurantsysteminformation.unregistereduser.dto;
 
-import akatsuki.restaurantsysteminformation.user.dto.CreateUserDTO;
+import akatsuki.restaurantsysteminformation.user.dto.UserDTO;
 
-public class UnregisteredUserDTO extends CreateUserDTO {
+public class UnregisteredUserDTO extends UserDTO {
     private String pinCode;
 
     public UnregisteredUserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type,
