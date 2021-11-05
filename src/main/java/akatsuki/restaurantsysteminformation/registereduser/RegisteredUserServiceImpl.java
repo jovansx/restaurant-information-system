@@ -1,11 +1,13 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
+import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
+import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         checkUsernameExistence(registeredUser.getUsername());
         userService.checkEmailExistence(registeredUser.getEmailAddress());
         userService.checkPhoneNumberExistence(registeredUser.getPhoneNumber());
+        checkUserType(registeredUser.getType());
         registeredUserRepository.save(registeredUser);
     }
 
@@ -48,6 +51,12 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         Optional<RegisteredUser> user = registeredUserRepository.findByUsername(username);
         if(user.isPresent()) {
             throw new UserExistsException("User with the username " + username + " already exists in the database.");
+        }
+    }
+
+    private void checkUserType(UserType type) {
+        if(type != UserType.MANAGER && type != UserType.SYSTEM_ADMIN) {
+            throw new UserTypeNotValidException("User type for registered user is not valid.");
         }
     }
 
@@ -73,6 +82,8 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     private void validateUpdate(long id, RegisteredUser registeredUser) {
+        // TODO da li ubaciti proveru za empty fields? :(
+        checkUserType(registeredUser.getType());
         Optional<RegisteredUser> userByUsername = registeredUserRepository.findByUsername(registeredUser.getUsername());
         Optional<User> userByEmail = userService.findByEmail(registeredUser.getEmailAddress());
         Optional<User> userByPhoneNumber = userService.findByPhoneNumber(registeredUser.getPhoneNumber());

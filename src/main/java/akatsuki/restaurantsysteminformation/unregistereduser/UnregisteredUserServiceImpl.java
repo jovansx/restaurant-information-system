@@ -1,10 +1,12 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
+import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
+import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,14 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     public void create(UnregisteredUser unregisteredUser) {
         checkPinCodeExistence(unregisteredUser.getPinCode());
         userService.checkEmailExistence(unregisteredUser.getEmailAddress());
+        checkUserType(unregisteredUser.getType());
         unregisteredUserRepository.save(unregisteredUser);
+    }
+
+    private void checkUserType(UserType type) {
+        if(type != UserType.WAITER && type != UserType.CHEF && type != UserType.BARTENDER) {
+            throw new UserTypeNotValidException("User type for unregistered user is not valid.");
+        }
     }
 
     @Override
@@ -68,6 +77,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     private void validateUpdate(long id, UnregisteredUser unregisteredUser) {
+        checkUserType(unregisteredUser.getType());
         Optional<UnregisteredUser> userByPinCode = unregisteredUserRepository.findByPinCode(unregisteredUser.getPinCode());
         Optional<User> userByEmail = userService.findByEmail(unregisteredUser.getEmailAddress());
         Optional<User> userByPhoneNumber = userService.findByPhoneNumber(unregisteredUser.getPhoneNumber());
