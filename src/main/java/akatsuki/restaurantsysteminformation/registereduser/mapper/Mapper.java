@@ -7,22 +7,22 @@ import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidExcep
 
 public class Mapper {
 
-    public static RegisteredUser convertRegisteredUserDTOToRegisteredUser(RegisteredUserDTO registeredCreateUserDTO) {
+    public static RegisteredUser convertRegisteredUserDTOToRegisteredUser(RegisteredUserDTO registeredUserDTO) {
         try {
-            UserType.valueOf(registeredCreateUserDTO.getType());
+            UserType.valueOf(registeredUserDTO.getType());
         } catch (IllegalArgumentException e) {
             throw new UserTypeNotValidException("User type for unregistered user is not valid.");
         }
         return new RegisteredUser(
-                registeredCreateUserDTO.getFirstName(),
-                registeredCreateUserDTO.getLastName(),
-                registeredCreateUserDTO.getEmailAddress(),
-                registeredCreateUserDTO.getPhoneNumber(),
-                registeredCreateUserDTO.getSalary(),
-                UserType.valueOf(registeredCreateUserDTO.getType()),
+                registeredUserDTO.getFirstName(),
+                registeredUserDTO.getLastName(),
+                registeredUserDTO.getEmailAddress(),
+                registeredUserDTO.getPhoneNumber(),
+                registeredUserDTO.getSalary(),
+                UserType.valueOf(registeredUserDTO.getType()),
                 false,
-                registeredCreateUserDTO.getUsername(),
-                registeredCreateUserDTO.getPassword()
+                registeredUserDTO.getUsername(),
+                registeredUserDTO.getPassword()
         );
     }
 }
