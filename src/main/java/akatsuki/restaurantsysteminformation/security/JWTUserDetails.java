@@ -32,7 +32,7 @@ public class JWTUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmailAddress();
+        return user.getUsername();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
+import akatsuki.restaurantsysteminformation.user.User;
+import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import akatsuki.restaurantsysteminformation.user.User;
-import akatsuki.restaurantsysteminformation.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     @Override
     public UnregisteredUser getOne(long id) {
         return unregisteredUserRepository.findById(id).orElseThrow(
-            () -> new UserNotFoundException("User with the id " + id + " is not found in the database.")
+                () -> new UserNotFoundException("User with the id " + id + " is not found in the database.")
         );
     }
 
@@ -40,10 +40,10 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     public void delete(long id) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
         // TODO sta ako imaju stavke
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
         }
-        if(user.get().isDeleted()) {
+        if (user.get().isDeleted()) {
             throw new UserDeletedException("User with the id " + id + " already deleted.");
         }
         user.get().setDeleted(true);
@@ -53,7 +53,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     @Override
     public void update(UnregisteredUser unregisteredUser, long id) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
         }
         validateUpdate(id, unregisteredUser);
@@ -73,25 +73,25 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         Optional<UnregisteredUser> userByPinCode = unregisteredUserRepository.findByPinCode(unregisteredUser.getPinCode());
         Optional<User> userByEmail = userService.findByEmail(unregisteredUser.getEmailAddress());
 
-        if(userByPinCode.isPresent() && id != userByPinCode.get().getId()) {
+        if (userByPinCode.isPresent() && id != userByPinCode.get().getId()) {
             throw new UserExistsException("User with the pin code " + unregisteredUser.getPinCode() + " already exists in the database.");
         }
 
-        if(userByEmail.isPresent() && id != userByEmail.get().getId()) {
+        if (userByEmail.isPresent() && id != userByEmail.get().getId()) {
             throw new UserExistsException("User with the email " + unregisteredUser.getEmailAddress() + " already exists in the database.");
         }
     }
 
     private void checkPinCodeExistence(String pinCode) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findByPinCode(pinCode);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             throw new UserExistsException("User with the pin code " + pinCode + " already exists in the database.");
         }
     }
 
     private void checkEmailExistence(String email) {
         Optional<User> user = userService.findByEmail(email);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             throw new UserExistsException("User with the email " + email + " already exists in the database.");
         }
     }
