@@ -1,7 +1,7 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
-import akatsuki.restaurantsysteminformation.utils.Mapper;
+import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
 package akatsuki.restaurantsysteminformation.user.dto;
 
-public class CreateUserDTO {
+public class UserDTO {
     private String firstName;
     private String lastName;
     private String emailAddress;
@@ -8,7 +8,7 @@ public class CreateUserDTO {
     private double salary;
     private String type;
 
-    public CreateUserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type) {
+    public UserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
