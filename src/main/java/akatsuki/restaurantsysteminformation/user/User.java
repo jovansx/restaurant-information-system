@@ -1,11 +1,13 @@
 package akatsuki.restaurantsysteminformation.user;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "MyUser")
+@Where(clause = "is_deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
@@ -110,4 +112,6 @@ public abstract class User {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+
+    public String getName() { return firstName + " " + lastName; }
 }

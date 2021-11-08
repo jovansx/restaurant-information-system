@@ -52,6 +52,16 @@ public class DbConfiguration {
             unregisteredUserRepository.save(bartender1);
             UnregisteredUser chef1 = new UnregisteredUser("Elon", "Musk", "elonmusk@gmail.com", "061111113", 2250, UserType.CHEF, false, "1113");
             unregisteredUserRepository.save(chef1);
+            UnregisteredUser waiter2 = new UnregisteredUser("Chili", "Kalibrk", "chilikalibrk@gmail.com", "061111117", 3000, UserType.WAITER, false, "1114");
+            unregisteredUserRepository.save(waiter2);
+            UnregisteredUser bartender2 = new UnregisteredUser("Simon", "Cowel", "simoncowel@gmail.com", "061111118", 3500, UserType.BARTENDER, false, "1115");
+            unregisteredUserRepository.save(bartender2);
+            UnregisteredUser chef2 = new UnregisteredUser("Eloner", "Muskila", "elonermuskila@gmail.com", "061111119", 3250, UserType.CHEF, false, "1116");
+            unregisteredUserRepository.save(chef2);
+            UnregisteredUser waiter3 = new UnregisteredUser("Calikikoki", "Garibai", "calikikoki@gmail.com", "061111121", 4000, UserType.WAITER, false, "1117");
+            unregisteredUserRepository.save(waiter3);
+            UnregisteredUser waiter4 = new UnregisteredUser("Kalionear", "Calioki", "kalionear@gmail.com", "061111122", 4000, UserType.WAITER, false, "1118");
+            unregisteredUserRepository.save(waiter4);
 //            RegisteredUsers
 //            TODO sifre cemo kriptovati pre nego sto ih stavimo u bazu
             registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "061111114", 3000, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
