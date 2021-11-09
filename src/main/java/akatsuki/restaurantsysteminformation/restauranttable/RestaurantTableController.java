@@ -1,16 +1,25 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
+import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("restaurant-table")
+@RequestMapping("/api/restaurant-table")
 public class RestaurantTableController {
-    private final RestaurantTableServiceImpl restaurantTableService;
+    private final RestaurantTableService restaurantTableService;
 
     @Autowired
-    public RestaurantTableController(RestaurantTableServiceImpl restaurantTableService) {
+    public RestaurantTableController(RestaurantTableService restaurantTableService) {
         this.restaurantTableService = restaurantTableService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody CreateRestaurantTableDTO createRestaurantTableDTO) {
+        RestaurantTable table = Mapper.convertCreateRestaurantTableDTOToRestaurantTable(createRestaurantTableDTO);
+        restaurantTableService.create(table);
     }
 }
