@@ -26,7 +26,7 @@ public class RestaurantTable {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "order_id")
     private Order activeOrder;
 
