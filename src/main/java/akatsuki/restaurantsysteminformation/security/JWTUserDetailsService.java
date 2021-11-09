@@ -17,8 +17,8 @@ public class JWTUserDetailsService implements UserDetailsService {
     private RegisteredUserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
-        Optional<RegisteredUser> registeredUser = userRepository.findByEmailAddress(emailAddress);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<RegisteredUser> registeredUser = userRepository.findByUsername(username);
         if (registeredUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         } else {

@@ -4,23 +4,23 @@ import java.io.Serializable;
 
 public class JWTRequest implements Serializable {
 
-    private String email;
+    private String username;
     private String password;
 
     public JWTRequest() {
     }
 
-    public JWTRequest(String email, String password) {
-        this.setEmail(email);
+    public JWTRequest(String username, String password) {
+        this.setUsername(username);
         this.setPassword(password);
     }
 
-    public String getEmail() {
-        return this.email;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
