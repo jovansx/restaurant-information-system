@@ -8,6 +8,8 @@ public class UserDTO {
     private double salary;
     private String type;
 
+    public UserDTO() {}
+
     public UserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -62,6 +64,6 @@ public class UserDTO {
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type = type.toLowerCase();
     }
 }

@@ -47,16 +47,26 @@ public class DbConfiguration {
                                               RestaurantTableRepository restaurantTableRepository, RoomRepository roomRepository, OrderRepository orderRepository) {
         return (args) -> {
 //            UnregisteredUsers
-            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "061111111", 2000, UserType.WAITER, false, "1111");
+            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", 2000, UserType.WAITER, false, "1111");
             unregisteredUserRepository.save(waiter1);
-            UnregisteredUser bartender1 = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "061111112", 2500, UserType.BARTENDER, false, "1112");
+            UnregisteredUser bartender1 = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "0611111112", 2500, UserType.BARTENDER, false, "1112");
             unregisteredUserRepository.save(bartender1);
-            UnregisteredUser chef1 = new UnregisteredUser("Elon", "Musk", "elonmusk@gmail.com", "061111113", 2250, UserType.CHEF, false, "1113");
+            UnregisteredUser chef1 = new UnregisteredUser("Elon", "Musk", "elonmusk@gmail.com", "0611111113", 2250, UserType.CHEF, false, "1113");
             unregisteredUserRepository.save(chef1);
+            UnregisteredUser waiter2 = new UnregisteredUser("Chili", "Kalibrk", "chilikalibrk@gmail.com", "0611111117", 3000, UserType.WAITER, false, "1114");
+            unregisteredUserRepository.save(waiter2);
+            UnregisteredUser bartender2 = new UnregisteredUser("Simon", "Cowel", "simoncowel@gmail.com", "0611111118", 3500, UserType.BARTENDER, false, "1115");
+            unregisteredUserRepository.save(bartender2);
+            UnregisteredUser chef2 = new UnregisteredUser("Eloner", "Muskila", "elonermuskila@gmail.com", "0611111119", 3250, UserType.CHEF, false, "1116");
+            unregisteredUserRepository.save(chef2);
+            UnregisteredUser waiter3 = new UnregisteredUser("Calikikoki", "Garibai", "calikikoki@gmail.com", "0611111121", 4000, UserType.WAITER, false, "1117");
+            unregisteredUserRepository.save(waiter3);
+            UnregisteredUser waiter4 = new UnregisteredUser("Kalionear", "Calioki", "kalionear@gmail.com", "0611111122", 4000, UserType.WAITER, false, "1118");
+            unregisteredUserRepository.save(waiter4);
 //            RegisteredUsers
-            registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "061111114", 3000, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
-            registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "061111115", 3000, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
-            registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "061111116", 3000, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));
+            registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "0611111114", 3000, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
+            registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "0611111115", 3000, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
+            registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "0611111116", 3000, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));
 //            Prices
             Price p1 = new Price(LocalDateTime.of(2021, 11, 3, 0, 0, 0), 5);
             Price p2 = new Price(LocalDateTime.of(2021, 11, 4, 0, 0, 0), 8);
