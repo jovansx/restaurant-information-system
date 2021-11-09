@@ -12,6 +12,7 @@ import akatsuki.restaurantsysteminformation.item.ItemRepository;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryRepository;
 import akatsuki.restaurantsysteminformation.order.Order;
+import akatsuki.restaurantsysteminformation.order.OrderRepository;
 import akatsuki.restaurantsysteminformation.price.Price;
 import akatsuki.restaurantsysteminformation.price.PriceRepository;
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
@@ -43,7 +44,7 @@ public class DbConfiguration {
                                               PriceRepository priceRepository, ItemCategoryRepository itemCategoryRepository,
                                               ItemRepository itemRepository, DishItemRepository dishItemRepository,
                                               DrinkItemRepository drinkItemRepository, DrinkItemsRepository drinkItemsRepository,
-                                              RestaurantTableRepository restaurantTableRepository, RoomRepository roomRepository) {
+                                              RestaurantTableRepository restaurantTableRepository, RoomRepository roomRepository, OrderRepository orderRepository) {
         return (args) -> {
 //            UnregisteredUsers
             UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", 2000, UserType.WAITER, false, "1111");
@@ -63,7 +64,6 @@ public class DbConfiguration {
             UnregisteredUser waiter4 = new UnregisteredUser("Kalionear", "Calioki", "kalionear@gmail.com", "0611111122", 4000, UserType.WAITER, false, "1118");
             unregisteredUserRepository.save(waiter4);
 //            RegisteredUsers
-//            TODO sifre cemo kriptovati pre nego sto ih stavimo u bazu
             registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "0611111114", 3000, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
             registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "0611111115", 3000, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
             registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "0611111116", 3000, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));
@@ -93,23 +93,40 @@ public class DbConfiguration {
 
             Item juice1 = new Item("1111", "Apple juice", "Very good apple juice!", appleJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Apple", "Sugar"), ic1, Arrays.asList(p1, p2));
             itemRepository.save(juice1);
-            itemRepository.save(new Item("1112", "Orange juice", "Very good orange juice!", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Orange", "Sugar"), ic1, Collections.singletonList(p3)));
-            itemRepository.save(new Item("1113", "Sex on the beach", "Very good cocktail!", sexOnTheBeachImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Potato", "Sugar", "Vodka"), ic2, Collections.singletonList(p4)));
+            Item juice2 = new Item("1112", "Orange juice", "Very good orange juice!", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Orange", "Sugar"), ic1, Collections.singletonList(p3));
+            itemRepository.save(juice2);
+            Item cocktail1 = new Item("1113", "Sex on the beach", "Very good cocktail!", sexOnTheBeachImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Potato", "Sugar", "Vodka"), ic2, Collections.singletonList(p4));
+            itemRepository.save(cocktail1);
             Item sandwich1 = new Item("1114", "Chicken sandwich", "Very good chicken sandwich!", chickenSandwichImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Tomato", "Bread"), ic3, Collections.singletonList(p5));
             itemRepository.save(sandwich1);
 //          DishItem
-            DishItem dishItem1 = new DishItem(null, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, ItemState.DELIVERED, 1, chef1, sandwich1);
+            DishItem dishItem1 = new DishItem(null, LocalDateTime.now(), false, ItemState.PREPARATION, 1, chef1, sandwich1);
             dishItemRepository.save(dishItem1);
 //          DrinkItem
             DrinkItem drinkItem1 = new DrinkItem(1, juice1);
             drinkItemRepository.save(drinkItem1);
+            DrinkItem drinkItem2 = new DrinkItem(2, juice2);
+            drinkItemRepository.save(drinkItem2);
+            DrinkItem drinkItem3 = new DrinkItem(3, juice1);
+            drinkItemRepository.save(drinkItem3);
+            DrinkItem drinkItem4 = new DrinkItem(2, cocktail1);
+            drinkItemRepository.save(drinkItem4);
+            DrinkItem drinkItem5 = new DrinkItem(1, cocktail1);
+            drinkItemRepository.save(drinkItem5);
 //          DrinkItems
-            DrinkItems drinkItems1 = new DrinkItems(null, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, ItemState.DELIVERED, bartender1, Collections.singletonList(drinkItem1));
+            DrinkItems drinkItems1 = new DrinkItems("Hocu dobar sok od jabuke", LocalDateTime.now().minusMinutes(5), false, ItemState.PREPARATION, bartender1, Arrays.asList(drinkItem1, drinkItem2), true);
             drinkItemsRepository.save(drinkItems1);
+            DrinkItems drinkItems2 = new DrinkItems(null, LocalDateTime.now(), false, ItemState.ON_HOLD, null, Collections.singletonList(drinkItem3), true);
+            drinkItemsRepository.save(drinkItems2);
+            DrinkItems drinkItems3 = new DrinkItems(null, LocalDateTime.now(), false, ItemState.ON_HOLD, null, Collections.singletonList(drinkItem4), true);
+            drinkItemsRepository.save(drinkItems3);
+            DrinkItems drinkItems4 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.READY, bartender1, Collections.singletonList(drinkItem5), true);
+            drinkItemsRepository.save(drinkItems4);
 //          Order
-            Order order1 = new Order(8, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, false, waiter1, new ArrayList<>(), Collections.singletonList(drinkItems1));
+            Order order1 = new Order(8, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, false, waiter1, new ArrayList<>(), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
+            orderRepository.save(order1);
 //          RestaurantTable
-            RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.FREE, TableShape.CIRCLE, false, null);
+            RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.FREE, TableShape.CIRCLE, false, order1);
             restaurantTableRepository.save(restaurantTable1);
 //          Room
             Room room1 = new Room("Room number 1", false, Collections.singletonList(restaurantTable1));

@@ -1,6 +1,8 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
+import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTOEssentials;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserTableDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
@@ -52,6 +54,12 @@ public class UnregisteredUserController {
     public UnregisteredUserDetailsDTO getDetailsById(@PathVariable long id) {
         UnregisteredUser unregisteredUser = unregisteredUserService.getOne(id);
         return modelMapper.map(unregisteredUser, UnregisteredUserDetailsDTO.class);
+    }
+
+    @GetMapping("/pin-code/{pinCode}")
+    @ResponseStatus(HttpStatus.OK)
+    public UnregisteredUserDTOEssentials checkPinCode(@PathVariable int pinCode, @RequestParam("usertype") String userType) {
+        return new UnregisteredUserDTOEssentials(unregisteredUserService.checkPinCode(pinCode, UserType.valueOf(userType.toUpperCase())));
     }
 
     @PostMapping

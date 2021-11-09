@@ -24,4 +24,5 @@ public class Mapper {
                 unregisteredUserDTO.getPinCode()
         );
     }
+
 }

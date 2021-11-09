@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.user;
 
-import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void checkEmailExistence(String email) {
         Optional<User> user = findByEmail(email);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             throw new UserExistsException("User with the email " + email + " already exists in the database.");
         }
     }
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void checkPhoneNumberExistence(String phoneNumber) {
         Optional<User> user = findByPhoneNumber(phoneNumber);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             throw new UserExistsException("User with the phone number " + phoneNumber + " already exists in the database.");
         }
     }
@@ -47,10 +46,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteValidation(long id) {
         Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
         }
-        if(user.get().isDeleted()) {
+        if (user.get().isDeleted()) {
             throw new UserDeletedException("User with the id " + id + " already deleted.");
         }
     }

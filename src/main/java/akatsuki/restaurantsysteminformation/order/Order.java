@@ -31,10 +31,10 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private UnregisteredUser waiter;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DishItem> dishes;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItems> drinks;
 
     public Order() {

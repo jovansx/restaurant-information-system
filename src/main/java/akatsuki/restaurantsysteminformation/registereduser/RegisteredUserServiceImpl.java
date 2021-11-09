@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
@@ -49,13 +48,13 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     private void checkUsernameExistence(String username) {
         Optional<RegisteredUser> user = registeredUserRepository.findByUsername(username);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             throw new UserExistsException("User with the username " + username + " already exists in the database.");
         }
     }
 
     private void checkUserType(UserType type) {
-        if(type != UserType.MANAGER && type != UserType.SYSTEM_ADMIN) {
+        if (type != UserType.MANAGER && type != UserType.SYSTEM_ADMIN) {
             throw new UserTypeNotValidException("User type for registered user is not valid.");
         }
     }
@@ -63,9 +62,9 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     @Override
     public void update(RegisteredUser registeredUser, long id) {
         Optional<RegisteredUser> user = registeredUserRepository.findById(id);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        } else if(user.get().isDeleted()) {
+        } else if (user.get().isDeleted()) {
             throw new UserDeletedException("User with the id " + id + " is deleted.");
         }
         validateUpdate(id, registeredUser);
@@ -88,15 +87,15 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         Optional<User> userByEmail = userService.findByEmail(registeredUser.getEmailAddress());
         Optional<User> userByPhoneNumber = userService.findByPhoneNumber(registeredUser.getPhoneNumber());
 
-        if(userByUsername.isPresent() && id != userByUsername.get().getId()) {
+        if (userByUsername.isPresent() && id != userByUsername.get().getId()) {
             throw new UserExistsException("User with the pin code " + registeredUser.getUsername() + " already exists in the database.");
         }
 
-        if(userByEmail.isPresent() && id != userByEmail.get().getId()) {
+        if (userByEmail.isPresent() && id != userByEmail.get().getId()) {
             throw new UserExistsException("User with the email " + registeredUser.getEmailAddress() + " already exists in the database.");
         }
 
-        if(userByPhoneNumber.isPresent() && id != userByPhoneNumber.get().getId()) {
+        if (userByPhoneNumber.isPresent() && id != userByPhoneNumber.get().getId()) {
             throw new UserExistsException("User with the phone number " + registeredUser.getPhoneNumber() + " already exists in the database.");
         }
     }
