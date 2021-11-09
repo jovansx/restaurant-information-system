@@ -14,16 +14,16 @@ public class DrinkItemsDTOActive {
     public DrinkItemsDTOActive(DrinkItems drinkItems) {
         this.id = drinkItems.getId();
         this.state = drinkItems.getState();
-        if(drinkItems.getBartender() != null)
+        if (drinkItems.getBartender() != null)
             this.initials = drinkItems.getBartender().getFirstName().toUpperCase().charAt(0) + " " + drinkItems.getBartender().getLastName().toUpperCase().charAt(0);
         else
             this.initials = "";
         StringBuilder str = new StringBuilder();
-        for (DrinkItem di: drinkItems.getDrinkItems()) {
+        for (DrinkItem di : drinkItems.getDrinkItems()) {
             str.append(di.getItem().getName());
             str.append(",");
         }
-        this.name = str.toString().substring(0, str.length()-1);
+        this.name = str.substring(0, str.length() - 1);
     }
 
     public ItemState getState() {

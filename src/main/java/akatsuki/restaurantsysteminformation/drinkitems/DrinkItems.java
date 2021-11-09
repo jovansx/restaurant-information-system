@@ -18,7 +18,6 @@ public class DrinkItems extends OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private UnregisteredUser bartender;
 
-//    TODO vidi dal treba ovo
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItem> drinkItemList;
 

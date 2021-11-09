@@ -54,7 +54,6 @@ public class DbConfiguration {
             UnregisteredUser chef1 = new UnregisteredUser("Elon", "Musk", "elonmusk@gmail.com", "061111113", 2250, UserType.CHEF, false, "1113");
             unregisteredUserRepository.save(chef1);
 //            RegisteredUsers
-//            TODO sifre cemo kriptovati pre nego sto ih stavimo u bazu
             registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "061111114", 3000, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
             registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "061111115", 3000, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
             registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "061111116", 3000, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));

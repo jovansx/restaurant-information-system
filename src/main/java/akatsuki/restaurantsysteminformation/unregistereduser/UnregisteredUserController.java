@@ -2,7 +2,7 @@ package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTOEsentials;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTOEssentials;
 import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,10 +32,10 @@ public class UnregisteredUserController {
         return unregisteredUserService.getOne(id);
     }
 
-    @GetMapping("/pin-code/bartender/{pinCode}")
+    @GetMapping("/pin-code/{pinCode}")
     @ResponseStatus(HttpStatus.OK)
-    public UnregisteredUserDTOEsentials checkBartenderPinCode(@PathVariable long pinCode) {
-        return new UnregisteredUserDTOEsentials(unregisteredUserService.checkPinCode(pinCode, UserType.BARTENDER));
+    public UnregisteredUserDTOEssentials checkPinCode(@PathVariable int pinCode, @RequestParam("usertype") String userType) {
+        return new UnregisteredUserDTOEssentials(unregisteredUserService.checkPinCode(pinCode, UserType.valueOf(userType.toUpperCase())));
     }
 
     @PostMapping

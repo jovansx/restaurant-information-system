@@ -17,5 +17,5 @@ public interface UnregisteredUserService {
 
     List<UnregisteredUser> getAll();
 
-    UnregisteredUser checkPinCode(long pinCode, UserType type);
+    UnregisteredUser checkPinCode(int pinCode, UserType type);
 }
