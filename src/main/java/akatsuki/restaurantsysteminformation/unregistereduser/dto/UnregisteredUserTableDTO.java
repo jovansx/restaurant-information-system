@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.unregistereduser.dto;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 public class UnregisteredUserTableDTO {
     private Long id;
@@ -9,6 +10,13 @@ public class UnregisteredUserTableDTO {
     private String type;
 
     public UnregisteredUserTableDTO() {}
+
+    public UnregisteredUserTableDTO(UnregisteredUser user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.phoneNumber = user.getPhoneNumber();
+        this.type = user.getType().name().toLowerCase();
+    }
 
     public Long getId() {
         return id;

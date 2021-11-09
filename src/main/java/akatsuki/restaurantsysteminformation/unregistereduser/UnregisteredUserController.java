@@ -36,11 +36,7 @@ public class UnregisteredUserController {
     @GetMapping("/table")
     @ResponseStatus(HttpStatus.OK)
     public List<UnregisteredUserTableDTO> getAllForTable() {
-        modelMapper.typeMap(UnregisteredUser.class, UnregisteredUserTableDTO.class).addMappings(mapper -> {
-            mapper.map(User::getName,
-                    UnregisteredUserTableDTO::setName);
-        });
-        return unregisteredUserService.getAll().stream().map(u -> modelMapper.map(u, UnregisteredUserTableDTO.class)).collect(Collectors.toList());
+        return unregisteredUserService.getAll().stream().map(UnregisteredUserTableDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
