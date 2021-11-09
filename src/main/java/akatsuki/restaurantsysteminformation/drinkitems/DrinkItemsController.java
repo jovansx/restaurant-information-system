@@ -1,13 +1,18 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTOActionRequest;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTOActive;
+import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
+import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/drink-items")
@@ -22,17 +27,20 @@ public class DrinkItemsController {
     @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
     public List<DrinkItemsDTOActive> getAllActiveDrinkItems() {
-        List<DrinkItemsDTOActive> itemsDTOList = new ArrayList<>();
-        for (DrinkItems item: this.drinkItemsService.getAllActive()) {
-            itemsDTOList.add(new DrinkItemsDTOActive(item));
-        }
-        return itemsDTOList;
+        return this.drinkItemsService.getAllActive().stream().map(DrinkItemsDTOActive::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DrinkItemsDTO getOne(@PathVariable long id) {
         return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public DrinkItemsDTOActive changeStateOfDrinkItems(@RequestBody DrinkItemsDTOActionRequest dto) {
+        DrinkItems drinkItems = drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
+        return new DrinkItemsDTOActive(drinkItems);
     }
 
 }

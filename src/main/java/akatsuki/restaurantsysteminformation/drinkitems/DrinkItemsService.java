@@ -7,4 +7,6 @@ public interface DrinkItemsService {
     List<DrinkItems> getAllActive();
 
     DrinkItems getOne(long id);
+
+    DrinkItems changeStateOfDrinkItems(long itemId, long userId);
 }

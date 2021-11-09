@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
+import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
@@ -105,6 +106,15 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     @Override
     public List<UnregisteredUser> getAll() {
         return unregisteredUserRepository.findAll();
+    }
+
+    @Override
+    public UnregisteredUser checkPinCode(long pinCode, UserType type) {
+        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode+"")
+                .orElseThrow(() -> new UserNotFoundException("User with the pin code " + pinCode + " is not found in the database."));
+        if (!user.getType().equals(type))
+            throw  new UserNotFoundException("User with the pin code " + pinCode + " is not a bartender.");
+        return user;
     }
 
 }
