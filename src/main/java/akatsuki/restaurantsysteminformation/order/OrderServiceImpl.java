@@ -39,27 +39,34 @@ public class OrderServiceImpl implements OrderService {
         if (order.getWaiter().getType() != UserType.WAITER) {
             throw new UserTypeNotValidException("User has to be waiter!");
         }
-        checkDishes(order.getDishes());
-        checkDrinks(order.getDrinks());
+        double dishesPrice = calculateDishesPrice(order.getDishes());
+        double drinksPrice = calculateDrinksPrice(order.getDrinks());
+        order.setTotalPrice(dishesPrice + drinksPrice);
         orderRepository.save(order);
     }
 
-    private void checkDishes(List<DishItem> dishes) {
-        dishes.forEach(dish -> {
-            if (dish.getItem().getType() != ItemType.DISH) {
+    private double calculateDishesPrice(List<DishItem> dishes) {
+        double dishesPrice = 0;
+        for(DishItem dishItem: dishes) {
+            if (dishItem.getItem().getType() != ItemType.DISH) {
                 throw new UserTypeNotValidException("Not correct type of dish item!");
             }
-        });
+            dishesPrice += dishItem.getAmount() * dishItem.getItem().getLastDefinedPrice().getValue();
+        }
+        return dishesPrice;
     }
 
-    private void checkDrinks(List<DrinkItems> drinkItemsList) {
-        drinkItemsList.forEach(drinkItems -> {
+    private double calculateDrinksPrice(List<DrinkItems> drinkItemsList) {
+        double drinksPrice = 0;
+        for (DrinkItems drinkItems: drinkItemsList) {
             List<DrinkItem> drinkItemList = drinkItems.getDrinkItems();
-            drinkItemList.forEach(drink -> {
-                if (drink.getItem().getType() != ItemType.DRINK) {
+            for(DrinkItem drinkItem: drinkItemList) {
+                if (drinkItem.getItem().getType() != ItemType.DRINK) {
                     throw new UserTypeNotValidException("Not correct type of drink item!");
                 }
-            });
-        });
+                drinksPrice += drinkItem.getAmount() * drinkItem.getItem().getLastDefinedPrice().getValue();
+            }
+        }
+        return drinksPrice;
     }
 }
