@@ -8,4 +8,6 @@ public interface OrderService {
 
     Order getOne(long id);
 
+    void create(Order order);
+
 }

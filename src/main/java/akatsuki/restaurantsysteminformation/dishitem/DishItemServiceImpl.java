@@ -11,4 +11,9 @@ public class DishItemServiceImpl implements DishItemService {
     public void setDishItemRepository(DishItemRepository dishItemRepository) {
         this.dishItemRepository = dishItemRepository;
     }
+
+    @Override
+    public DishItem create(DishItem dishItem) {
+        return dishItemRepository.save(dishItem);
+    }
 }

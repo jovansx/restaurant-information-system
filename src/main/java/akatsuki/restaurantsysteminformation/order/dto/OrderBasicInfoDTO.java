@@ -103,7 +103,7 @@ public class OrderBasicInfoDTO {
 
     private void setDishItemsInitially(List<DishItem> items) {
         for (DishItem item : items) {
-            this.drinkItemsList.add(new OrderItemIdDTO(item));
+            this.dishItemList.add(new OrderItemIdDTO(item));
         }
     }
 

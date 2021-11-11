@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrderCreateDTO {
     private Long waiterId;
-    private Long createdAt;
+    private String createdAt;
     private List<DishItemCreateDTO> dishItemList;
     private List<DrinkItemsCreateDTO> drinkItemsList;
 
@@ -22,11 +22,11 @@ public class OrderCreateDTO {
         this.waiterId = waiterId;
     }
 
-    public Long getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Long createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 

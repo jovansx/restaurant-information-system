@@ -71,4 +71,8 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         return drinkItems;
     }
 
+    @Override
+    public DrinkItems create(DrinkItems drinkItems) {
+        return drinkItemsRepository.save(drinkItems);
+    }
 }
