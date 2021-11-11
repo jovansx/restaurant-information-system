@@ -26,14 +26,30 @@ public abstract class OrderItem {
     @Column(name = "state", nullable = false)
     private ItemState state;
 
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
     public OrderItem() {
     }
 
-    public OrderItem(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state) {
+    public OrderItem(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, boolean isActive) {
         this.notes = notes;
         this.createdAt = createdAt;
         this.isDeleted = isDeleted;
         this.state = state;
+        this.isActive = isActive;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Long getId() {

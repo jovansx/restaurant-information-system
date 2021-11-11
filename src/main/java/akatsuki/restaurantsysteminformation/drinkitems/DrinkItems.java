@@ -21,17 +21,13 @@ public class DrinkItems extends OrderItem {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItem> drinkItemList;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
-
     public DrinkItems() {
     }
 
     public DrinkItems(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItems, boolean active) {
-        super(notes, createdAt, isDeleted, state);
+        super(notes, createdAt, isDeleted, state, active);
         this.bartender = bartender;
         this.drinkItemList = drinkItems;
-        this.isActive = active;
     }
 
     public UnregisteredUser getBartender() {
@@ -58,11 +54,4 @@ public class DrinkItems extends OrderItem {
         this.drinkItemList = drinkItemList;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
 }
