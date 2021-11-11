@@ -1,7 +1,11 @@
 package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.order.dto.OrderBasicInfoDTO;
+import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
+import akatsuki.restaurantsysteminformation.room.Room;
+import akatsuki.restaurantsysteminformation.room.dto.CreateRoomDTO;
+import akatsuki.restaurantsysteminformation.room.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +38,12 @@ public class OrderController {
             orderBasicInfoDTOList.add(new OrderBasicInfoDTO(order));
         }
         return orderBasicInfoDTOList;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody OrderCreateDTO orderCreateDTO) {
+        Order order = Mapper.convertOrderCreateDTOToOrder(orderCreateDTO);
+        orderCreateDTO.create(order);
     }
 }
