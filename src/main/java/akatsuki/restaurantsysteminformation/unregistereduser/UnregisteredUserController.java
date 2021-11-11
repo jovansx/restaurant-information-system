@@ -6,7 +6,6 @@ import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUse
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserTableDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
-import akatsuki.restaurantsysteminformation.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

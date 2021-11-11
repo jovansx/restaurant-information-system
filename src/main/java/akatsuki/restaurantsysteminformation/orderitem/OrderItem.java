@@ -40,10 +40,6 @@ public abstract class OrderItem {
         this.isActive = isActive;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public boolean isActive() {
         return isActive;
     }
@@ -54,6 +50,10 @@ public abstract class OrderItem {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNotes() {

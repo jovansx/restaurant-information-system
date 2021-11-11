@@ -1,8 +1,5 @@
 package akatsuki.restaurantsysteminformation.dishitem;
 
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
-
-import java.util.Collection;
 import java.util.List;
 
 public interface DishItemService {

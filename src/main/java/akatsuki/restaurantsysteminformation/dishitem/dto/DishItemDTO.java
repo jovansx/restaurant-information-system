@@ -1,13 +1,10 @@
 package akatsuki.restaurantsysteminformation.dishitem.dto;
 
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
-import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
-import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemDTO;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DishItemDTO {

@@ -2,9 +2,6 @@ package akatsuki.restaurantsysteminformation.dishitem;
 
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTOActionRequest;
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTO;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTOActionRequest;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsDTOActive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
