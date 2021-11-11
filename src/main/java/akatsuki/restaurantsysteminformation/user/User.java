@@ -113,5 +113,7 @@ public abstract class User {
         isDeleted = deleted;
     }
 
-    public String getName() { return firstName + " " + lastName; }
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 }

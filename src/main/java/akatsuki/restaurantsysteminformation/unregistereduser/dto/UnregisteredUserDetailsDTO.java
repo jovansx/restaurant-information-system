@@ -6,7 +6,8 @@ public class UnregisteredUserDetailsDTO extends UserDTO {
 
     private String pinCode;
 
-    public UnregisteredUserDetailsDTO() {}
+    public UnregisteredUserDetailsDTO() {
+    }
 
     public String getPinCode() {
         return pinCode;
