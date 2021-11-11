@@ -1,12 +1,14 @@
 package akatsuki.restaurantsysteminformation.orderitem;
 
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MyOrderItem")
+@Where(clause = "is_deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class OrderItem {
 

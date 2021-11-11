@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "DrinkItems")
-@Where(clause = "is_deleted = false")
 public class DrinkItems extends OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)

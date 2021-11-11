@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
