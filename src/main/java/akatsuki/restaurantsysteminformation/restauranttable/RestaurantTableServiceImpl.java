@@ -3,15 +3,9 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableDeletedException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
-import akatsuki.restaurantsysteminformation.room.Room;
-import akatsuki.restaurantsysteminformation.room.RoomService;
-import akatsuki.restaurantsysteminformation.room.exception.RoomDeletedException;
-import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
-import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +25,7 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public List<RestaurantTable> findAll() {
+    public List<RestaurantTable> getAll() {
         return restaurantTableRepository.findAll();
     }
 
@@ -40,8 +34,6 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
         if(tableMaybe.isEmpty()) {
             throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
-        } else if (tableMaybe.get().isDeleted()) {
-            throw new RestaurantTableExistsException("Restaurant table with the id " + id + " is deleted.");
         }
         checkNameExistence(restaurantTable.getName(), id);
 
@@ -70,9 +62,6 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
         if (tableMaybe.isEmpty()) {
             throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
-        }
-        if (tableMaybe.get().isDeleted()) {
-            throw new RestaurantTableDeletedException("Restaurant table with the id " + id + " already deleted.");
         }
         return tableMaybe.get();
     }

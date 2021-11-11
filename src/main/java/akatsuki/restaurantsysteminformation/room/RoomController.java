@@ -7,6 +7,7 @@ import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurant
 import akatsuki.restaurantsysteminformation.room.dto.RoomDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomWithTablesDTO;
 import akatsuki.restaurantsysteminformation.room.dto.UpdateRoomDTO;
+import akatsuki.restaurantsysteminformation.room.helper.Helper;
 import akatsuki.restaurantsysteminformation.room.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,10 +35,7 @@ public class RoomController {
         List<Room> rooms = roomService.getAll();
         rooms.forEach(room -> {
             List<RestaurantTable> roomTables = roomService.getRoomTables(room.getId());
-            List<RestaurantTableRepresentationDTO> tablesDTO = new ArrayList<>();
-            roomTables.forEach(table -> {
-                tablesDTO.add(new RestaurantTableRepresentationDTO(table));
-            });
+            List<RestaurantTableRepresentationDTO> tablesDTO = Helper.getTablesDTO(roomTables);
             roomsDTO.add(new RoomWithTablesDTO(room.getName(), tablesDTO));
         });
         return roomsDTO;
@@ -48,17 +46,13 @@ public class RoomController {
     public RoomWithTablesDTO getOne(@PathVariable long id) {
         Room room = roomService.getOne(id);
         List<RestaurantTable> roomTables = roomService.getRoomTables(id);
-        List<RestaurantTableRepresentationDTO> tablesDTO = new ArrayList<>();
-        roomTables.forEach(table -> {
-            tablesDTO.add(new RestaurantTableRepresentationDTO(table));
-        });
+        List<RestaurantTableRepresentationDTO> tablesDTO = Helper.getTablesDTO(roomTables);
         return new RoomWithTablesDTO(room.getName(), tablesDTO);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody RoomDTO roomDTO) {
-        // kreiranje stola - automatski se sacuva sa praznom listom stolova
         Room room = Mapper.convertRoomDTOToRoom(roomDTO);
         roomService.create(room);
     }
@@ -99,8 +93,6 @@ public class RoomController {
             }
         });
         Room room = new Room(updateRoomDTO.getName(), false, allTables);
-
-        // posalji taj room u roomservice.update
         roomService.update(room, id);
     }
 
