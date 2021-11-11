@@ -26,8 +26,8 @@ public class DishItem extends OrderItem {
     public DishItem() {
     }
 
-    public DishItem(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, int amount, UnregisteredUser chef, Item item) {
-        super(notes, createdAt, isDeleted, state);
+    public DishItem(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, int amount, UnregisteredUser chef, Item item, boolean active) {
+        super(notes, createdAt, isDeleted, state, active);
         this.amount = amount;
         this.chef = chef;
         this.item = item;

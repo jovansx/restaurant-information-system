@@ -8,7 +8,8 @@ public class UserDTO {
     private double salary;
     private String type;
 
-    public UserDTO() {}
+    public UserDTO() {
+    }
 
     public UserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type) {
         this.firstName = firstName;

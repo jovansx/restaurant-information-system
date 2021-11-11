@@ -5,7 +5,8 @@ import akatsuki.restaurantsysteminformation.user.dto.UserDTO;
 public class UnregisteredUserDTO extends UserDTO {
     private String pinCode;
 
-    public UnregisteredUserDTO() {}
+    public UnregisteredUserDTO() {
+    }
 
     public UnregisteredUserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type,
                                String pinCode) {

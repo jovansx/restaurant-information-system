@@ -9,7 +9,8 @@ public class UnregisteredUserTableDTO {
     private String phoneNumber;
     private String type;
 
-    public UnregisteredUserTableDTO() {}
+    public UnregisteredUserTableDTO() {
+    }
 
     public UnregisteredUserTableDTO(UnregisteredUser user) {
         this.id = user.getId();
