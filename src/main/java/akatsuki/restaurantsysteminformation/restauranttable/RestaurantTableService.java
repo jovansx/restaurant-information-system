@@ -3,8 +3,9 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 import java.util.List;
 
 public interface RestaurantTableService {
-    List<RestaurantTable> getTablesFromIds(List<Long> tableIds);
-    void create(RestaurantTable restaurantTable);
-
+    RestaurantTable create(RestaurantTable restaurantTable);
     List<RestaurantTable> findAll();
+    RestaurantTable update(RestaurantTable table, long id);
+    void delete(long id);
+    RestaurantTable getOne(long tableId);
 }

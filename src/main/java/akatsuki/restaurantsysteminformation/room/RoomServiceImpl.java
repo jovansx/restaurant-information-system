@@ -48,7 +48,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void update(Room room, List<RestaurantTable> tables, long id) {
+    public void update(Room room, long id) {
         Optional<Room> roomMaybe = roomRepository.findById(id);
         if(roomMaybe.isEmpty()) {
             throw new RoomNotFoundException("Room the id " + id + " is not found in the database.");
@@ -56,11 +56,10 @@ public class RoomServiceImpl implements RoomService {
             throw new RoomExistsException("Room with the id " + id + " is deleted.");
         }
         checkNameExistence(room.getName(), id);
-        checkTablesAvailability(tables, id);
 
         Room foundRoom = roomMaybe.get();
         foundRoom.setName(room.getName());
-        foundRoom.setRestaurantTables(tables);
+        foundRoom.setRestaurantTables(room.getRestaurantTables());
 
         roomRepository.save(foundRoom);
     }
@@ -83,8 +82,13 @@ public class RoomServiceImpl implements RoomService {
         return tableIds;
     }
 
+    @Override
+    public List<RestaurantTable> getRoomTables(long id) {
+        //TODO provere
+        return roomRepository.findById(id).get().getRestaurantTables();
+    }
 
-    private void checkTablesAvailability(List<RestaurantTable> tables, long roomId) {
+    public void checkTablesAvailability(List<RestaurantTable> tables, long roomId) {
         List<Room> allRooms = getAll();
         allRooms.forEach(room -> {
             List<RestaurantTable> allTables = room.getRestaurantTables();
@@ -94,6 +98,54 @@ public class RoomServiceImpl implements RoomService {
                 }
             });
         });
+    }
+
+    @Override
+    public void addTableToRoom(RestaurantTable table, long roomId) {
+        Optional<Room> roomMaybe = roomRepository.findById(roomId);
+        if(roomMaybe.isEmpty()) {
+            throw new RoomNotFoundException("Room the id " + roomId + " is not found in the database.");
+        }
+        Room room = roomMaybe.get();
+        List<RestaurantTable> tables = room.getRestaurantTables();
+        tables.add(table);
+        room.setRestaurantTables(tables);
+        roomRepository.save(room);
+    }
+
+    @Override
+    public void updateRoomTable(RestaurantTable updatedTable, long roomId) {
+        Optional<Room> roomMaybe = roomRepository.findById(roomId);
+        if(roomMaybe.isEmpty()) {
+            throw new RoomNotFoundException("Room the id " + roomId + " is not found in the database.");
+        }
+        Room room = roomMaybe.get();
+        List<RestaurantTable> tables = room.getRestaurantTables();
+        int index = -1;
+        for(RestaurantTable table : tables) {
+            if(table == updatedTable) {
+                index = tables.indexOf(table);
+                break;
+            }
+        }
+        if(index == -1) {
+            throw new RestaurantTableNotAvailableException("Restaurant table with the id " + updatedTable + " is not available in the room with the id " + roomId);
+        }
+        tables.set(index, updatedTable);
+        room.setRestaurantTables(tables);
+        roomRepository.save(room);
+    }
+
+    @Override
+    public void checkTableInRoom(long tableId, long id) {
+        Optional<Room> roomMaybe = roomRepository.findById(id);
+        if (roomMaybe.isEmpty()) {
+            throw new RoomNotFoundException("Room with the id " + id + " is not found in the database.");
+        }
+        RestaurantTable table = restaurantTableService.getOne(tableId);
+        if(!roomMaybe.get().getRestaurantTables().contains(table)) {
+            throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + roomMaybe.get().getName());
+        }
     }
 
     private Room deleteValidation(long id) {
@@ -108,7 +160,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private void checkNameExistence(String name, long id) {
-        if(id == -1) return;        Optional<Room> room = roomRepository.findByName(name);
+        Optional<Room> room = roomRepository.findByName(name);
+        if(id == -1 && room.isPresent()) {
+            throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
+        };
+
         if(room.isPresent() && room.get().getId() != id) {
             throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
         }
