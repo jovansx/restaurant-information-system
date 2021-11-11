@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletedException;
+import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
@@ -48,19 +49,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void update(Room room, List<RestaurantTable> tables, long id) {
-        Optional<Room> roomMaybe = roomRepository.findById(id);
-        if(roomMaybe.isEmpty()) {
-            throw new RoomNotFoundException("Room the id " + id + " is not found in the database.");
-        } else if (roomMaybe.get().isDeleted()) {
-            throw new RoomExistsException("Room with the id " + id + " is deleted.");
-        }
+    public void update(Room room, long id) {
+        Room foundRoom = checkRoomExistence(id);
         checkNameExistence(room.getName(), id);
-        checkTablesAvailability(tables, id);
 
-        Room foundRoom = roomMaybe.get();
         foundRoom.setName(room.getName());
-        foundRoom.setRestaurantTables(tables);
+        foundRoom.setRestaurantTables(room.getRestaurantTables());
 
         roomRepository.save(foundRoom);
     }
@@ -69,48 +63,50 @@ public class RoomServiceImpl implements RoomService {
     public void delete(long id) {
         Room room = deleteValidation(id);
         room.setDeleted(true);
+        room.getRestaurantTables().forEach(table -> {
+            if(table.getActiveOrder() != null) {
+                throw new RoomDeletionFailedException("Room with the id " + id + " cannot be deleted because it has active order.");
+            }
+            restaurantTableService.delete(table.getId());
+        });
         roomRepository.save(room);
     }
 
     @Override
-    public List<Long> getRoomTableIds(long roomId) {
-        Room room = roomRepository.findById(roomId).get();
-        List<RestaurantTable> tables = room.getRestaurantTables();
-        List<Long> tableIds = new ArrayList<>();
-        tables.forEach(table -> {
-            tableIds.add(table.getId());
-        });
-        return tableIds;
+    public List<RestaurantTable> getRoomTables(long id) {
+        Room room = checkRoomExistence(id);
+        return room.getRestaurantTables();
     }
 
-
-    private void checkTablesAvailability(List<RestaurantTable> tables, long roomId) {
-        List<Room> allRooms = getAll();
-        allRooms.forEach(room -> {
-            List<RestaurantTable> allTables = room.getRestaurantTables();
-            allTables.forEach(table -> {
-                if(tables.contains(table) && room.getId() != roomId) {
-                    throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is already taken.");
-                }
-            });
-        });
+    @Override
+    public void checkTableInRoom(long tableId, long id) {
+        Room room = checkRoomExistence(id);
+        RestaurantTable table = restaurantTableService.getOne(tableId);
+        if(!room.getRestaurantTables().contains(table)) {
+            throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
+        }
     }
 
     private Room deleteValidation(long id) {
+        return checkRoomExistence(id);
+    }
+
+    private void checkNameExistence(String name, long id) {
+        Optional<Room> room = roomRepository.findByName(name);
+        if(id == -1 && room.isPresent()) {
+            throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
+        };
+
+        if(room.isPresent() && room.get().getId() != id) {
+            throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
+        }
+    }
+
+    private Room checkRoomExistence(long id) {
         Optional<Room> roomMaybe = roomRepository.findById(id);
         if (roomMaybe.isEmpty()) {
             throw new RoomNotFoundException("Room with the id " + id + " is not found in the database.");
         }
-        if (roomMaybe.get().isDeleted()) {
-            throw new RoomDeletedException("Room with the id " + id + " already deleted.");
-        }
         return roomMaybe.get();
-    }
-
-    private void checkNameExistence(String name, long id) {
-        if(id == -1) return;        Optional<Room> room = roomRepository.findByName(name);
-        if(room.isPresent() && room.get().getId() != id) {
-            throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
-        }
     }
 }

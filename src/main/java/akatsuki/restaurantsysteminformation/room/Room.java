@@ -2,12 +2,14 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "Room")
+@Where(clause = "is_deleted = false")
 public class Room {
 
     @Id

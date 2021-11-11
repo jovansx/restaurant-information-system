@@ -3,11 +3,13 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "RestaurantTable")
+@Where(clause = "is_deleted = false")
 public class RestaurantTable {
 
     @Id

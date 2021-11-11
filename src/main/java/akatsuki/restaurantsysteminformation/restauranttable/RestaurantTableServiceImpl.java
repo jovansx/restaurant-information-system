@@ -1,13 +1,11 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
+import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableDeletedException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
-import akatsuki.restaurantsysteminformation.room.Room;
-import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,37 +14,65 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     private RestaurantTableRepository restaurantTableRepository;
 
     @Autowired
-    public void setRestaurantTableRepository(RestaurantTableRepository restaurantTableRepository) {
+    public RestaurantTableServiceImpl(RestaurantTableRepository restaurantTableRepository) {
         this.restaurantTableRepository = restaurantTableRepository;
     }
 
     @Override
-    public List<RestaurantTable> getTablesFromIds(List<Long> tableIds) {
-        List<RestaurantTable> tables = new ArrayList<>();
-        tableIds.forEach(tableId -> {
-            Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(tableId);
-            if(tableMaybe.isEmpty()) {
-                throw new RestaurantTableNotFoundException("Table with the id " + tableId + " is not found in the database.");
-            }
-            tables.add(tableMaybe.get());
-        });
-        return tables;
+    public RestaurantTable create(RestaurantTable restaurantTable) {
+        checkNameExistence(restaurantTable.getName(), -1);
+        return restaurantTableRepository.save(restaurantTable);
     }
 
     @Override
-    public void create(RestaurantTable restaurantTable) {
-        checkNameExistence(restaurantTable.getName());
-        restaurantTableRepository.save(restaurantTable);
-    }
-
-    @Override
-    public List<RestaurantTable> findAll() {
+    public List<RestaurantTable> getAll() {
         return restaurantTableRepository.findAll();
     }
 
-    private void checkNameExistence(String name) {
+    @Override
+    public RestaurantTable update(RestaurantTable restaurantTable, long id) {
+        Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
+        if(tableMaybe.isEmpty()) {
+            throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
+        }
+        checkNameExistence(restaurantTable.getName(), id);
+
+        RestaurantTable table = tableMaybe.get();
+        table.setName(restaurantTable.getName());
+        table.setShape(restaurantTable.getShape());
+
+        return restaurantTableRepository.save(table);
+    }
+
+    @Override
+    public void delete(long id) {
+        RestaurantTable table = deleteValidation(id);
+        table.setDeleted(true);
+        restaurantTableRepository.save(table);
+    }
+
+    @Override
+    public RestaurantTable getOne(long id) {
+        return restaurantTableRepository.findById(id).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table the id " + id + " is not found in the database.")
+        );
+    }
+
+    private RestaurantTable deleteValidation(long id) {
+        Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
+        if (tableMaybe.isEmpty()) {
+            throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
+        }
+        return tableMaybe.get();
+    }
+
+    private void checkNameExistence(String name, long id) {
         Optional<RestaurantTable> table = restaurantTableRepository.findByName(name);
-        if(table.isPresent()) {
+        if(id == -1 && table.isPresent()) {
+            throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
+        }
+
+        if(table.isPresent() && table.get().getId() != id) {
             throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
         }
     }

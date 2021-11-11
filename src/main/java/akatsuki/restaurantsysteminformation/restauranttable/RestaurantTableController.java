@@ -1,10 +1,12 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
-import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.mapper.Mapper;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableRepresentationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurant-table")
@@ -16,10 +18,21 @@ public class RestaurantTableController {
         this.restaurantTableService = restaurantTableService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody CreateRestaurantTableDTO createRestaurantTableDTO) {
-        RestaurantTable table = Mapper.convertCreateRestaurantTableDTOToRestaurantTable(createRestaurantTableDTO);
-        restaurantTableService.create(table);
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<RestaurantTableRepresentationDTO> getAll() {
+        List<RestaurantTable> tables = restaurantTableService.getAll();
+        List<RestaurantTableRepresentationDTO> tablesDTO = new ArrayList<>();
+        tables.forEach(table -> {
+            tablesDTO.add(new RestaurantTableRepresentationDTO(table));
+        });
+        return tablesDTO;
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RestaurantTableRepresentationDTO getOne(@PathVariable("id") long id) {
+        RestaurantTable table = restaurantTableService.getOne(id);
+        return new RestaurantTableRepresentationDTO(table);
     }
 }
