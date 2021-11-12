@@ -10,4 +10,6 @@ public interface OrderService {
 
     void create(Order order);
 
+    void discard(long id);
+
 }

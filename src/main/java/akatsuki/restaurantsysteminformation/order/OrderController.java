@@ -100,4 +100,10 @@ public class OrderController {
         Order order = OrderMapper.convertOrderCreateDTOToOrder(createdAt, dishItems, drinkItemsList, waiter);
         orderService.create(order);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void discard(@PathVariable long id) {
+        orderService.discard(id);
+    }
 }

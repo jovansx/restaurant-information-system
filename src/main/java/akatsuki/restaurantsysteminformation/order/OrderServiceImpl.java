@@ -5,12 +5,16 @@ import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
+import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiveException;
+import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -68,5 +72,24 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return drinksPrice;
+    }
+
+    @Override
+    public void discard(long id) {
+        Optional<Order> foundOrder = orderRepository.findById(id);
+        if (foundOrder.isEmpty()) {
+            throw new OrderNotFoundException("Order with the id " + id + " is not found in the database.");
+        }
+        Order order = foundOrder.get();
+        if (order.isDiscarded()) {
+            throw new OrderDiscardException("Order with the id " + id + " is already discarded.");
+        }
+        if (!order.isActive()) {
+            throw new OrderDiscardNotActiveException("Order with the id " + id + " is not active, can't be discarded.");
+        }
+        // TODO Vidi dal treba jos prolaziti kroz liste i podesavati neke njihove flagove
+        order.setDiscarded(true);
+        order.setActive(false);
+        orderRepository.save(order);
     }
 }
