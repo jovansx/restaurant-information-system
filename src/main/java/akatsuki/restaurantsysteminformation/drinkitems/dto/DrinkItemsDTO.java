@@ -15,7 +15,7 @@ public class DrinkItemsDTO {
     private String notes;
     private String createdAt;
     private ItemState state;
-    private List<DrinkItemDTO> drinkItemList;
+    private List<DrinkItemDTO> itemList;
     private String bartender;
 
     public DrinkItemsDTO(DrinkItems item) {
@@ -27,9 +27,9 @@ public class DrinkItemsDTO {
         this.notes = item.getNotes();
         this.createdAt = Timestamp.valueOf(item.getCreatedAt()).getTime() + "";
         this.state = item.getState();
-        this.drinkItemList = new ArrayList<>();
+        this.itemList = new ArrayList<>();
         for (DrinkItem i : item.getDrinkItemList()) {
-            drinkItemList.add(new DrinkItemDTO(i));
+            itemList.add(new DrinkItemDTO(i));
         }
     }
 
@@ -73,11 +73,11 @@ public class DrinkItemsDTO {
         this.state = state;
     }
 
-    public List<DrinkItemDTO> getDrinkItemList() {
-        return drinkItemList;
+    public List<DrinkItemDTO> getItemList() {
+        return itemList;
     }
 
-    public void setDrinkItemList(List<DrinkItemDTO> drinkItemList) {
-        this.drinkItemList = drinkItemList;
+    public void setItemList(List<DrinkItemDTO> drinkItemList) {
+        this.itemList = drinkItemList;
     }
 }
