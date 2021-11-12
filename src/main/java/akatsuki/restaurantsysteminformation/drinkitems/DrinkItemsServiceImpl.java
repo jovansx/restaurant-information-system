@@ -56,8 +56,6 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
             throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
         }
 
-//        TODO mozes proveriti da li je ova porudzbina ustvari od tog konobara da bi je od odneo
-
         if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
             drinkItems.setState(ItemState.PREPARATION);
             drinkItems.setBartender(bartender);

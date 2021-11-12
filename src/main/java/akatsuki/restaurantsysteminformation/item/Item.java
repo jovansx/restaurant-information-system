@@ -1,10 +1,15 @@
 package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -175,6 +180,7 @@ public class Item {
         this.prices = prices;
     }
 
+    //TODO ovo moze i lakse
     public Price getLastDefinedPrice() {
         if (prices.size() == 0) {
             return null;

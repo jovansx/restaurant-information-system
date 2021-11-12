@@ -47,8 +47,6 @@ public class DishItemServiceImpl implements DishItemService {
             throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
         }
 
-//        TODO mozes proveriti da li je ova porudzbina ustvari od tog konobara da bi je od odneo
-
         if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
             dishItem.setChef(bartender);
