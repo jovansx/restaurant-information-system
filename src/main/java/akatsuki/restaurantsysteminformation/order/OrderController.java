@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.order;
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
+import akatsuki.restaurantsysteminformation.dishitem.mapper.DishItemMapper;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItemService;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
@@ -15,7 +16,6 @@ import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderBasicInfoDTO;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
-import akatsuki.restaurantsysteminformation.dishitem.mapper.DishItemMapper;
 import akatsuki.restaurantsysteminformation.order.mapper.OrderMapper;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
@@ -99,5 +99,17 @@ public class OrderController {
         UnregisteredUser waiter = unregisteredUserService.getOne(orderCreateDTO.getWaiterId());
         Order order = OrderMapper.convertOrderCreateDTOToOrder(createdAt, dishItems, drinkItemsList, waiter);
         orderService.create(order);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void discard(@PathVariable long id) {
+        orderService.discard(id);
+    }
+
+    @PutMapping("/charge/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void charge(@PathVariable long id) {
+        orderService.charge(id);
     }
 }

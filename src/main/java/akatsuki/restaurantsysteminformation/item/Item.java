@@ -1,15 +1,12 @@
 package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
-import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Item")
@@ -176,5 +173,17 @@ public class Item {
 
     public void setPrices(List<Price> prices) {
         this.prices = prices;
+    }
+
+    public Price getLastDefinedPrice() {
+        if (prices.size() == 0) {
+            return null;
+        }
+        if (prices.size() > 1) {
+            List<Price> sortedPrices = prices.stream().sorted(Comparator.comparingDouble(Price::getValue)).collect(Collectors.toList());
+            Collections.reverse(sortedPrices);
+            return sortedPrices.get(0);
+        }
+        return prices.get(0);
     }
 }
