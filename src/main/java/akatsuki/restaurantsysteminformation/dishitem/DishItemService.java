@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.dishitem;
 import java.util.List;
 
 public interface DishItemService {
+    DishItem create(DishItem dishItem);
 
     List<DishItem> getAllActive();
 

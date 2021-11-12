@@ -9,4 +9,6 @@ public interface DrinkItemsService {
     DrinkItems getOne(long id);
 
     DrinkItems changeStateOfDrinkItems(long itemId, long userId);
+
+    DrinkItems create(DrinkItems drinkItems);
 }

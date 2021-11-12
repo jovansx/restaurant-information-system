@@ -11,4 +11,9 @@ public class DrinkItemServiceImpl implements DrinkItemService {
     public void setDrinkItemRepository(DrinkItemRepository drinkItemRepository) {
         this.drinkItemRepository = drinkItemRepository;
     }
+
+    @Override
+    public DrinkItem create(DrinkItem drinkItem) {
+        return drinkItemRepository.save(drinkItem);
+    }
 }

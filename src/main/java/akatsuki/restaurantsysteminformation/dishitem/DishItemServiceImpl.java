@@ -68,4 +68,9 @@ public class DishItemServiceImpl implements DishItemService {
                 () -> new DrinkItemsNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
     }
+
+    @Override
+    public DishItem create(DishItem dishItem) {
+        return dishItemRepository.save(dishItem);
+    }
 }
