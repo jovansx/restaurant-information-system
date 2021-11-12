@@ -1,10 +1,15 @@
 package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -27,11 +32,11 @@ public class Item {
     @Column(name = "icon_base_64", nullable = false)
     private byte[] iconBase64;
 
-    @Column(name = "is_currently_active", nullable = false)
-    private boolean isCurrentlyActive;
+    @Column(name = "currently_active", nullable = false)
+    private boolean currentlyActive;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 
     @Column(name = "type", nullable = false)
     private ItemType type;
@@ -48,17 +53,46 @@ public class Item {
     public Item() {
     }
 
-    public Item(String code, String name, String description, byte[] iconBase64, boolean isCurrentlyActive, boolean isDeleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
+    public Item(String code, String name, String description, byte[] iconBase64, boolean currentlyActive, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
         this.code = code;
         this.name = name;
         this.description = description;
         this.iconBase64 = iconBase64;
-        this.isCurrentlyActive = isCurrentlyActive;
-        this.isDeleted = isDeleted;
+        this.currentlyActive = currentlyActive;
+        this.deleted = deleted;
         this.type = type;
         this.components = components;
         this.itemCategory = itemCategory;
         this.prices = prices;
+    }
+
+    public Item(ItemDTOCreate itemDTO) {
+        this.code = itemDTO.getCode();
+        this.name = itemDTO.getName();
+        this.description = itemDTO.getDescription();
+        this.iconBase64 = itemDTO.getIconBase64().getBytes();
+        this.currentlyActive = false;
+        this.deleted = false;
+        this.type = itemDTO.getType();
+        this.components = itemDTO.getComponents();
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
+    }
+
+    public Item(Item item) {
+        this.code = item.getCode();
+        this.name = item.getName();
+        this.description = item.getDescription();
+        this.iconBase64 = item.getIconBase64();
+        this.currentlyActive = false;
+        this.deleted = false;
+        this.type = item.getType();
+        this.components = new ArrayList<>(item.getComponents());
+        this.itemCategory = item.getItemCategory();
+        int indexOfLastPrice = item.getPrices().size()-1;
+        Price newPrice = new Price(LocalDateTime.now(), item.getPrices().get(indexOfLastPrice).getValue());
+        this.prices = new ArrayList<>();
+        this.prices.add(newPrice);
     }
 
     public Long getId() {
@@ -98,19 +132,19 @@ public class Item {
     }
 
     public boolean isCurrentlyActive() {
-        return isCurrentlyActive;
+        return currentlyActive;
     }
 
     public void setCurrentlyActive(boolean currentlyActive) {
-        isCurrentlyActive = currentlyActive;
+        this.currentlyActive = currentlyActive;
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public ItemType getType() {

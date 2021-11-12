@@ -11,4 +11,9 @@ public class PriceServiceImpl implements PriceService {
     public void setPriceRepository(PriceRepository priceRepository) {
         this.priceRepository = priceRepository;
     }
+
+    @Override
+    public void save(Price price) {
+        priceRepository.save(price);
+    }
 }

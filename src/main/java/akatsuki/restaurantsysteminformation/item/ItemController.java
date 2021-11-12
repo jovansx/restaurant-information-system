@@ -1,16 +1,66 @@
 package akatsuki.restaurantsysteminformation.item;
 
+import akatsuki.restaurantsysteminformation.item.dto.ItemDTO;
+import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
+import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
+import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("item")
+@RequestMapping("/api/item")
 public class ItemController {
-    private final ItemServiceImpl itemService;
+    private final ItemService itemService;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemService) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDTO> getAll() {
+        return itemService.getAll().stream().map(ItemDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDTO getOne(@PathVariable long id) {
+        return new ItemDTO(itemService.getOne(id));
+    }
+
+    @GetMapping("/save-changes")
+    @ResponseStatus(HttpStatus.OK)
+    public void saveChanges() {
+        this.itemService.saveChanges();
+    }
+
+    @GetMapping("/discard-changes")
+    @ResponseStatus(HttpStatus.OK)
+    public void discardChanges() {
+        this.itemService.discardChanges();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody ItemDTOCreate itemDTO) {
+        itemService.create(new Item(itemDTO));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@RequestBody ItemDTOCreate itemDTO, @PathVariable long id) {
+        itemService.update(new Item(itemDTO), id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable long id) {
+        itemService.delete(id);
     }
 }

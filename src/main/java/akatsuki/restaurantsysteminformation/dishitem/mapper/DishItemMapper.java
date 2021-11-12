@@ -17,7 +17,8 @@ public class DishItemMapper {
                 ItemState.NEW,
                 dishItemCreateDTO.getAmount(),
                 null,
-                item
+                item,
+                true
         );
     }
 }
