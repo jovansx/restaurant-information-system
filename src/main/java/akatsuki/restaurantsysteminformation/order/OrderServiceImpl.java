@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     private double calculateDishesPrice(List<DishItem> dishes) {
         double dishesPrice = 0;
-        for(DishItem dishItem: dishes) {
+        for (DishItem dishItem : dishes) {
             if (dishItem.getItem().getType() != ItemType.DISH) {
                 throw new UserTypeNotValidException("Not correct type of dish item!");
             }
@@ -62,9 +62,9 @@ public class OrderServiceImpl implements OrderService {
 
     private double calculateDrinksPrice(List<DrinkItems> drinkItemsList) {
         double drinksPrice = 0;
-        for (DrinkItems drinkItems: drinkItemsList) {
+        for (DrinkItems drinkItems : drinkItemsList) {
             List<DrinkItem> drinkItemList = drinkItems.getDrinkItems();
-            for(DrinkItem drinkItem: drinkItemList) {
+            for (DrinkItem drinkItem : drinkItemList) {
                 if (drinkItem.getItem().getType() != ItemType.DRINK) {
                     throw new UserTypeNotValidException("Not correct type of drink item!");
                 }
@@ -76,20 +76,38 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void discard(long id) {
-        Optional<Order> foundOrder = orderRepository.findById(id);
-        if (foundOrder.isEmpty()) {
-            throw new OrderNotFoundException("Order with the id " + id + " is not found in the database.");
-        }
-        Order order = foundOrder.get();
+        Order order = checkOrderExistence(id);
         if (order.isDiscarded()) {
             throw new OrderDiscardException("Order with the id " + id + " is already discarded.");
         }
         if (!order.isActive()) {
             throw new OrderDiscardNotActiveException("Order with the id " + id + " is not active, can't be discarded.");
         }
-        // TODO Vidi dal treba jos prolaziti kroz liste i podesavati neke njihove flagove
+        // TODO Vidi dal treba jos prolaziti kroz liste i podesavati neke njihove flagove, npr. isActive kod DrinkItems
         order.setDiscarded(true);
         order.setActive(false);
         orderRepository.save(order);
+    }
+
+    @Override
+    public void charge(long id) {
+        Order order = checkOrderExistence(id);
+        if (order.isDiscarded()) {
+            throw new OrderDiscardException("Order with the id " + id + " is discarded, can't be charged.");
+        }
+        if (!order.isActive()) {
+            throw new OrderDiscardNotActiveException("Order with the id " + id + " is not active, can't be charged.");
+        }
+        // TODO Vidi dal treba jos prolaziti kroz liste i podesavati neke njihove flagove
+        order.setActive(false);
+        orderRepository.save(order);
+    }
+
+    private Order checkOrderExistence(long id) {
+        Optional<Order> foundOrder = orderRepository.findById(id);
+        if (foundOrder.isEmpty()) {
+            throw new OrderNotFoundException("Order with the id " + id + " is not found in the database.");
+        }
+        return foundOrder.get();
     }
 }
