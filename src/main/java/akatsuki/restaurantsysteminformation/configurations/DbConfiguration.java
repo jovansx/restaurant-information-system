@@ -73,12 +73,14 @@ public class DbConfiguration {
             Price p4 = new Price(LocalDateTime.of(2021, 11, 2, 0, 0, 0), 10);
             Price p5 = new Price(LocalDateTime.of(2021, 5, 2, 0, 0, 0), 150);
             Price p6 = new Price(LocalDateTime.of(2020, 4, 3, 1, 10, 30), 100);
+            Price p7 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
             priceRepository.save(p1);
             priceRepository.save(p2);
             priceRepository.save(p3);
             priceRepository.save(p4);
             priceRepository.save(p5);
             priceRepository.save(p6);
+            priceRepository.save(p7);
 //            ItemCategory
             ItemCategory ic1 = new ItemCategory("Juices");
             ItemCategory ic2 = new ItemCategory("Cocktails");
@@ -103,7 +105,7 @@ public class DbConfiguration {
             itemRepository.save(cocktail1);
             Item sandwich1 = new Item("1114", "Chicken sandwich", "Very good chicken sandwich!", chickenSandwichImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Tomato", "Bread"), ic3, Arrays.asList(p5, p6));
             itemRepository.save(sandwich1);
-            Item chickenBreast = new Item("1115", "Chicken breast", "Very good chicken breast!", chickenBreastImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Potato"), ic4, Collections.singletonList(p6));
+            Item chickenBreast = new Item("1115", "Chicken breast", "Very good chicken breast!", chickenBreastImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Potato"), ic4, Collections.singletonList(p7));
             itemRepository.save(chickenBreast);
 //          DishItem
             DishItem dishItem1 = new DishItem(null, LocalDateTime.now(), false, ItemState.ON_HOLD, 1, null, sandwich1, true);
