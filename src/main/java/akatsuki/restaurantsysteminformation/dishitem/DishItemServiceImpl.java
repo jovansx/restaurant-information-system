@@ -24,7 +24,6 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public List<DishItem> getAllActive() {
-        //TODO ne znam kako da join fetchujem i one koji imaju null na bartenderu
         List<DishItem> dishItemsList = dishItemRepository.findAllNotOnHoldActive();
         dishItemsList.addAll(this.dishItemRepository.findAllOnHoldActive());
         return dishItemsList;
@@ -47,8 +46,6 @@ public class DishItemServiceImpl implements DishItemService {
         if (!bartender.getType().equals(typeOfAllowedUser)) {
             throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
         }
-
-//        TODO mozes proveriti da li je ova porudzbina ustvari od tog konobara da bi je od odneo
 
         if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);

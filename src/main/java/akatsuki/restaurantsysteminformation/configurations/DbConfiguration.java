@@ -36,8 +36,6 @@ import java.util.Collections;
 @Slf4j
 public class DbConfiguration {
 
-    //    Populate database
-
     @Bean
     public CommandLineRunner populateDatabase(UnregisteredUserRepository unregisteredUserRepository, RegisteredUserRepository registeredUserRepository,
                                               PriceRepository priceRepository, ItemCategoryRepository itemCategoryRepository,
