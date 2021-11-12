@@ -34,13 +34,13 @@ public class ItemController {
         return new ItemDTO(itemService.getOne(id));
     }
 
-    @GetMapping("/save-changes")
+    @PostMapping("/save-changes")
     @ResponseStatus(HttpStatus.OK)
     public void saveChanges() {
         this.itemService.saveChanges();
     }
 
-    @GetMapping("/discard-changes")
+    @PostMapping("/discard-changes")
     @ResponseStatus(HttpStatus.OK)
     public void discardChanges() {
         this.itemService.discardChanges();

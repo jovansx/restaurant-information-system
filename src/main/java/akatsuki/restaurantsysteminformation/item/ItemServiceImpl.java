@@ -44,42 +44,44 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public void saveChanges() {
-        List<Item> itemCopies = itemRepository.findAllByCurrentlyActiveIsFalse();
+        List<Item> itemCopies = itemRepository.findAllByOriginalIsFalse();
         for (Item item : itemCopies) {
-            Optional<Item> originalItemOptional = itemRepository.findOneByCodeAndCurrentlyActiveIsTrueAndDeletedIsFalse(item.getCode());
+            Optional<Item> originalItemOptional = itemRepository.findOneByCodeAndOriginalIsTrueAndDeletedIsFalse(item.getCode());
             if (originalItemOptional.isEmpty()) {
-                item.setCurrentlyActive(true);
+                item.setOriginal(true);
                 itemRepository.save(item);
             } else {
                 assignItemFields(item, originalItemOptional.get());
             }
 
         }
-        itemRepository.removeAllByCurrentlyActiveIsFalse();
+        itemRepository.removeAllByOriginalIsFalse();
     }
 
-    private void assignItemFields(Item item, Item i) {
-        //TODO treba videti za update da doda samo novu cenu
-        if (item.isDeleted()) {
-            i.setDeleted(true);
+    private void assignItemFields(Item copy, Item original) {
+        if (copy.isDeleted()) {
+            original.setDeleted(true);
         }
         else {
-            i.setName(item.getName());
-            i.setDescription(item.getDescription());
-            i.setIconBase64(item.getIconBase64());
-            i.setComponents(new ArrayList<>(item.getComponents()));
-            i.setItemCategory(item.getItemCategory());
-            i.setPrices(item.getPrices());
-            i.setDeleted(item.isDeleted());
+            original.setName(copy.getName());
+            original.setDescription(copy.getDescription());
+            original.setIconBase64(copy.getIconBase64());
+            original.setComponents(new ArrayList<>(copy.getComponents()));
+            original.setItemCategory(copy.getItemCategory());
+            Price p = copy.getPrices().get(0);
+            if (p.getValue() != original.getPrices().get(original.getPrices().size() - 1).getValue()) {
+                Price newPrice = new Price(p.getCreatedAt(), p.getValue());
+                original.getPrices().add(newPrice);
+                priceService.save(newPrice);
+            }
         }
-
-        itemRepository.save(i);
+        itemRepository.save(original);
     }
 
     @Transactional
     @Override
     public void discardChanges() {
-        itemRepository.removeAllByCurrentlyActiveIsFalse();
+        itemRepository.removeAllByOriginalIsFalse();
     }
 
     @Override
@@ -111,32 +113,31 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemCategoryNotFoundException("Item category with the code " + item.getCode() + " not found in the database.");
         }
 
-        Optional<Item> itemOptional = itemRepository.findByIdAndCurrentlyActiveIsTrueAndDeletedIsFalse(id);
+        Optional<Item> itemOptional = itemRepository.findByIdAndOriginalIsTrueAndDeletedIsFalse(id);
         if (itemOptional.isEmpty()) {
             throw new ItemNotFoundException("Item with the id " + id + " is not found in the database.");
         }
         Item foundItem = itemOptional.get();
         if (!foundItem.getCode().equals(item.getCode()))
-            throw new ItemCodeNotValidException("Item cannot change his code.");
+            throw new ItemCodeNotValidException("Item cannot change its code.");
 
         List<Item> itemList = itemRepository.findAllByCode(foundItem.getCode());
 
         if (itemList.size() == 1) {
             Price price = item.getPrices().get(0);
             priceService.save(price);
-            item.setPrices(foundItem.getPrices());
-            item.getPrices().add(price);
             itemRepository.save(item);
         } else if (itemList.size() > 2)
             throw new ItemExistsException("Item with the code " + item.getCode() + " already have copy in the database.");
 
         for (Item i: itemList) {
-            if (!i.isCurrentlyActive()) {
+            if (!i.isOriginal()) {
                 assignItemFields(item, i);
             }
         }
     }
 
+    //TODO da li da delete i insert vracaju nesto
     @Override
     public void delete(long id) {
         Optional<Item> itemOptional = itemRepository.findOneActiveAndFetchAll(id);
@@ -151,7 +152,7 @@ public class ItemServiceImpl implements ItemService {
             Item i = itemList.get(0);
             Item copy = new Item(i);
             priceService.save(copy.getPrices().get(0));
-            copy.setCurrentlyActive(false);
+            copy.setOriginal(false);
             copy.setDeleted(true);
             itemRepository.save(copy);
         } else {

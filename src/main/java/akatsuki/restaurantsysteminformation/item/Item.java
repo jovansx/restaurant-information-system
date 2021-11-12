@@ -4,7 +4,6 @@ import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,8 +31,8 @@ public class Item {
     @Column(name = "icon_base_64", nullable = false)
     private byte[] iconBase64;
 
-    @Column(name = "currently_active", nullable = false)
-    private boolean currentlyActive;
+    @Column(name = "original", nullable = false)
+    private boolean original;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
@@ -53,12 +52,12 @@ public class Item {
     public Item() {
     }
 
-    public Item(String code, String name, String description, byte[] iconBase64, boolean currentlyActive, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
+    public Item(String code, String name, String description, byte[] iconBase64, boolean original, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
         this.code = code;
         this.name = name;
         this.description = description;
         this.iconBase64 = iconBase64;
-        this.currentlyActive = currentlyActive;
+        this.original = original;
         this.deleted = deleted;
         this.type = type;
         this.components = components;
@@ -71,10 +70,10 @@ public class Item {
         this.name = itemDTO.getName();
         this.description = itemDTO.getDescription();
         this.iconBase64 = itemDTO.getIconBase64().getBytes();
-        this.currentlyActive = false;
+        this.original = false;
         this.deleted = false;
         this.type = itemDTO.getType();
-        this.components = itemDTO.getComponents();
+        this.components = new ArrayList<>(itemDTO.getComponents());
         this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
         this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
     }
@@ -84,7 +83,7 @@ public class Item {
         this.name = item.getName();
         this.description = item.getDescription();
         this.iconBase64 = item.getIconBase64();
-        this.currentlyActive = false;
+        this.original = false;
         this.deleted = false;
         this.type = item.getType();
         this.components = new ArrayList<>(item.getComponents());
@@ -131,12 +130,12 @@ public class Item {
         this.iconBase64 = iconBase64;
     }
 
-    public boolean isCurrentlyActive() {
-        return currentlyActive;
+    public boolean isOriginal() {
+        return original;
     }
 
-    public void setCurrentlyActive(boolean currentlyActive) {
-        this.currentlyActive = currentlyActive;
+    public void setOriginal(boolean original) {
+        this.original = original;
     }
 
     public boolean isDeleted() {

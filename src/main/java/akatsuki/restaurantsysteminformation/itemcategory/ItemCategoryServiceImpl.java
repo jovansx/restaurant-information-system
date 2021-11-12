@@ -18,7 +18,7 @@ public class ItemCategoryServiceImpl implements ItemCategoryService{
 
     @Override
     public ItemCategory findByName(String name) {
-        return itemCategoryRepository.findByName(name).get();
+        return itemCategoryRepository.findByName(name);
     }
 
     @Override

@@ -25,7 +25,6 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public List<DrinkItems> getAllActive() {
-        //TODO ne znam kako da join fetchujem i one koji imaju null na bartenderu
         List<DrinkItems> drinkItemsList = drinkItemsRepository.findAllNotOnHoldActive();
         drinkItemsList.addAll(this.drinkItemsRepository.findAllOnHoldActive());
         return drinkItemsList;

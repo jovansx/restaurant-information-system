@@ -24,7 +24,6 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public List<DishItem> getAllActive() {
-        //TODO ne znam kako da join fetchujem i one koji imaju null na bartenderu
         List<DishItem> dishItemsList = dishItemRepository.findAllNotOnHoldActive();
         dishItemsList.addAll(this.dishItemRepository.findAllOnHoldActive());
         return dishItemsList;

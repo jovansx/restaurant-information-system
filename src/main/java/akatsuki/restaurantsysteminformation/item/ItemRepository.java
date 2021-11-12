@@ -13,7 +13,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("select distinct i from Item i join fetch i.itemCategory ic join fetch i.prices p where i.deleted = false")
     List<Item> findAllAndFetchAll();
 
-    @Query("select distinct i from Item i join fetch i.itemCategory ic join fetch i.prices p where (:id) = i.id and i.currentlyActive=true and i.deleted = false ")
+    @Query("select distinct i from Item i join fetch i.itemCategory ic join fetch i.prices p where (:id) = i.id and i.original=true and i.deleted = false ")
     Optional<Item> findOneActiveAndFetchAll(Long id);
 
     @Query("select distinct i from Item i where (:code) = i.code")
@@ -21,11 +21,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByCode(String code);
 
-    Optional<Item> findByIdAndCurrentlyActiveIsTrueAndDeletedIsFalse(long id);
+    Optional<Item> findByIdAndOriginalIsTrueAndDeletedIsFalse(long id);
 
-    void removeAllByCurrentlyActiveIsFalse();
+    void removeAllByOriginalIsFalse();
 
-    List<Item> findAllByCurrentlyActiveIsFalse();
+    List<Item> findAllByOriginalIsFalse();
 
-    Optional<Item> findOneByCodeAndCurrentlyActiveIsTrueAndDeletedIsFalse(String code);
+    Optional<Item> findOneByCodeAndOriginalIsTrueAndDeletedIsFalse(String code);
 }
