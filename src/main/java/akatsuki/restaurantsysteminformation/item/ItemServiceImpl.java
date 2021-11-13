@@ -61,8 +61,7 @@ public class ItemServiceImpl implements ItemService {
     private void assignItemFields(Item copy, Item original) {
         if (copy.isDeleted()) {
             original.setDeleted(true);
-        }
-        else {
+        } else {
             original.setName(copy.getName());
             original.setDescription(copy.getDescription());
             original.setIconBase64(copy.getIconBase64());
@@ -86,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void create(Item item) {
-        ItemCategory itemCategory= itemCategoryService.findByName(item.getItemCategory().getName());
+        ItemCategory itemCategory = itemCategoryService.findByName(item.getItemCategory().getName());
         if (itemCategory != null) {
             item.setItemCategory(itemCategory);
         } else {
@@ -130,7 +129,7 @@ public class ItemServiceImpl implements ItemService {
         } else if (itemList.size() > 2)
             throw new ItemExistsException("Item with the code " + item.getCode() + " already have copy in the database.");
 
-        for (Item i: itemList) {
+        for (Item i : itemList) {
             if (!i.isOriginal()) {
                 assignItemFields(item, i);
             }

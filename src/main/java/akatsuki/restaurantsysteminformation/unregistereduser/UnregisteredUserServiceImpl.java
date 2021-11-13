@@ -55,7 +55,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         unregisteredUserRepository.save(user.get());
     }
 
-// TODO ovde treba onaj where
+    // TODO ovde treba onaj where
     @Override
     public void update(UnregisteredUser unregisteredUser, long id) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);

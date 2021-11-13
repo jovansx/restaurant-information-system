@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.order.dto.OrderBasicInfoDTO;
-import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

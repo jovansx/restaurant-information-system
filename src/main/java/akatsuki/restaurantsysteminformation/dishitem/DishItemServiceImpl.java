@@ -15,15 +15,12 @@ import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
-import akatsuki.restaurantsysteminformation.user.User;
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DishItemServiceImpl implements DishItemService {
@@ -110,7 +107,7 @@ public class DishItemServiceImpl implements DishItemService {
         }
         DishItem dishItem = getOne(id);
         boolean dishIsInOrder = false;
-        for (DishItem di:order.getDishes()) {
+        for (DishItem di : order.getDishes()) {
             if (di.getId().equals(dishItem.getId())) {
                 dishIsInOrder = true;
                 break;

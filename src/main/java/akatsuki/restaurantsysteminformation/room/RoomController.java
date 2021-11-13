@@ -1,4 +1,5 @@
 package akatsuki.restaurantsysteminformation.room;
+
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
@@ -88,7 +89,7 @@ public class RoomController {
         });
         List<RestaurantTable> roomTables = roomService.getRoomTables(id);
         roomTables.forEach(table -> {
-            if(!allTables.contains(table)) {
+            if (!allTables.contains(table)) {
                 allTables.add(table);
             }
         });

@@ -1,7 +1,5 @@
 package akatsuki.restaurantsysteminformation.restauranttable.dto;
 
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-
 public class CreateRestaurantTableDTO {
     private String name;
     private String state;

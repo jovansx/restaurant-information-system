@@ -6,10 +6,10 @@ import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurant
 import java.util.List;
 
 public class UpdateRoomDTO {
-    private String name;
     List<CreateRestaurantTableDTO> newTables;
     List<UpdateRestaurantTableDTO> updateTables;
     List<Long> deleteTables;
+    private String name;
 
     public UpdateRoomDTO(String name, List<CreateRestaurantTableDTO> newTables, List<UpdateRestaurantTableDTO> updateTables, List<Long> deleteTables) {
         this.name = name;

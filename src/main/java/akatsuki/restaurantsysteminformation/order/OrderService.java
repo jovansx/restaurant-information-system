@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
-import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 
 import java.util.List;
 
