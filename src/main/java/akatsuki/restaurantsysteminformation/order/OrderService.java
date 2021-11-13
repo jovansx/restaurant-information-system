@@ -1,5 +1,7 @@
 package akatsuki.restaurantsysteminformation.order;
 
+import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
+
 import java.util.List;
 
 public interface OrderService {
@@ -8,7 +10,7 @@ public interface OrderService {
 
     Order getOne(long id);
 
-    void create(Order order);
+    void create(OrderCreateDTO order);
 
     void discard(long id);
 
