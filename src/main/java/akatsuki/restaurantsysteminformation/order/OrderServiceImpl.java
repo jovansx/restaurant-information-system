@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
@@ -8,7 +9,6 @@ import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiv
 import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +32,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOne(long id) {
         return orderRepository.findOrderByIdFetchWaiter(id).orElseThrow(
-                () -> new UserNotFoundException("Order with the id " + id + " is not found in the database."));
+                () -> new OrderNotFoundException("Order with the id " + id + " is not found in the database."));
     }
 
     @Override
     public List<Order> getAll() {
         return orderRepository.findAllFetchWaiter().orElseThrow(
-                () -> new UserNotFoundException("There's no order created."));
+                () -> new OrderNotFoundException("There's no order created."));
     }
 
     @Override
@@ -92,6 +92,12 @@ public class OrderServiceImpl implements OrderService {
         order.setActive(false);
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void addDrinkItemsToCollection(DrinkItems drinkItems, Order order) {
+        order.getDrinks().add(drinkItems);
         orderRepository.save(order);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/order")
@@ -28,12 +29,7 @@ public class OrderController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<OrderBasicInfoDTO> getAll() {
-        List<Order> orderList = orderService.getAll();
-        List<OrderBasicInfoDTO> orderBasicInfoDTOList = new ArrayList<>();
-        for (Order order : orderList) {
-            orderBasicInfoDTOList.add(new OrderBasicInfoDTO(order));
-        }
-        return orderBasicInfoDTOList;
+        return orderService.getAll().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping

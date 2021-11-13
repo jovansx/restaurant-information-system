@@ -22,4 +22,7 @@ public interface DrinkItemsRepository extends JpaRepository<DrinkItems, Long> {
             "and ( d.state = 1 or d.state = 2  or d.state = 3 )")
     Optional<DrinkItems> findOneActiveWithBartenderAndWithItems(Long id);
 
+    @Query("select d from DrinkItems d left join fetch d.bartender b")
+    Optional<List<DrinkItems>> findAllFetchBartender();
+
 }

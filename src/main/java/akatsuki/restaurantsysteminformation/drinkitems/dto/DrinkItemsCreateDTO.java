@@ -12,6 +12,14 @@ public class DrinkItemsCreateDTO {
     public DrinkItemsCreateDTO() {
     }
 
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
     public List<DrinkItemCreateDTO> getDrinkItemList() {
         return drinkItemList;
     }
