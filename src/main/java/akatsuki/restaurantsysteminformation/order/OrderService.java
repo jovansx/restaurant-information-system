@@ -13,6 +13,8 @@ public interface OrderService {
 
     void create(OrderCreateDTO order);
 
+    void updateTotalPrice(Order order);
+
     void discard(long id);
 
     void charge(long id);

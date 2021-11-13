@@ -4,6 +4,8 @@ import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItemService;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsInvalidStateException;
+import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotContainedException;
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
@@ -114,20 +116,39 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
-        AtomicReference<Double> totalPrice = new AtomicReference<>((double) 0);
-        List<DrinkItem> drinkItemsOfList = new ArrayList<>();
-
-        drinkItemsDTOList.forEach(drinkItemDTO -> {
-            Item item = itemService.getOne(drinkItemDTO.getItemId());
-            DrinkItem drinkItem = new DrinkItem(drinkItemDTO.getAmount(), item);
-            DrinkItem savedDrinkItem = drinkItemService.create(drinkItem);
-            drinkItemsOfList.add(savedDrinkItem);
-            totalPrice.updateAndGet(value -> value + savedDrinkItem.getAmount() * item.getLastDefinedPrice());
-        });
+        List<DrinkItem> drinkItemsOfList = getDrinks(order, drinkItemsDTOList);
         DrinkItems drinkItems = new DrinkItems(drinkItemsDTO.getNotes(), LocalDateTime.now(), false, ItemState.ON_HOLD, null, drinkItemsOfList, true);
         DrinkItems savedDrinkItems = drinkItemsRepository.save(drinkItems);
 
         orderService.addDrinkItemsToCollection(savedDrinkItems, order);
+    }
+
+    @Override
+    public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
+        Order order = orderService.getOne(drinkItemsDTO.getOrderId()); //TODO Obrati paznju, kad budemo promenili in-view na false, moraces fetchovati(jos na nekim mestima)
+        List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
+        checkDrinks(drinkItemsDTOList);
+
+        DrinkItems drinkItems = getOne(id);
+        boolean listIsInOrder = order.getDrinks().contains(drinkItems);
+        if (!listIsInOrder) {
+            throw new DrinkItemsNotContainedException("Drink items list with id " + id + " is not contained within order drinks.");
+        }
+
+        ItemState itemState = drinkItems.getState();
+        if (!itemState.equals(ItemState.ON_HOLD)) {
+            throw new DrinkItemsInvalidStateException("Cannot change drink items list, because its state is " + itemState.name().toLowerCase() + ". Allowed state to change is 'on_hold'.");
+        }
+
+        List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItems());
+        drinkItems.getDrinkItems().clear();
+        ref.forEach(drinkItem -> drinkItemService.delete(drinkItem));
+
+        List<DrinkItem> drinkItemsOfList = getDrinks(order, drinkItemsDTOList);
+        drinkItems.setDrinkItems(drinkItemsOfList);
+        drinkItemsRepository.save(drinkItems);
+        
+        orderService.updateTotalPrice(order);
     }
 
     private void checkDrinks(List<DrinkItemCreateDTO> drinkItems) {
@@ -137,5 +158,20 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
                 throw new ItemNotFoundException("Not correct type of drink item!");
             }
         });
+    }
+
+    private List<DrinkItem> getDrinks(Order order, List<DrinkItemCreateDTO> drinkItemsDTOList) {
+        double totalPrice = 0;
+        List<DrinkItem> drinkItemsOfList = new ArrayList<>();
+
+        for (DrinkItemCreateDTO drinkItemDTO: drinkItemsDTOList) {
+            Item item = itemService.getOne(drinkItemDTO.getItemId());
+            DrinkItem drinkItem = new DrinkItem(drinkItemDTO.getAmount(), item);
+            DrinkItem savedDrinkItem = drinkItemService.create(drinkItem);
+            drinkItemsOfList.add(savedDrinkItem);
+            totalPrice += savedDrinkItem.getAmount() * item.getLastDefinedPrice();
+        }
+        order.setTotalPrice(totalPrice);
+        return drinkItemsOfList;
     }
 }

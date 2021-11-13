@@ -19,4 +19,6 @@ public interface DrinkItemsService {
     void delete(long id);
 
     void create(DrinkItemsCreateDTO drinkItemsDTO);
+
+    void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
 }

@@ -63,4 +63,10 @@ public class DrinkItemsController {
     public void create(@RequestBody DrinkItemsCreateDTO drinkItemsDTO) {
         drinkItemsService.create(drinkItemsDTO);
     }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@RequestBody DrinkItemsCreateDTO drinkItemsDTO, @PathVariable long id) {
+        drinkItemsService.update(drinkItemsDTO, id);
+    }
 }
