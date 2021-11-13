@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
+import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 
@@ -22,5 +23,7 @@ public interface OrderService {
     void delete(long id);
 
     void addDrinkItemsToCollection(DrinkItems drinkItems, Order order);
+
+    void addDishItemToOrder(DishItem dishItem, Order order);
 
 }

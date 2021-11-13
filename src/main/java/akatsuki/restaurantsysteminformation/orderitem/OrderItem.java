@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MyOrderItem")
-@Where(clause = "is_deleted = false")
+@Where(clause = "deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class OrderItem {
 
@@ -22,32 +22,32 @@ public abstract class OrderItem {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 
     @Column(name = "state", nullable = false)
     private ItemState state;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     public OrderItem() {
     }
 
-    public OrderItem(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, boolean isActive) {
+    public OrderItem(String notes, LocalDateTime createdAt, boolean deleted, ItemState state, boolean active) {
         this.notes = notes;
         this.createdAt = createdAt;
-        this.isDeleted = isDeleted;
+        this.deleted = deleted;
         this.state = state;
-        this.isActive = isActive;
+        this.active = active;
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public Long getId() {
@@ -75,11 +75,11 @@ public abstract class OrderItem {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public ItemState getState() {

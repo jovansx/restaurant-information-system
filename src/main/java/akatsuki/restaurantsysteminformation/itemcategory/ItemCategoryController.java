@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemCategoryController {
     private final ItemCategoryServiceImpl itemCategoryService;
 
+    //TODO CRUD
     @Autowired
     public ItemCategoryController(ItemCategoryServiceImpl itemCategoryService) {
         this.itemCategoryService = itemCategoryService;

@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
-import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableDeletedException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import java.util.Optional;
 
 @Service
 public class RestaurantTableServiceImpl implements RestaurantTableService {
-    private RestaurantTableRepository restaurantTableRepository;
+    private final RestaurantTableRepository restaurantTableRepository;
 
     @Autowired
     public RestaurantTableServiceImpl(RestaurantTableRepository restaurantTableRepository) {
@@ -32,7 +31,7 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     @Override
     public RestaurantTable update(RestaurantTable restaurantTable, long id) {
         Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
-        if(tableMaybe.isEmpty()) {
+        if (tableMaybe.isEmpty()) {
             throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
         }
         checkNameExistence(restaurantTable.getName(), id);
@@ -68,11 +67,11 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
 
     private void checkNameExistence(String name, long id) {
         Optional<RestaurantTable> table = restaurantTableRepository.findByName(name);
-        if(id == -1 && table.isPresent()) {
+        if (id == -1 && table.isPresent()) {
             throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
         }
 
-        if(table.isPresent() && table.get().getId() != id) {
+        if (table.isPresent() && table.get().getId() != id) {
             throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
         }
     }

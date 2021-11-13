@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
+import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
@@ -43,7 +44,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void create(OrderCreateDTO orderDTO) {
-
         UnregisteredUser waiter = unregisteredUserService.getOne(orderDTO.getWaiterId());   //TODO pomocu anotacija validiraj da nije null ili negativan broj
         if (waiter.getType() != UserType.WAITER) {
             throw new UserTypeNotValidException("User has to be waiter!");
@@ -52,6 +52,12 @@ public class OrderServiceImpl implements OrderService {
         // TODO Kad saljes sa fronta - format ('2021-11-11T17:35:22')
 
         Order order = new Order(0, createdAt, false, true, waiter, new ArrayList<>(), new ArrayList<>());
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void addDishItemToOrder(DishItem dishItem, Order order) {
+        order.getDishes().add(dishItem);
         orderRepository.save(order);
     }
 

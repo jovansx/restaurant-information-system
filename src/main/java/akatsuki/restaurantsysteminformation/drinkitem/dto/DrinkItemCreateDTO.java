@@ -4,7 +4,8 @@ public class DrinkItemCreateDTO {
     private int amount;
     private Long itemId;
 
-    public DrinkItemCreateDTO() {}
+    public DrinkItemCreateDTO() {
+    }
 
     public int getAmount() {
         return amount;

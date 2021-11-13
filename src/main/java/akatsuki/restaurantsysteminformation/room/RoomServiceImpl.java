@@ -3,26 +3,19 @@ package akatsuki.restaurantsysteminformation.room;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
-import akatsuki.restaurantsysteminformation.room.exception.RoomDeletedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
-import akatsuki.restaurantsysteminformation.user.User;
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
-import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    private RoomRepository roomRepository;
-    private RestaurantTableService restaurantTableService;
+    private final RoomRepository roomRepository;
+    private final RestaurantTableService restaurantTableService;
 
     @Autowired
     public RoomServiceImpl(RoomRepository roomRepository, RestaurantTableService restaurantTableService) {
@@ -64,7 +57,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = deleteValidation(id);
         room.setDeleted(true);
         room.getRestaurantTables().forEach(table -> {
-            if(table.getActiveOrder() != null) {
+            if (table.getActiveOrder() != null) {
                 throw new RoomDeletionFailedException("Room with the id " + id + " cannot be deleted because it has active order.");
             }
             restaurantTableService.delete(table.getId());
@@ -82,7 +75,7 @@ public class RoomServiceImpl implements RoomService {
     public void checkTableInRoom(long tableId, long id) {
         Room room = checkRoomExistence(id);
         RestaurantTable table = restaurantTableService.getOne(tableId);
-        if(!room.getRestaurantTables().contains(table)) {
+        if (!room.getRestaurantTables().contains(table)) {
             throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
         }
     }
@@ -93,11 +86,11 @@ public class RoomServiceImpl implements RoomService {
 
     private void checkNameExistence(String name, long id) {
         Optional<Room> room = roomRepository.findByName(name);
-        if(id == -1 && room.isPresent()) {
+        if (id == -1 && room.isPresent()) {
             throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
-        };
+        }
 
-        if(room.isPresent() && room.get().getId() != id) {
+        if (room.isPresent() && room.get().getId() != id) {
             throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
         }
     }

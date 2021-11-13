@@ -35,6 +35,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private ItemService itemService;
     private DrinkItemService drinkItemService;
 
+    //TODO CRUD
     @Autowired
     public void setDrinkItemsRepository(DrinkItemsRepository drinkItemsRepository, UnregisteredUserService unregisteredUserService,
                                         OrderService orderService, ItemService itemService, DrinkItemService drinkItemService) {
