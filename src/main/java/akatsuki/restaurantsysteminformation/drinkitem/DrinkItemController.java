@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DrinkItemController {
     private final DrinkItemServiceImpl drinkItemService;
 
+    //TODO CRUD
     @Autowired
     public DrinkItemController(DrinkItemServiceImpl drinkItemService) {
         this.drinkItemService = drinkItemService;

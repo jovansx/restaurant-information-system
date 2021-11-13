@@ -4,8 +4,17 @@ public class DishItemCreateDTO {
     private Long itemId;
     private int amount;
     private String notes;
+    private Long orderId;
 
     public DishItemCreateDTO() {
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getItemId() {

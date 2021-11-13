@@ -10,4 +10,6 @@ public interface DishItemService {
     DishItem getOne(long id);
 
     DishItem changeStateOfDishItems(long itemId, long userId);
+
+    void delete(long id);
 }

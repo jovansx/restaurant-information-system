@@ -5,11 +5,14 @@ import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
+import akatsuki.restaurantsysteminformation.user.User;
+import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DishItemServiceImpl implements DishItemService {
@@ -70,4 +73,24 @@ public class DishItemServiceImpl implements DishItemService {
     public DishItem create(DishItem dishItem) {
         return dishItemRepository.save(dishItem);
     }
+
+    @Override
+    public void delete(long id) {
+        Optional<DishItem> dishItemOptional = dishItemRepository.findById(id);
+        if (dishItemOptional.isEmpty()) {
+            throw new DrinkItemsNotFoundException("Dish item with the id " + id + " is not found in the database.");
+        }
+
+        DishItem dishItem = dishItemOptional.get();
+
+        if (dishItem.isDeleted()) {
+            throw new UserDeletedException("Dish item with the id " + id + " is  already deleted.");
+        }
+
+        dishItem.setDeleted(true);
+//        TODO razmisli o ovome
+        dishItem.setActive(false);
+        dishItemRepository.save(dishItem);
+    }
+
 }
