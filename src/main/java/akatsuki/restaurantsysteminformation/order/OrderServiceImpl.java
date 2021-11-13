@@ -22,7 +22,6 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -138,9 +137,10 @@ public class OrderServiceImpl implements OrderService {
         if (!order.isActive()) {
             throw new OrderDiscardNotActiveException("Order with the id " + id + " is not active, can't be discarded.");
         }
-        // TODO Vidi dal treba jos prolaziti kroz liste i podesavati neke njihove flagove, npr. isActive kod DrinkItems
         order.setDiscarded(true);
         order.setActive(false);
+        order.getDishes().forEach(dish -> dish.setActive(false));
+        order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
     }
 
@@ -153,8 +153,9 @@ public class OrderServiceImpl implements OrderService {
         if (!order.isActive()) {
             throw new OrderDiscardNotActiveException("Order with the id " + id + " is not active, can't be charged.");
         }
-        // TODO Vidi dal treba jos prolaziti kroz liste i podesavati neke njihove flagove
         order.setActive(false);
+        order.getDishes().forEach(dish -> dish.setActive(false));
+        order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
     }
 
