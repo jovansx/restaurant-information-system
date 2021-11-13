@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.dishitem;
 
+import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTOActionRequest;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsDTOActive;
@@ -22,21 +23,38 @@ public class DishItemController {
 
     @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemsDTOActive> getAllActiveDrinkItems() {
+    public List<ItemsDTOActive> getAllActive() {
         return this.dishItemService.getAllActive().stream().map(ItemsDTOActive::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DishItemDTO getOne(@PathVariable long id) {
-        return new DishItemDTO(this.dishItemService.getOne(id));
+    public DishItemDTO getOneActive(@PathVariable long id) {
+        return new DishItemDTO(this.dishItemService.getOneWithChef(id));
     }
 
-    @PutMapping
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody DishItemCreateDTO dishItemCreateDTO) {
+        dishItemService.create(dishItemCreateDTO);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@RequestBody DishItemCreateDTO dishItemCreateDTO, @PathVariable long id) {
+        dishItemService.update(dishItemCreateDTO, id);
+    }
+
+    @PutMapping("/change-state")
     @ResponseStatus(HttpStatus.OK)
     public ItemsDTOActive changeStateOfDishItem(@RequestBody DishItemDTOActionRequest dto) {
         return new ItemsDTOActive(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable long id) {
+        dishItemService.delete(id);
+    }
 
 }

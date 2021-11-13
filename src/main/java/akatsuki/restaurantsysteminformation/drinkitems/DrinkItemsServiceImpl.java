@@ -17,6 +17,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     private UnregisteredUserService unregisteredUserService;
 
+    //TODO CRUD
     @Autowired
     public void setDrinkItemsRepository(DrinkItemsRepository drinkItemsRepository, UnregisteredUserService unregisteredUserService) {
         this.drinkItemsRepository = drinkItemsRepository;

@@ -1,6 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
-import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
+import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 
 import java.util.List;
 
@@ -10,10 +10,11 @@ public interface OrderService {
 
     Order getOne(long id);
 
-    void create(OrderCreateDTO order);
+//    void create(OrderCreateDTO order);
 
     void discard(long id);
 
     void charge(long id);
 
+    void addDishItemToOrder(DishItem dishItem, Order order);
 }

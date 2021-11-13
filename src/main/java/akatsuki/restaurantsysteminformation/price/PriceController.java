@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PriceController {
     private final PriceServiceImpl priceService;
 
+    //TODO CRUD
     @Autowired
     public PriceController(PriceServiceImpl priceService) {
         this.priceService = priceService;

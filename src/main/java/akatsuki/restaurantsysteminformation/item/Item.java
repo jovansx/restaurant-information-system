@@ -88,7 +88,7 @@ public class Item {
         this.type = item.getType();
         this.components = new ArrayList<>(item.getComponents());
         this.itemCategory = item.getItemCategory();
-        int indexOfLastPrice = item.getPrices().size()-1;
+        int indexOfLastPrice = item.getPrices().size() - 1;
         Price newPrice = new Price(LocalDateTime.now(), item.getPrices().get(indexOfLastPrice).getValue());
         this.prices = new ArrayList<>();
         this.prices.add(newPrice);
