@@ -42,7 +42,7 @@ public class OrderController {
         orderService.create(orderCreateDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void discard(@PathVariable long id) {
         orderService.discard(id);
@@ -52,5 +52,11 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public void charge(@PathVariable long id) {
         orderService.charge(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable long id) {
+        orderService.delete(id);
     }
 }
