@@ -3,10 +3,8 @@ package akatsuki.restaurantsysteminformation.unregistereduser;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTOEssentials;
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserTableDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +16,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/unregistered-user")
 public class UnregisteredUserController {
     private final UnregisteredUserService unregisteredUserService;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public UnregisteredUserController(UnregisteredUserService unregisteredUserService, ModelMapper modelMapper) {
+    public UnregisteredUserController(UnregisteredUserService unregisteredUserService) {
         this.unregisteredUserService = unregisteredUserService;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping
@@ -46,9 +42,9 @@ public class UnregisteredUserController {
 
     @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UnregisteredUserDetailsDTO getDetailsById(@PathVariable long id) {
+    public UnregisteredUserDTO getDetailsById(@PathVariable long id) {
         UnregisteredUser unregisteredUser = unregisteredUserService.getOne(id);
-        return modelMapper.map(unregisteredUser, UnregisteredUserDetailsDTO.class);
+        return new UnregisteredUserDTO(unregisteredUser);
     }
 
     @GetMapping("/pin-code/{pinCode}")
