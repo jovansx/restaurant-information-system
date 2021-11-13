@@ -36,11 +36,11 @@ public class OrderController {
         return orderBasicInfoDTOList;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody OrderCreateDTO orderCreateDTO) {
-        orderService.create(orderCreateDTO);
-    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public void create(@RequestBody OrderCreateDTO orderCreateDTO) {
+//        orderService.create(orderCreateDTO);
+//    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
