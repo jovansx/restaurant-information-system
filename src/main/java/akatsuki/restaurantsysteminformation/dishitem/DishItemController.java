@@ -3,7 +3,7 @@ package akatsuki.restaurantsysteminformation.dishitem;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTO;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsDTOActive;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsActiveDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -22,8 +22,8 @@ public class DishItemController {
     private final DishItemService dishItemService;
 
     @GetMapping("/active")
-    public List<ItemsDTOActive> getAllActive() {
-        return this.dishItemService.getAllActive().stream().map(ItemsDTOActive::new).collect(Collectors.toList());
+    public List<ItemsActiveDTO> getAllActive() {
+        return this.dishItemService.getAllActive().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -44,8 +44,8 @@ public class DishItemController {
     }
 
     @PutMapping("/change-state")
-    public ItemsDTOActive changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
-        return new ItemsDTOActive(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));
+    public ItemsActiveDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
+        return new ItemsActiveDTO(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));
     }
 
     @DeleteMapping("/{id}")

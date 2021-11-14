@@ -18,6 +18,7 @@ import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,23 +29,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
+@RequiredArgsConstructor
 public class DrinkItemsServiceImpl implements DrinkItemsService {
-    private DrinkItemsRepository drinkItemsRepository;
-    private UnregisteredUserService unregisteredUserService;
-    private OrderService orderService;
-    private ItemService itemService;
-    private DrinkItemService drinkItemService;
-
-    //TODO CRUD
-    @Autowired
-    public void setDrinkItemsRepository(DrinkItemsRepository drinkItemsRepository, UnregisteredUserService unregisteredUserService,
-                                        OrderService orderService, ItemService itemService, DrinkItemService drinkItemService) {
-        this.drinkItemsRepository = drinkItemsRepository;
-        this.unregisteredUserService = unregisteredUserService;
-        this.orderService = orderService;
-        this.itemService = itemService;
-        this.drinkItemService = drinkItemService;
-    }
+    private final DrinkItemsRepository drinkItemsRepository;
+    private final UnregisteredUserService unregisteredUserService;
+    private final OrderService orderService;
+    private final ItemService itemService;
+    private final DrinkItemService drinkItemService;
 
     @Override
     public DrinkItems getOne(long id) {
@@ -141,12 +132,12 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
             throw new DrinkItemsInvalidStateException("Cannot change drink items list, because its state is " + itemState.name().toLowerCase() + ". Allowed state to change is 'on_hold'.");
         }
 
-        List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItems());
-        drinkItems.getDrinkItems().clear();
-        ref.forEach(drinkItem -> drinkItemService.delete(drinkItem));
+        List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
+        drinkItems.getDrinkItemList().clear();
+        ref.forEach(drinkItemService::delete);
 
         List<DrinkItem> drinkItemsOfList = getDrinks(order, drinkItemsDTOList);
-        drinkItems.setDrinkItems(drinkItemsOfList);
+        drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItemsRepository.save(drinkItems);
         
         orderService.updateTotalPrice(order);
