@@ -1,51 +1,20 @@
 package akatsuki.restaurantsysteminformation.dishitem.dto;
 
+import lombok.Data;
+
+import javax.validation.constraints.Min;
+
+@Data
 public class DishItemCreateDTO {
-    //TODO validiraj da je itemId i orderId i amount positivan
+
+    @Min(value = 1, message = "Id has to be a positive value.")
     private Long itemId;
+
+    @Min(value = 1, message = "Id has to be a positive value.")
     private int amount;
+
     private String notes;
+
+    @Min(value = 1, message = "Id has to be a positive value.")
     private Long orderId;
-
-    public DishItemCreateDTO() {
-    }
-
-    public DishItemCreateDTO(Long itemId, int amount, String notes, Long orderId) {
-        this.itemId = itemId;
-        this.amount = amount;
-        this.notes = notes;
-        this.orderId = orderId;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 }

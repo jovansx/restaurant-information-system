@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -35,6 +38,24 @@ public class ExceptionControllerAdvice {
             }
         }
         return response;
+    }
+
+    /**
+     * Method that handles thrown exception by spring validator.
+     * Validates path variables.
+     *
+     * @param exception - ConstraintViolationException
+     * @return ExceptionResponse
+     */
+    @ExceptionHandler(value = { ConstraintViolationException.class })
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleResourceNotFoundException(ConstraintViolationException exception) {
+        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+        StringBuilder exceptionMessage = new StringBuilder();
+        for (ConstraintViolation<?> violation : violations ) {
+            exceptionMessage.append(violation.getMessageTemplate());
+        }
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exceptionMessage.toString());
     }
 
     @ExceptionHandler(NotFoundRuntimeException.class)

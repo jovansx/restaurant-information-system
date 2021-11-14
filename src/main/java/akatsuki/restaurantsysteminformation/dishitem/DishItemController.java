@@ -4,57 +4,52 @@ import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDT
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsDTOActive;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping("/api/dish-item")
+@RequiredArgsConstructor
 public class DishItemController {
     private final DishItemService dishItemService;
 
-    @Autowired
-    public DishItemController(DishItemService dishItemService) {
-        this.dishItemService = dishItemService;
-    }
-
     @GetMapping("/active")
-    @ResponseStatus(HttpStatus.OK)
     public List<ItemsDTOActive> getAllActive() {
         return this.dishItemService.getAllActive().stream().map(ItemsDTOActive::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public DishItemDTO getOneActive(@PathVariable long id) {
+    public DishItemDTO getOneActive(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         return new DishItemDTO(this.dishItemService.getOneWithChef(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody DishItemCreateDTO dishItemCreateDTO) {
+    public void create(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO) {
         dishItemService.create(dishItemCreateDTO);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody DishItemCreateDTO dishItemCreateDTO, @PathVariable long id) {
+    public void update(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO,
+                       @PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         dishItemService.update(dishItemCreateDTO, id);
     }
 
     @PutMapping("/change-state")
-    @ResponseStatus(HttpStatus.OK)
-    public ItemsDTOActive changeStateOfDishItem(@RequestBody DishItemActionRequestDTO dto) {
+    public ItemsDTOActive changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
         return new ItemsDTOActive(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         dishItemService.delete(id);
     }
-
 }
