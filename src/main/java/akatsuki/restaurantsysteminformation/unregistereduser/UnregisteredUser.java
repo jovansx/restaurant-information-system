@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.user.User;
 
 import javax.persistence.Column;
@@ -18,6 +19,13 @@ public class UnregisteredUser extends User {
     public UnregisteredUser(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean isDeleted, String pinCode) {
         super(firstName, lastName, emailAddress, phoneNumber, salary, type, isDeleted);
         this.pinCode = pinCode;
+    }
+
+    public UnregisteredUser(UnregisteredUserDTO unregisteredUserDTO) {
+        super(unregisteredUserDTO.getFirstName(), unregisteredUserDTO.getLastName(), unregisteredUserDTO.getEmailAddress(),
+                unregisteredUserDTO.getPhoneNumber(), unregisteredUserDTO.getSalary(),
+                unregisteredUserDTO.getType(), false);
+        this.pinCode = unregisteredUserDTO.getPinCode();
     }
 
     public String getPinCode() {

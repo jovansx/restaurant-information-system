@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
-import akatsuki.restaurantsysteminformation.registereduser.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,15 +32,13 @@ public class RegisteredUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody RegisteredUserDTO registeredUserDTO) {
-        RegisteredUser user = Mapper.convertRegisteredUserDTOToRegisteredUser(registeredUserDTO);
-        registeredUserService.create(user);
+        registeredUserService.create(new RegisteredUser(registeredUserDTO));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody RegisteredUserDTO registeredUserDTO, @PathVariable long id) {
-        RegisteredUser user = Mapper.convertRegisteredUserDTOToRegisteredUser(registeredUserDTO);
-        registeredUserService.update(user, id);
+        registeredUserService.update(new RegisteredUser(registeredUserDTO), id);
     }
 
     @DeleteMapping("/{id}")

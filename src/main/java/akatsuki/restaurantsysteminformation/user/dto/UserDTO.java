@@ -1,6 +1,6 @@
 package akatsuki.restaurantsysteminformation.user.dto;
 
-import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.enums.UserType;
 
 public class UserDTO {
     private String firstName;
@@ -8,12 +8,12 @@ public class UserDTO {
     private String emailAddress;
     private String phoneNumber;
     private double salary;
-    private ItemType type;
+    private UserType type;
 
     public UserDTO() {
     }
 
-    public UserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, ItemType type) {
+    public UserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
@@ -62,11 +62,11 @@ public class UserDTO {
         this.salary = salary;
     }
 
-    public ItemType getType() {
+    public UserType getType() {
         return type;
     }
 
-    public void setType(ItemType type) {
+    public void setType(UserType type) {
         this.type = type;
     }
 }

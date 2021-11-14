@@ -5,9 +5,6 @@ import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 public class ItemCategoryDTO {
     String name;
 
-    public ItemCategoryDTO() {
-    }
-
     public ItemCategoryDTO(ItemCategory itemCategory) {
         this.name = itemCategory.getName();
     }

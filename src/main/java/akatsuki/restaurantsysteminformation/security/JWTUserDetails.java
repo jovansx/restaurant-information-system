@@ -42,7 +42,7 @@ public class JWTUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // user.isEmailVerified();
+        return true;
     }
 
     @Override
@@ -55,7 +55,6 @@ public class JWTUserDetails implements UserDetails {
         return true;
     }
 
-    // Sta god hocemo da bude u tokenu definisemo ovako i zatim jos u fajlu JWTTokenUtil
     public long getId() {
         return user.getId();
     }

@@ -22,9 +22,6 @@ public class OrderBasicInfoDTO {
     private List<OrderItemIdDTO> dishItemList;
     private List<OrderItemIdDTO> drinkItemsList;
 
-    public OrderBasicInfoDTO() {
-    }
-
     public OrderBasicInfoDTO(Order order) {
         this.id = order.getId();
         this.totalPrice = order.getTotalPrice();
