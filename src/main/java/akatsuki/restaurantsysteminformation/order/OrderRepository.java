@@ -15,4 +15,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select o from Order o left join fetch o.waiter w")
     Optional<List<Order>> findAllFetchWaiter();
+
+    @Query("select o from Order o left join fetch o.drinks dr join fetch o.waiter w where o.id = (:id)")
+    Optional<Order> findOrderByIdAndFetchDrinks(long id);
+
+    @Query("select o from Order o left join fetch o.dishes dr join fetch o.waiter w where o.id = (:id)")
+    Optional<Order> findOrderByIdAndFetchDishes(long id);
+
+    List<Order> findAllByActiveIsTrue();
 }

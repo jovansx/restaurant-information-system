@@ -20,7 +20,7 @@ public class ItemsDTOActive {
         else
             this.initials = "";
         StringBuilder str = new StringBuilder();
-        for (DrinkItem di : drinkItems.getDrinkItems()) {
+        for (DrinkItem di : drinkItems.getDrinkItemList()) {
             str.append(di.getItem().getName());
             str.append(",");
         }

@@ -17,4 +17,6 @@ public interface ItemCategoryService {
     void update(ItemCategory category, long id);
 
     void delete(long id);
+
+    String firstLetterUppercase(String name);
 }

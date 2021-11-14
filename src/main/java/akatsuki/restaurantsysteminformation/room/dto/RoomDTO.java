@@ -7,9 +7,6 @@ public class RoomDTO {
         this.name = name;
     }
 
-    public RoomDTO() {
-    }
-
     public String getName() {
         return name;
     }

@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.item.dto.ItemDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
+import akatsuki.restaurantsysteminformation.item.dto.ItemDTOForMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,12 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public List<ItemDTO> getAll() {
         return itemService.getAll().stream().map(ItemDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/category/{category}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDTOForMenu> getAllByCategory(@PathVariable String category) {
+        return itemService.getAllByCategory(category).stream().map(ItemDTOForMenu::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

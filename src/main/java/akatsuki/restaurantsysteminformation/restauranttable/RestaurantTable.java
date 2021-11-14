@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -42,6 +43,15 @@ public class RestaurantTable {
         this.isDeleted = isDeleted;
         this.activeOrder = activeOrder;
     }
+
+    public RestaurantTable(CreateRestaurantTableDTO tableDTO) {
+        this.name = tableDTO.getName();
+        this.state = tableDTO.getState();
+        this.shape = tableDTO.getShape();
+        this.isDeleted = false;
+        this.activeOrder = null;
+    }
+
 
     public Long getId() {
         return id;

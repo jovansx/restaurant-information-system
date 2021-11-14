@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,14 +16,17 @@ import java.io.IOException;
 
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
-    @Autowired
-    private JWTUserDetailsService jwtUserDetailsService;
+    private final JWTUserDetailsService jwtUserDetailsService;
+    private final JWTTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private JWTTokenUtil jwtTokenUtil;
+    public JWTRequestFilter(JWTUserDetailsService jwtUserDetailsService, JWTTokenUtil jwtTokenUtil) {
+        this.jwtUserDetailsService = jwtUserDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
+    @SuppressWarnings("NullableProblems")
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, @SuppressWarnings("NullableProblems") HttpServletResponse response, @SuppressWarnings("NullableProblems") FilterChain chain)
             throws ServletException, IOException {
 
         final String requestTokenHeader = request.getHeader("Authorization");

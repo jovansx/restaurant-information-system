@@ -1,12 +1,13 @@
 package akatsuki.restaurantsysteminformation.registereduser.dto;
 
+import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.user.dto.UserDTO;
 
 public class RegisteredUserDTO extends UserDTO {
     private String username;
     private String password;
 
-    public RegisteredUserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, String type, String username, String password) {
+    public RegisteredUserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, String username, String password) {
         super(firstName, lastName, emailAddress, phoneNumber, salary, type);
         this.username = username;
         this.password = password;

@@ -2,7 +2,6 @@ package akatsuki.restaurantsysteminformation.security;
 
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +12,11 @@ import java.util.Optional;
 @Service
 public class JWTUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private RegisteredUserRepository userRepository;
+    private final RegisteredUserRepository userRepository;
+
+    public JWTUserDetailsService(RegisteredUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

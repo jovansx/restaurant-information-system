@@ -1,11 +1,14 @@
 package akatsuki.restaurantsysteminformation.restauranttable.dto;
 
+import akatsuki.restaurantsysteminformation.enums.TableShape;
+import akatsuki.restaurantsysteminformation.enums.TableState;
+
 public class CreateRestaurantTableDTO {
     private String name;
-    private String state;
-    private String shape;
+    private TableState state;
+    private TableShape shape;
 
-    public CreateRestaurantTableDTO(String name, String state, String shape) {
+    public CreateRestaurantTableDTO(String name, TableState state, TableShape shape) {
         this.name = name;
         this.state = state;
         this.shape = shape;
@@ -19,19 +22,19 @@ public class CreateRestaurantTableDTO {
         this.name = name;
     }
 
-    public String getState() {
+    public TableState getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(TableState state) {
         this.state = state;
     }
 
-    public String getShape() {
+    public TableShape getShape() {
         return shape;
     }
 
-    public void setShape(String shape) {
+    public void setShape(TableShape shape) {
         this.shape = shape;
     }
 }

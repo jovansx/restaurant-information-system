@@ -23,9 +23,7 @@ public class RestaurantTableController {
     public List<RestaurantTableRepresentationDTO> getAll() {
         List<RestaurantTable> tables = restaurantTableService.getAll();
         List<RestaurantTableRepresentationDTO> tablesDTO = new ArrayList<>();
-        tables.forEach(table -> {
-            tablesDTO.add(new RestaurantTableRepresentationDTO(table));
-        });
+        tables.forEach(table -> tablesDTO.add(new RestaurantTableRepresentationDTO(table)));
         return tablesDTO;
     }
 

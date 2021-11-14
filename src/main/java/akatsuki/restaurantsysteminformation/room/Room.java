@@ -1,9 +1,11 @@
 package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
+import akatsuki.restaurantsysteminformation.room.dto.RoomDTO;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +23,6 @@ public class Room {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    //    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<RestaurantTable> restaurantTables;
 
@@ -32,6 +33,12 @@ public class Room {
         this.name = name;
         this.isDeleted = isDeleted;
         this.restaurantTables = restaurantTables;
+    }
+
+    public Room(RoomDTO roomDTO) {
+        this.name = roomDTO.getName();
+        this.isDeleted = false;
+        this.restaurantTables = new ArrayList<>();
     }
 
     public Long getId() {

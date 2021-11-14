@@ -31,6 +31,13 @@ public class OrderController {
         return orderService.getAll().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
     }
 
+    @GetMapping("/active")
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderBasicInfoDTO> getAllActive() {
+        //TODO vrati nesto najosnovnije
+        return orderService.getAllActive().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody OrderCreateDTO orderCreateDTO) {

@@ -16,4 +16,6 @@ public interface ItemService {
     void saveChanges();
 
     void discardChanges();
+
+    List<Item> getAllByCategory(String category);
 }

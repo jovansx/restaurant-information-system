@@ -1,25 +1,20 @@
 package akatsuki.restaurantsysteminformation.restauranttable.dto;
 
+import akatsuki.restaurantsysteminformation.enums.TableShape;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 
 public class RestaurantTableRepresentationDTO {
     private long id;
     private String name;
-    private String state;
-    private String shape;
-
-    public RestaurantTableRepresentationDTO(long id, String name, String state, String shape) {
-        this.id = id;
-        this.name = name;
-        this.state = state;
-        this.shape = shape;
-    }
+    private TableState state;
+    private TableShape shape;
 
     public RestaurantTableRepresentationDTO(RestaurantTable table) {
         this.id = table.getId();
         this.name = table.getName();
-        this.state = table.getState().toString();
-        this.shape = table.getShape().toString();
+        this.state = table.getState();
+        this.shape = table.getShape();
     }
 
     public long getId() {
@@ -38,19 +33,19 @@ public class RestaurantTableRepresentationDTO {
         this.name = name;
     }
 
-    public String getState() {
+    public TableState getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(TableState state) {
         this.state = state;
     }
 
-    public String getShape() {
+    public TableShape getShape() {
         return shape;
     }
 
-    public void setShape(String shape) {
+    public void setShape(TableShape shape) {
         this.shape = shape;
     }
 }

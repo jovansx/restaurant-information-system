@@ -1,8 +1,7 @@
 package akatsuki.restaurantsysteminformation.order;
 
-import akatsuki.restaurantsysteminformation.dishitem.DishItem;
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
+import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
 
 import java.util.List;
 
@@ -10,11 +9,13 @@ public interface OrderService {
 
     List<Order> getAll();
 
+    List<Order> getAllActive();
+
     Order getOne(long id);
 
     void create(OrderCreateDTO order);
 
-    void updateTotalPrice(Order order);
+    void updateTotalPriceAndSave(Order order);
 
     void discard(long id);
 
@@ -22,8 +23,9 @@ public interface OrderService {
 
     void delete(long id);
 
-    void addDrinkItemsToCollection(DrinkItems drinkItems, Order order);
+    Order getOrderByOrderItem(OrderItem orderItem);
 
-    void addDishItemToOrder(DishItem dishItem, Order order);
+    Order getOneWithDishes(Long orderId);
 
+    Order getOneWithDrinks(Long orderId);
 }

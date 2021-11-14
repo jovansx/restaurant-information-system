@@ -7,9 +7,6 @@ public class WaiterBasicInfoDTO {
     private String firstName;
     private String lastName;
 
-    public WaiterBasicInfoDTO() {
-    }
-
     public WaiterBasicInfoDTO(UnregisteredUser waiter) {
         this.id = waiter.getId();
         this.firstName = waiter.getFirstName();

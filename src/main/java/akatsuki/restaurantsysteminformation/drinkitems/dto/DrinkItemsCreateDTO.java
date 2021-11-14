@@ -5,14 +5,14 @@ import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import java.util.List;
 
 public class DrinkItemsCreateDTO {
-    private int orderId;
+    private long orderId;
     private List<DrinkItemCreateDTO> drinkItemList;
     private String notes;
 
     public DrinkItemsCreateDTO() {
     }
 
-    public int getOrderId() {
+    public long getOrderId() {
         return orderId;
     }
 

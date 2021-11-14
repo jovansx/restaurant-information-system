@@ -6,7 +6,7 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "MyOrder")
@@ -22,29 +22,29 @@ public class Order {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "is_discarded", nullable = false)
-    private boolean isDiscarded;
+    @Column(name = "discarded", nullable = false)
+    private boolean discarded;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UnregisteredUser waiter;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private List<DishItem> dishes;
+    private Set<DishItem> dishes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private List<DrinkItems> drinks;
+    private Set<DrinkItems> drinks;
 
     public Order() {
     }
 
-    public Order(double totalPrice, LocalDateTime createdAt, boolean isDiscarded, boolean isActive, UnregisteredUser waiter, List<DishItem> dishes, List<DrinkItems> drinks) {
+    public Order(double totalPrice, LocalDateTime createdAt, boolean discarded, boolean active, UnregisteredUser waiter, Set<DishItem> dishes, Set<DrinkItems> drinks) {
         this.totalPrice = totalPrice;
         this.createdAt = createdAt;
-        this.isDiscarded = isDiscarded;
-        this.isActive = isActive;
+        this.discarded = discarded;
+        this.active = active;
         this.waiter = waiter;
         this.dishes = dishes;
         this.drinks = drinks;
@@ -54,19 +54,19 @@ public class Order {
         return id;
     }
 
-    public List<DishItem> getDishes() {
+    public Set<DishItem> getDishes() {
         return dishes;
     }
 
-    public void setDishes(List<DishItem> dishes) {
+    public void setDishes(Set<DishItem> dishes) {
         this.dishes = dishes;
     }
 
-    public List<DrinkItems> getDrinks() {
+    public Set<DrinkItems> getDrinks() {
         return drinks;
     }
 
-    public void setDrinks(List<DrinkItems> drinks) {
+    public void setDrinks(Set<DrinkItems> drinks) {
         this.drinks = drinks;
     }
 
@@ -87,19 +87,19 @@ public class Order {
     }
 
     public boolean isDiscarded() {
-        return isDiscarded;
+        return discarded;
     }
 
     public void setDiscarded(boolean discarded) {
-        isDiscarded = discarded;
+        this.discarded = discarded;
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public UnregisteredUser getWaiter() {
