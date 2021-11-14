@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.order.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class OrderDiscardException extends RuntimeException {
+public class OrderDiscardException extends ConflictRuntimeException {
     public OrderDiscardException(String message) {
         super(message);
     }

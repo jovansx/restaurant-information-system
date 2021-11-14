@@ -60,7 +60,7 @@ public class DishItemServiceImpl implements DishItemService {
         else if (dishItem.getState().equals(ItemState.ON_HOLD) || dishItem.getState().equals(ItemState.PREPARATION))
             typeOfAllowedUser = UserType.CHEF;
         else
-            throw new DrinkItemsNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
+            throw new DishItemNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
 
         UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
         if (!bartender.getType().equals(typeOfAllowedUser)) {

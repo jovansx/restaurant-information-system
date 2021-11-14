@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.restauranttable.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class RestaurantTableShapeNotValidException extends RuntimeException {
+public class RestaurantTableShapeNotValidException extends ConflictRuntimeException {
     public RestaurantTableShapeNotValidException(String message) {
         super(message);
     }

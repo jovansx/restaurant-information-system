@@ -1,8 +1,8 @@
 package akatsuki.restaurantsysteminformation.dishitem;
 
+import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTO;
-import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTOActionRequest;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsDTOActive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class DishItemController {
 
     @PutMapping("/change-state")
     @ResponseStatus(HttpStatus.OK)
-    public ItemsDTOActive changeStateOfDishItem(@RequestBody DishItemDTOActionRequest dto) {
+    public ItemsDTOActive changeStateOfDishItem(@RequestBody DishItemActionRequestDTO dto) {
         return new ItemsDTOActive(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));
     }
 

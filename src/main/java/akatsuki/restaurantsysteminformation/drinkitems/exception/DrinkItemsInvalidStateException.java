@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.drinkitems.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class DrinkItemsInvalidStateException extends RuntimeException {
+public class DrinkItemsInvalidStateException extends ConflictRuntimeException {
     public DrinkItemsInvalidStateException(String message) {
         super(message);
     }

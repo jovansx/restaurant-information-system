@@ -1,19 +1,9 @@
 package akatsuki.restaurantsysteminformation.room.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class RoomExistsException extends RuntimeException {
-    public RoomExistsException() {
-        super();
-    }
-
+public class RoomExistsException extends ConflictRuntimeException {
     public RoomExistsException(String message) {
         super(message);
-    }
-
-    public RoomExistsException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

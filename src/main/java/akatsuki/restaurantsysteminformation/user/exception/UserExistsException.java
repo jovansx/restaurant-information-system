@@ -1,19 +1,9 @@
 package akatsuki.restaurantsysteminformation.user.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UserExistsException extends RuntimeException {
-    public UserExistsException() {
-        super();
-    }
-
+public class UserExistsException extends ConflictRuntimeException {
     public UserExistsException(String message) {
         super(message);
-    }
-
-    public UserExistsException(String message, Throwable cause) {
-        super(message, cause);
     }
 }
