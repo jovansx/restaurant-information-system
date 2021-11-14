@@ -33,6 +33,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> getAllActive() {
+        return orderRepository.findAllByActiveIsTrue();
+    }
+
+    @Override
     public Order getOrderByOrderItem(OrderItem orderItem) {
         List<Order> allOrders = getAll();
 

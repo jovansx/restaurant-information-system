@@ -21,4 +21,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select o from Order o left join fetch o.dishes dr join fetch o.waiter w where o.id = (:id)")
     Optional<Order> findOrderByIdAndFetchDishes(long id);
+
+    List<Order> findAllByActiveIsTrue();
 }

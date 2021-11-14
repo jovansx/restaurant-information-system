@@ -134,7 +134,7 @@ public class DbConfiguration {
             DrinkItems drinkItems4 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.READY, bartender1, Collections.singletonList(drinkItem5), true);
             drinkItemsRepository.save(drinkItems4);
 //          Order
-            Order order1 = new Order(8, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, false, waiter1, new HashSet<>(Arrays.asList(dishItem1, dishItem2, dishItem3)), new HashSet<>(Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4)));
+            Order order1 = new Order(8, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, true, waiter1, new HashSet<>(Arrays.asList(dishItem1, dishItem2, dishItem3)), new HashSet<>(Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4)));
             orderRepository.save(order1);
 //          RestaurantTable
             RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.FREE, TableShape.CIRCLE, false, order1);

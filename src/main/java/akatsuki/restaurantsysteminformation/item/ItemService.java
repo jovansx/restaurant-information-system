@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.item;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ItemService {
@@ -16,4 +17,6 @@ public interface ItemService {
     void saveChanges();
 
     void discardChanges();
+
+    List<Item> getAllByCategory(String category);
 }

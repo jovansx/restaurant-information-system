@@ -31,6 +31,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<Item> getAllByCategory(String categoryName) {
+        ItemCategory itemCategory = itemCategoryService.findByName(itemCategoryService.firstLetterUppercase(categoryName));
+        if (itemCategory == null)
+            throw new ItemCategoryNotFoundException("Item category with the name " + categoryName.toLowerCase() + " not found in the database.");
+        return itemRepository.findAllByItemCategoryAndOriginalIsTrueAndDeletedIsFalse(itemCategory);
+    }
+
+    @Override
     public List<Item> getAll() {
         return itemRepository.findAllAndFetchAll();
     }

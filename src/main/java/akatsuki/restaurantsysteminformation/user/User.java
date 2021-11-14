@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.user;
 
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import org.hibernate.annotations.Where;
 
@@ -97,7 +98,7 @@ public abstract class User {
         this.salary = salary;
     }
 
-    public UserType getType() {
+    public ItemType getType() {
         return type;
     }
 
