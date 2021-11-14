@@ -13,9 +13,13 @@ public interface DishItemService {
 
     DishItem getOne(long id);
 
+    DishItem getOneActive(long id);
+
     DishItem changeStateOfDishItems(long itemId, long userId);
 
     void delete(long id);
 
     void update(DishItemCreateDTO dishItemCreateDTO, long id);
+
+    void prepare(long id, long waiterId);
 }

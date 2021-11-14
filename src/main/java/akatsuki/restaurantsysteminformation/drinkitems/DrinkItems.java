@@ -22,10 +22,10 @@ public class DrinkItems extends OrderItem {
     public DrinkItems() {
     }
 
-    public DrinkItems(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItems, boolean active) {
+    public DrinkItems(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItemList, boolean active) {
         super(notes, createdAt, isDeleted, state, active);
         this.bartender = bartender;
-        this.drinkItemList = drinkItems;
+        this.drinkItemList = drinkItemList;
     }
 
     public UnregisteredUser getBartender() {
@@ -34,14 +34,6 @@ public class DrinkItems extends OrderItem {
 
     public void setBartender(UnregisteredUser bartender) {
         this.bartender = bartender;
-    }
-
-    public List<DrinkItem> getDrinkItems() {
-        return drinkItemList;
-    }
-
-    public void setDrinkItems(List<DrinkItem> drinkItems) {
-        this.drinkItemList = drinkItems;
     }
 
     public List<DrinkItem> getDrinkItemList() {

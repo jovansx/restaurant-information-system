@@ -9,6 +9,7 @@ import akatsuki.restaurantsysteminformation.user.dto.WaiterBasicInfoDTO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class OrderBasicInfoDTO {
 
@@ -101,13 +102,13 @@ public class OrderBasicInfoDTO {
         this.drinkItemsList = drinkItems;
     }
 
-    private void setDishItemsInitially(List<DishItem> items) {
+    private void setDishItemsInitially(Set<DishItem> items) {
         for (DishItem item : items) {
             this.dishItemList.add(new OrderItemIdDTO(item));
         }
     }
 
-    private void setDrinkItemsInitially(List<DrinkItems> items) {
+    private void setDrinkItemsInitially(Set<DrinkItems> items) {
         for (DrinkItems i : items) {
             this.drinkItemsList.add(new OrderItemIdDTO(i));
         }
