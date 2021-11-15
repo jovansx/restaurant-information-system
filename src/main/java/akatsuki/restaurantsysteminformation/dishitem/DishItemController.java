@@ -28,7 +28,7 @@ public class DishItemController {
 
     @GetMapping("/{id}")
     public DishItemDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new DishItemDTO(this.dishItemService.getOneWithChef(id));
+        return new DishItemDTO(this.dishItemService.findOneActiveAndFetchItemAndChef(id));
     }
 
     @PostMapping
@@ -58,4 +58,5 @@ public class DishItemController {
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         dishItemService.delete(id);
     }
+
 }

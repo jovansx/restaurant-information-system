@@ -3,7 +3,9 @@ package akatsuki.restaurantsysteminformation.order;
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
 import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
@@ -15,35 +17,42 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
-    private final RestaurantTableService restaurantTableService;
-    private final UnregisteredUserService unregisteredUserService;
+    private OrderRepository orderRepository;
+    private RestaurantTableService restaurantTableService;
+    private UnregisteredUserService unregisteredUserService;
+    private DrinkItemsService drinkItemsService;
+    private ItemService itemService;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, @Lazy UnregisteredUserService unregisteredUserService, RestaurantTableService restaurantTableService) {
+    public void setOrderRepository(OrderRepository orderRepository, UnregisteredUserService unregisteredUserService,
+                                   RestaurantTableService restaurantTableService, ItemService itemService,
+                                   DrinkItemsService drinkItemsService) {
         this.unregisteredUserService = unregisteredUserService;
         this.orderRepository = orderRepository;
         this.restaurantTableService = restaurantTableService;
+        this.drinkItemsService = drinkItemsService;
+        this.itemService = itemService;
     }
 
     @Override
     public List<Order> getAllActive() {
-        return orderRepository.findAllByActiveIsTrue();
+        return getAll().stream().filter(Order::isActive).collect(Collectors.toList());
     }
 
     @Override
     public Order getOneByRestaurantTable(long id) {
-        return restaurantTableService.getActiveOrderByTableId(id);
+        Long orderId = restaurantTableService.getActiveOrderIdByTableId(id);
+        return getOneWithAll(orderId);
     }
 
     @Override
@@ -67,6 +76,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order getOneWithAll(Long orderId) {
+        Order order1 = getOneWithDrinks(orderId);
+        Order order2 = getOneWithDishes(orderId);
+        order1.setDishes(order2.getDishes());
+        return order1;
+    }
+
+    @Override
     public Order getOneWithDishes(Long orderId) {
         return orderRepository.findOrderByIdAndFetchDishes(orderId).orElseThrow(
                 () -> new OrderNotFoundException("Order with the id " + orderId + " is not found in the database."));
@@ -80,14 +97,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOne(long id) {
-        return orderRepository.findOrderByIdFetchWaiter(id).orElseThrow(
-                () -> new OrderNotFoundException("Order with the id " + id + " is not found in the database."));
+        return getOneWithAll(id);
     }
 
     @Override
     public List<Order> getAll() {
-        return orderRepository.findAllFetchWaiter().orElseThrow(
-                () -> new OrderNotFoundException("There's no order created."));
+        List<Long> indexes = orderRepository.findAllIndexes();
+        return indexes.stream().map(this::getOneWithAll).collect(Collectors.toList());
     }
 
     @Override
@@ -101,20 +117,23 @@ public class OrderServiceImpl implements OrderService {
         if (waiter.getType() != UserType.WAITER) {
             throw new UserTypeNotValidException("User has to be waiter!");
         }
+
         Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
     }
 
     @Override
     public void updateTotalPriceAndSave(Order order) {
-        orderRepository.save(order);
         double totalPrice = 0;
-        for (DishItem dishItem : getOneWithDishes(order.getId()).getDishes()) {
-            totalPrice += dishItem.getAmount() * dishItem.getItem().getPrices().get(dishItem.getItem().getPrices().size() - 1).getValue();
+        for (DishItem dishItem : order.getDishes()) {
+            double currentPrice = itemService.getCurrentPriceOfItem(dishItem.getItem().getId());
+            totalPrice += dishItem.getAmount() * currentPrice;
         }
-        for (DrinkItems drinkItems : getOneWithDrinks(order.getId()).getDrinks()) {
-            for (DrinkItem drinkItem : drinkItems.getDrinkItemList()) {
-                totalPrice += drinkItem.getAmount() * drinkItem.getItem().getPrices().get(drinkItem.getItem().getPrices().size() - 1).getValue();
+        for (DrinkItems drinkItems : order.getDrinks()) {
+            DrinkItems drinkItems1 = drinkItemsService.getOneActive(drinkItems.getId());
+            for (DrinkItem drinkItem : drinkItems1.getDrinkItemList()) {
+                double currentPrice = itemService.getCurrentPriceOfItem(drinkItem.getItem().getId());
+                totalPrice += drinkItem.getAmount() * currentPrice;
             }
         }
         order.setTotalPrice(totalPrice);
@@ -123,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void discard(long id) {
-        Order order = getOne(id);
+        Order order = getOneWithAll(id);
         if (order.isDiscarded()) {
             throw new OrderDiscardException("Order with the id " + id + " is already discarded.");
         }
@@ -139,7 +158,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void delete(long id) {
-        Order order = getOne(id);
+        Order order = getOneWithAll(id);
         if (order.getDishes().isEmpty() && order.getDrinks().isEmpty())
             orderRepository.deleteById(id);
         else
@@ -148,7 +167,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void charge(long id) {
-        Order order = getOne(id);
+        Order order = getOneWithAll(id);
         if (order.isDiscarded()) {
             throw new OrderDiscardException("Order with the id " + id + " is discarded, can't be charged.");
         }
@@ -160,4 +179,6 @@ public class OrderServiceImpl implements OrderService {
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
     }
+
+
 }
