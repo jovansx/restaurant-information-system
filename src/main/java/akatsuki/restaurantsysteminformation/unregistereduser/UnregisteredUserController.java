@@ -22,25 +22,14 @@ import java.util.stream.Collectors;
 public class UnregisteredUserController {
     private final UnregisteredUserService unregisteredUserService;
 
-    @GetMapping
-    public List<UnregisteredUser> getAll() {
-        return unregisteredUserService.getAll();
-    }
-
-    @GetMapping("/table")
-    public List<UnregisteredUserTableDTO> getAllForTable() {
-        return unregisteredUserService.getAll().stream().map(UnregisteredUserTableDTO::new).collect(Collectors.toList());
-    }
-
     @GetMapping("/{id}")
     public UnregisteredUserDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new UnregisteredUserDTO(unregisteredUserService.getOne(id));
     }
 
-    @GetMapping("/pin-code/{pinCode}")
-    public UnregisteredUserEssentialsDTO checkPinCode(@PathVariable @Pattern(regexp = "[0-9]{4}", message = "It has to be 4 digits number.") String pinCode,
-                                                      @RequestParam("usertype") String userType) {
-        return new UnregisteredUserEssentialsDTO(unregisteredUserService.checkPinCode(pinCode, UserType.valueOf(userType.toUpperCase())));
+    @GetMapping
+    public List<UnregisteredUser> getAll() {
+        return unregisteredUserService.getAll();
     }
 
     @PostMapping
@@ -58,5 +47,16 @@ public class UnregisteredUserController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         unregisteredUserService.delete(id);
+    }
+
+    @GetMapping("/table")
+    public List<UnregisteredUserTableDTO> getAllForTable() {
+        return unregisteredUserService.getAll().stream().map(UnregisteredUserTableDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/pin-code/{pinCode}")
+    public UnregisteredUserEssentialsDTO checkPinCode(@PathVariable @Pattern(regexp = "[0-9]{4}", message = "It has to be 4 digits number.") String pinCode,
+                                                      @RequestParam("usertype") String userType) {
+        return new UnregisteredUserEssentialsDTO(unregisteredUserService.checkPinCode(pinCode, UserType.valueOf(userType.toUpperCase())));
     }
 }
