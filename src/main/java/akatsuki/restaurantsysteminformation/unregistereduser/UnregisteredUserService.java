@@ -8,15 +8,13 @@ public interface UnregisteredUserService {
 
     UnregisteredUser getOne(long id);
 
+    List<UnregisteredUser> getAll();
+
     void create(UnregisteredUser unregisteredUser);
 
     void update(UnregisteredUser unregisteredUser, long id);
 
     void delete(long id);
 
-    List<UnregisteredUser> getAll();
-
     UnregisteredUser checkPinCode(String pinCode, UserType type);
-
-    boolean userCanBeDeleted(UnregisteredUser user);
 }

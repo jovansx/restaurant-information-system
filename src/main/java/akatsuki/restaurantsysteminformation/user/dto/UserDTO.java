@@ -33,8 +33,4 @@ public abstract class UserDTO {
 
     @NotNull(message = "It cannot be null.")
     private UserType type;
-
-    public void setUserType(String type) {
-        this.type = UserType.valueOf(type.toUpperCase());
-    }
 }

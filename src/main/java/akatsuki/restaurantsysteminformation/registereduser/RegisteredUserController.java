@@ -17,14 +17,14 @@ import java.util.List;
 public class RegisteredUserController {
     private final RegisteredUserService registeredUserService;
 
-    @GetMapping
-    public List<RegisteredUser> getAll() {
-        return registeredUserService.getAll();
-    }
-
     @GetMapping("/{id}")
     public RegisteredUser getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return registeredUserService.getOne(id);
+    }
+
+    @GetMapping
+    public List<RegisteredUser> getAll() {
+        return registeredUserService.getAll();
     }
 
     @PostMapping
