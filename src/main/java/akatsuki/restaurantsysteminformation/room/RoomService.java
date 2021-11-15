@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.room;
 
+import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface RoomService {
     List<RestaurantTable> getRoomTables(long id);
 
     void checkTableInRoom(long tableId, long id);
+
 }

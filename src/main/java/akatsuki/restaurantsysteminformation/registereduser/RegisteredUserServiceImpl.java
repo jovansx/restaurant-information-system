@@ -1,6 +1,8 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
+import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
@@ -64,8 +66,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         Optional<RegisteredUser> user = registeredUserRepository.findById(id);
         if (user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        } else if (user.get().isDeleted()) {
-            throw new UserDeletedException("User with the id " + id + " is deleted.");
         }
         validateUpdate(id, registeredUser);
 
@@ -81,7 +81,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     private void validateUpdate(long id, RegisteredUser registeredUser) {
-        // TODO da li ubaciti proveru za empty fields? :(
         checkUserType(registeredUser.getType());
         Optional<RegisteredUser> userByUsername = registeredUserRepository.findByUsername(registeredUser.getUsername());
         Optional<User> userByEmail = userService.findByEmail(registeredUser.getEmailAddress());
@@ -102,11 +101,11 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     @Override
     public void delete(long id) {
-        userService.deleteValidation(id);
-        Optional<RegisteredUser> user = registeredUserRepository.findById(id);
-        // TODO razmisliti
-
-        user.get().setDeleted(true);
-        registeredUserRepository.save(user.get());
+        RegisteredUser user = getOne(id);
+        if (!user.getType().equals(UserType.MANAGER) || !user.getType().equals(UserType.SYSTEM_ADMIN)) {
+            throw new RegisteredUserDeleteException("User with the id " + id + " is cannot be deleted.");
+        }
+        user.setDeleted(true);
+        registeredUserRepository.save(user);
     }
 }

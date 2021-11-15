@@ -25,6 +25,12 @@ public class OrderController {
         return new OrderBasicInfoDTO(orderService.getOne(id));
     }
 
+    @GetMapping("/table/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderBasicInfoDTO getOneByRestaurantTable(@PathVariable long id) {
+        return new OrderBasicInfoDTO(orderService.getOneByRestaurantTable(id));
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<OrderBasicInfoDTO> getAll() {
@@ -34,7 +40,6 @@ public class OrderController {
     @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderBasicInfoDTO> getAllActive() {
-        //TODO vrati nesto najosnovnije
         return orderService.getAllActive().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
     }
 

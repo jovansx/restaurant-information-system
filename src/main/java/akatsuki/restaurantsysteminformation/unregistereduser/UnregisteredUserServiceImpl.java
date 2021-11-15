@@ -1,6 +1,11 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
+import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.order.OrderService;
+import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
@@ -8,6 +13,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +21,30 @@ import java.util.Optional;
 
 @Service
 public class UnregisteredUserServiceImpl implements UnregisteredUserService {
-    private final UnregisteredUserRepository unregisteredUserRepository;
-    private final UserService userService;
+    private UnregisteredUserRepository unregisteredUserRepository;
+    private UserService userService;
+    private OrderService orderService;
+    private DrinkItemsService drinkItemsService;
+    private DishItemService dishItemService;
+//
+//    @Autowired
+//    public UnregisteredUserServiceImpl(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
+//                                       OrderService orderService, DrinkItemsService drinkItemsService, DishItemService dishItemService) {
+//        this.unregisteredUserRepository = unregisteredUserRepository;
+//        this.userService = userService;
+//        this.drinkItemsService = drinkItemsService;
+//        this.dishItemService = dishItemService;
+//        this.orderService = orderService;
+//    }
 
     @Autowired
-    public UnregisteredUserServiceImpl(UnregisteredUserRepository unregisteredUserRepository, UserService userService) {
+    public void setUnregisteredUserRepository(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
+                                              OrderService orderService, DrinkItemsService drinkItemsService, DishItemService dishItemService) {
         this.unregisteredUserRepository = unregisteredUserRepository;
         this.userService = userService;
+        this.drinkItemsService = drinkItemsService;
+        this.dishItemService = dishItemService;
+        this.orderService = orderService;
     }
 
     @Override
@@ -46,23 +69,32 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
-    public void delete(long id) {
-        userService.deleteValidation(id);
-        Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
-        // TODO sta ako imaju stavke
-
-        user.get().setDeleted(true);
-        unregisteredUserRepository.save(user.get());
+    public boolean userCanBeDeleted(UnregisteredUser user) {
+        if (user.getType().equals(UserType.WAITER)) {
+            return orderService.isWaiterActive(user);
+        } else if (user.getType().equals(UserType.BARTENDER)) {
+            return drinkItemsService.isBartenderActive(user);
+        } else if (user.getType().equals(UserType.CHEF)) {
+            return dishItemService.isChefActive(user);
+        }
+        return false;
     }
 
-    // TODO ovde treba onaj where
+    @Override
+    public void delete(long id) {
+        UnregisteredUser user = getOne(id);
+        if (!userCanBeDeleted(user)) {
+            throw new UnregisteredUserActiveException("User with the id " + id + " is currently active and cannot be deleted now.");
+        }
+        user.setDeleted(true);
+        unregisteredUserRepository.save(user);
+    }
+
     @Override
     public void update(UnregisteredUser unregisteredUser, long id) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
         if (user.isEmpty()) {
             throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        } else if (user.get().isDeleted()) {
-            throw new UserDeletedException("User with the id " + id + " is deleted.");
         }
         validateUpdate(id, unregisteredUser);
 

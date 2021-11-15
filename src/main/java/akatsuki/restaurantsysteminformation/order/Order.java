@@ -6,6 +6,7 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,15 +33,15 @@ public class Order {
     private UnregisteredUser waiter;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private Set<DishItem> dishes;
+    private List<DishItem> dishes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private Set<DrinkItems> drinks;
+    private List<DrinkItems> drinks;
 
     public Order() {
     }
 
-    public Order(double totalPrice, LocalDateTime createdAt, boolean discarded, boolean active, UnregisteredUser waiter, Set<DishItem> dishes, Set<DrinkItems> drinks) {
+    public Order(double totalPrice, LocalDateTime createdAt, boolean discarded, boolean active, UnregisteredUser waiter, List<DishItem> dishes, List<DrinkItems> drinks) {
         this.totalPrice = totalPrice;
         this.createdAt = createdAt;
         this.discarded = discarded;
@@ -54,19 +55,19 @@ public class Order {
         return id;
     }
 
-    public Set<DishItem> getDishes() {
+    public List<DishItem> getDishes() {
         return dishes;
     }
 
-    public void setDishes(Set<DishItem> dishes) {
+    public void setDishes(List<DishItem> dishes) {
         this.dishes = dishes;
     }
 
-    public Set<DrinkItems> getDrinks() {
+    public List<DrinkItems> getDrinks() {
         return drinks;
     }
 
-    public void setDrinks(Set<DrinkItems> drinks) {
+    public void setDrinks(List<DrinkItems> drinks) {
         this.drinks = drinks;
     }
 

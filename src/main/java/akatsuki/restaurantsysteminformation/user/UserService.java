@@ -11,5 +11,4 @@ public interface UserService {
 
     void checkPhoneNumberExistence(String phoneNumber);
 
-    void deleteValidation(long id);
 }

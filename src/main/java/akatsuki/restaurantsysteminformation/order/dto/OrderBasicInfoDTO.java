@@ -99,13 +99,13 @@ public class OrderBasicInfoDTO {
         this.drinkItemsList = drinkItems;
     }
 
-    private void setDishItemsInitially(Set<DishItem> items) {
+    private void setDishItemsInitially(List<DishItem> items) {
         for (DishItem item : items) {
             this.dishItemList.add(new OrderItemIdDTO(item));
         }
     }
 
-    private void setDrinkItemsInitially(Set<DrinkItems> items) {
+    private void setDrinkItemsInitially(List<DrinkItems> items) {
         for (DrinkItems i : items) {
             this.drinkItemsList.add(new OrderItemIdDTO(i));
         }

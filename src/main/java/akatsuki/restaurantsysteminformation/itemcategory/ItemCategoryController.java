@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/item-category")
 public class ItemCategoryController {
-    private final ItemCategoryServiceImpl itemCategoryService;
+    private final ItemCategoryService itemCategoryService;
 
     @Autowired
-    public ItemCategoryController(ItemCategoryServiceImpl itemCategoryService) {
+    public ItemCategoryController(ItemCategoryService itemCategoryService) {
         this.itemCategoryService = itemCategoryService;
     }
 
