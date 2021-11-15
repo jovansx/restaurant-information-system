@@ -1,14 +1,14 @@
 package akatsuki.restaurantsysteminformation.item;
 
-import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
+import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +25,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDetailsDTO getOne(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public ItemDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new ItemDetailsDTO(itemService.getOne(id));
     }
 
@@ -47,12 +47,12 @@ public class ItemController {
 
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid ItemCreateDTO itemDTO,
-                       @PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemService.update(new Item(itemDTO), id);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemService.delete(id);
     }
 }

@@ -1,32 +1,29 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/item-category")
+@RequiredArgsConstructor
+@Validated
 public class ItemCategoryController {
     private final ItemCategoryServiceImpl itemCategoryService;
 
-    @Autowired
-    public ItemCategoryController(ItemCategoryServiceImpl itemCategoryService) {
-        this.itemCategoryService = itemCategoryService;
-    }
-
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ItemCategoryDTO getOne(@PathVariable long id) {
+    public ItemCategoryDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new ItemCategoryDTO(itemCategoryService.getOne(id));
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<ItemCategoryDTO> getAll() {
         return itemCategoryService.getAll().stream().map(ItemCategoryDTO::new).collect(Collectors.toList());
     }
@@ -38,14 +35,13 @@ public class ItemCategoryController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody ItemCategoryDTO dto, @PathVariable long id) {
+    public void update(@RequestBody @Valid ItemCategoryDTO dto,
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemCategoryService.update(new ItemCategory(dto.getName()), id);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemCategoryService.delete(id);
     }
 }

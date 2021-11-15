@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class DrinkItemsController {
     private final DrinkItemsService drinkItemsService;
 
     @GetMapping("/{id}")
-    public DrinkItemsDTO getOne(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public DrinkItemsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
     }
 
@@ -32,7 +33,7 @@ public class DrinkItemsController {
     }
 
     @GetMapping("/active/{id}")
-    public DrinkItemsDTO getOneActive(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public DrinkItemsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new DrinkItemsDTO(this.drinkItemsService.getOneActive(id));
     }
 
@@ -47,7 +48,7 @@ public class DrinkItemsController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         drinkItemsService.delete(id);
     }
 

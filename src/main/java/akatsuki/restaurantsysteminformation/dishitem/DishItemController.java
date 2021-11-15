@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class DishItemController {
     }
 
     @GetMapping("/{id}")
-    public DishItemDTO getOneActive(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public DishItemDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new DishItemDTO(this.dishItemService.getOneWithChef(id));
     }
 
@@ -39,7 +39,7 @@ public class DishItemController {
 
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO,
-                       @PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         dishItemService.update(dishItemCreateDTO, id);
     }
 
@@ -49,7 +49,7 @@ public class DishItemController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         dishItemService.delete(id);
     }
 }

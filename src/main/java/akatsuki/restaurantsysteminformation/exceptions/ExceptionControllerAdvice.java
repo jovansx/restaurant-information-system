@@ -69,4 +69,10 @@ public class ExceptionControllerAdvice {
     public ExceptionResponse handleConflictException(ConflictRuntimeException exception) {
         return new ExceptionResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleUnhandledException(Exception exception) {
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 }
