@@ -75,7 +75,7 @@ public class RoomController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody UpdateRoomDTO updateRoomDTO, @PathVariable long id) {
-        roomService.update(updateRoomDTO, id);
+        roomService.updateByRoomDTO(updateRoomDTO, id);
     }
 
 
