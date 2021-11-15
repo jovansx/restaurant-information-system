@@ -28,9 +28,12 @@ public interface OrderService {
 
     Order getOneWithDishes(Long orderId);
 
+    Order getOneWithAll(Long orderId);
+
     Order getOneWithDrinks(Long orderId);
 
     Order getOneByRestaurantTable(long id);
 
     boolean isWaiterActive(UnregisteredUser user);
+
 }

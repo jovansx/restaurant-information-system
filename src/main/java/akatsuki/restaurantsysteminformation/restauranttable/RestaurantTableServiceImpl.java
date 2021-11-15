@@ -35,12 +35,13 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public Order getActiveOrderByTableId(long id) {
+    public Long getActiveOrderIdByTableId(long id) {
         RestaurantTable table = getOneWithOrder(id);
         if (table.getState().equals(TableState.FREE) || table.getActiveOrder() == null)
             throw new RestaurantTableStateNotValidException("Restaurant table the id " + id + " is not taken.");
-        return table.getActiveOrder();
+        return table.getActiveOrder().getId();
     }
+
 
     @Override
     public RestaurantTable create(RestaurantTable restaurantTable) {

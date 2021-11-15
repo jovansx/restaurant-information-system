@@ -17,5 +17,5 @@ public interface RestaurantTableService {
 
     RestaurantTable getOneWithOrder(long tableId);
 
-    Order getActiveOrderByTableId(long id);
+    Long getActiveOrderIdByTableId(long id);
 }

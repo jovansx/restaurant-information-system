@@ -5,10 +5,7 @@ import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -56,4 +53,5 @@ public class DishItem extends OrderItem {
     public void setItem(Item item) {
         this.item = item;
     }
+
 }

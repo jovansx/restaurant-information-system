@@ -39,6 +39,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public double getCurrentPriceOfItem(Long itemId) {
+        Item item = getOne(itemId);
+        int index = item.getPrices().size() - 1;
+        return item.getPrices().get(index).getValue();
+    }
+
+    @Override
     public List<Item> getAll() {
         return itemRepository.findAllAndFetchAll();
     }

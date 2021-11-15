@@ -10,11 +10,12 @@ public interface DishItemService {
 
     List<DishItem> getAllActive();
 
-    DishItem getOneWithChef(long id);
 
     DishItem getOne(long id);
 
     DishItem getOneActive(long id);
+
+    DishItem findOneActiveAndFetchItemAndChef(long id);
 
     DishItem changeStateOfDishItems(long itemId, long userId);
 

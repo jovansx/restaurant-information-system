@@ -30,7 +30,7 @@ public class DishItemController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DishItemDTO getOneActive(@PathVariable long id) {
-        return new DishItemDTO(this.dishItemService.getOneWithChef(id));
+        return new DishItemDTO(this.dishItemService.findOneActiveAndFetchItemAndChef(id));
     }
 
     @PostMapping

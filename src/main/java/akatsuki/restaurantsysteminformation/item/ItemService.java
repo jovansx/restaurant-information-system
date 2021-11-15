@@ -18,4 +18,6 @@ public interface ItemService {
     void discardChanges();
 
     List<Item> getAllByCategory(String category);
+
+    double getCurrentPriceOfItem(Long itemId);
 }
