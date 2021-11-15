@@ -11,6 +11,7 @@ import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundExcepti
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final UnregisteredUserService unregisteredUserService;
-
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UnregisteredUserService unregisteredUserService) {
-        this.unregisteredUserService = unregisteredUserService;
-        this.orderRepository = orderRepository;
-    }
 
     @Override
     public Order getOne(long id) {
@@ -48,10 +44,8 @@ public class OrderServiceImpl implements OrderService {
         if (waiter.getType() != UserType.WAITER) {
             throw new UserTypeNotValidException("User has to be waiter!");
         }
-        LocalDateTime createdAt = LocalDateTime.parse(orderDTO.getCreatedAt());     // TODO Datum validiraj pomocu anotacija, za proslost i format
-        // TODO Kad saljes sa fronta - format ('2021-11-11T17:35:22')
 
-        Order order = new Order(0, createdAt, false, true, waiter, new ArrayList<>(), new ArrayList<>());
+        Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
     }
 

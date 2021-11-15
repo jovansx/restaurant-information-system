@@ -3,6 +3,10 @@ package akatsuki.restaurantsysteminformation.order;
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,10 +14,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "MyOrder")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "total_price", nullable = false)
@@ -37,9 +45,6 @@ public class Order {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItems> drinks;
 
-    public Order() {
-    }
-
     public Order(double totalPrice, LocalDateTime createdAt, boolean isDiscarded, boolean isActive, UnregisteredUser waiter, List<DishItem> dishes, List<DrinkItems> drinks) {
         this.totalPrice = totalPrice;
         this.createdAt = createdAt;
@@ -48,65 +53,5 @@ public class Order {
         this.waiter = waiter;
         this.dishes = dishes;
         this.drinks = drinks;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<DishItem> getDishes() {
-        return dishes;
-    }
-
-    public void setDishes(List<DishItem> dishes) {
-        this.dishes = dishes;
-    }
-
-    public List<DrinkItems> getDrinks() {
-        return drinks;
-    }
-
-    public void setDrinks(List<DrinkItems> drinks) {
-        this.drinks = drinks;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isDiscarded() {
-        return isDiscarded;
-    }
-
-    public void setDiscarded(boolean discarded) {
-        isDiscarded = discarded;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public UnregisteredUser getWaiter() {
-        return waiter;
-    }
-
-    public void setWaiter(UnregisteredUser waiter) {
-        this.waiter = waiter;
     }
 }

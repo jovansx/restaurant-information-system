@@ -2,56 +2,51 @@ package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.order.dto.OrderBasicInfoDTO;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/order")
+@RequiredArgsConstructor
+@Validated
 public class OrderController {
     private final OrderService orderService;
 
-    @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public OrderBasicInfoDTO getOne(@PathVariable long id) {
+    public OrderBasicInfoDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new OrderBasicInfoDTO(orderService.getOne(id));
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<OrderBasicInfoDTO> getAll() {
         return orderService.getAll().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody OrderCreateDTO orderCreateDTO) {
+    public void create(@RequestBody @Valid OrderCreateDTO orderCreateDTO) {
         orderService.create(orderCreateDTO);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void discard(@PathVariable long id) {
+    public void discard(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         orderService.discard(id);
     }
 
     @PutMapping("/charge/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void charge(@PathVariable long id) {
+    public void charge(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         orderService.charge(id);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         orderService.delete(id);
     }
 }
