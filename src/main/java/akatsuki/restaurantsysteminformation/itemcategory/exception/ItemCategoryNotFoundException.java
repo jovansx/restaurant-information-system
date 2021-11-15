@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.itemcategory.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.NotFoundRuntimeException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class ItemCategoryNotFoundException extends RuntimeException {
+public class ItemCategoryNotFoundException extends NotFoundRuntimeException {
     public ItemCategoryNotFoundException(String message) {
         super(message);
     }

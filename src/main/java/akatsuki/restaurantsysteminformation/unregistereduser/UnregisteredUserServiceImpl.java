@@ -1,14 +1,12 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
@@ -26,20 +24,10 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private OrderService orderService;
     private DrinkItemsService drinkItemsService;
     private DishItemService dishItemService;
-//
-//    @Autowired
-//    public UnregisteredUserServiceImpl(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
-//                                       OrderService orderService, DrinkItemsService drinkItemsService, DishItemService dishItemService) {
-//        this.unregisteredUserRepository = unregisteredUserRepository;
-//        this.userService = userService;
-//        this.drinkItemsService = drinkItemsService;
-//        this.dishItemService = dishItemService;
-//        this.orderService = orderService;
-//    }
 
     @Autowired
     public void setUnregisteredUserRepository(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
-                                              OrderService orderService, DrinkItemsService drinkItemsService, DishItemService dishItemService) {
+                                              OrderService orderService, DrinkItemsService drinkItemsService, @Lazy DishItemService dishItemService) {
         this.unregisteredUserRepository = unregisteredUserRepository;
         this.userService = userService;
         this.drinkItemsService = drinkItemsService;
@@ -55,6 +43,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
+    //TODO nije validiran broj telefona dal vec postoji takav
     public void create(UnregisteredUser unregisteredUser) {
         checkPinCodeExistence(unregisteredUser.getPinCode());
         userService.checkEmailExistence(unregisteredUser.getEmailAddress());
@@ -141,8 +130,8 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
-    public UnregisteredUser checkPinCode(int pinCode, UserType type) {
-        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode + "")
+    public UnregisteredUser checkPinCode(String pinCode, UserType type) {
+        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode)
                 .orElseThrow(() -> new UserNotFoundException("User with the pin code " + pinCode + " is not found in the database."));
         if (!user.getType().equals(type))
             throw new UserNotFoundException("User with the pin code " + pinCode + " is not a " + type.name().toLowerCase());

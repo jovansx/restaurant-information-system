@@ -1,36 +1,32 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableRepresentationDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/restaurant-table")
+@RequiredArgsConstructor
+@Validated
 public class RestaurantTableController {
     private final RestaurantTableService restaurantTableService;
 
-    @Autowired
-    public RestaurantTableController(RestaurantTableService restaurantTableService) {
-        this.restaurantTableService = restaurantTableService;
-    }
-
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<RestaurantTableRepresentationDTO> getAll() {
+    public List<RestaurantTableDTO> getAll() {
         List<RestaurantTable> tables = restaurantTableService.getAll();
-        List<RestaurantTableRepresentationDTO> tablesDTO = new ArrayList<>();
-        tables.forEach(table -> tablesDTO.add(new RestaurantTableRepresentationDTO(table)));
-        return tablesDTO;
+        return tables.stream().map(RestaurantTableDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public RestaurantTableRepresentationDTO getOne(@PathVariable("id") long id) {
-        RestaurantTable table = restaurantTableService.getOne(id);
-        return new RestaurantTableRepresentationDTO(table);
+    public RestaurantTableDTO getOne(@PathVariable("id") @Positive(message = "Id has to be a positive value.") long id) {
+        return new RestaurantTableDTO(restaurantTableService.getOne(id));
     }
 }

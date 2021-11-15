@@ -1,6 +1,10 @@
 package akatsuki.restaurantsysteminformation.orderitem;
 
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -10,10 +14,14 @@ import java.time.LocalDateTime;
 @Table(name = "MyOrderItem")
 @Where(clause = "deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@NoArgsConstructor
 public abstract class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "notes")
@@ -31,63 +39,12 @@ public abstract class OrderItem {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    public OrderItem() {
-    }
-
     public OrderItem(String notes, LocalDateTime createdAt, boolean deleted, ItemState state, boolean active) {
         this.notes = notes;
         this.createdAt = createdAt;
         this.deleted = deleted;
         this.state = state;
         this.active = active;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public ItemState getState() {
-        return state;
-    }
-
-    public void setState(ItemState state) {
-        this.state = state;
     }
 
     @Override

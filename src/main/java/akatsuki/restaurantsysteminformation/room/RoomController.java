@@ -1,45 +1,48 @@
 package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.room.dto.RoomDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomWithTablesDTO;
-import akatsuki.restaurantsysteminformation.room.dto.UpdateRoomDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/room")
+@RequiredArgsConstructor
+@Validated
 public class RoomController {
     private final RoomService roomService;
 
-    @Autowired
-    public RoomController(RoomService roomService) {
-        this.roomService = roomService;
-    }
-
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<RoomWithTablesDTO> getAll() {
-        return roomService.getAll().stream().map(RoomWithTablesDTO::new).collect(Collectors.toList());
+        List<RoomWithTablesDTO> roomsDTO = new ArrayList<>();
+        List<Room> rooms = roomService.getAll();
+        rooms.forEach(room -> {
+            List<RestaurantTable> roomTables = roomService.getRoomTables(room.getId());
+            List<RestaurantTableDTO> tablesDTO = roomTables.stream().map(RestaurantTableDTO::new).collect(Collectors.toList());
+            roomsDTO.add(new RoomWithTablesDTO(room.getName(), tablesDTO));
+        });
+        return roomsDTO;
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public RoomWithTablesDTO getOne(@PathVariable long id) {
+    public RoomWithTablesDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new RoomWithTablesDTO(roomService.getOne(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody RoomDTO roomDTO) {
+    public void create(@RequestBody @Valid RoomCreateDTO roomDTO) {
         roomService.create(new Room(roomDTO));
     }
 
@@ -73,15 +76,13 @@ public class RoomController {
 //    }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody UpdateRoomDTO updateRoomDTO, @PathVariable long id) {
-        roomService.update(updateRoomDTO, id);
+    public void update(@RequestBody @Valid RoomUpdateDTO roomUpdateDTO,
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        roomService.update(roomUpdateDTO, id);
     }
 
-
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         roomService.delete(id);
     }
 }

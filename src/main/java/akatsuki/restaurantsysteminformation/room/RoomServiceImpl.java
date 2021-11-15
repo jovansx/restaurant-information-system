@@ -2,14 +2,14 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurantTableDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
-import akatsuki.restaurantsysteminformation.room.dto.UpdateRoomDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,15 +18,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final RestaurantTableService restaurantTableService;
-
-    @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, RestaurantTableService restaurantTableService) {
-        this.roomRepository = roomRepository;
-        this.restaurantTableService = restaurantTableService;
-    }
 
     @Override
     public List<Room> getAll() {
@@ -57,20 +52,20 @@ public class RoomServiceImpl implements RoomService {
 //        roomRepository.save(foundRoom);
 //    }
 
-//    TODO Jelena aj proveri jel radi ovo
+    //    TODO Jelena aj proveri jel radi ovo
     @Transactional
     @Override
-    public void update(UpdateRoomDTO updateRoomDTO, long id) {
+    public void update(RoomUpdateDTO updateRoomDTO, long id) {
         Room foundRoom = getOne(id);
         checkNameExistence(updateRoomDTO.getName(), id);
 
         List<RestaurantTable> allTables = new ArrayList<>();
 
-        List<CreateRestaurantTableDTO> newTablesDTO = updateRoomDTO.getNewTables();
+        List<RestaurantTableCreateDTO> newTablesDTO = updateRoomDTO.getNewTables();
 
         newTablesDTO.forEach(tableDTO -> allTables.add(restaurantTableService.create(new RestaurantTable(tableDTO))));
 
-        List<UpdateRestaurantTableDTO> updateTablesDTO = updateRoomDTO.getUpdateTables();
+        List<RestaurantTableDTO> updateTablesDTO = updateRoomDTO.getUpdateTables();
         updateTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = new RestaurantTable(tableDTO);
             checkTableInRoom(tableDTO.getId(), id);

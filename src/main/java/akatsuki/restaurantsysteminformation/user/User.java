@@ -1,18 +1,26 @@
 package akatsuki.restaurantsysteminformation.user;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "MyUser")
+@Table(name = "my_user")
 @Where(clause = "is_deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@NoArgsConstructor
 public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "first_name", nullable = false)
@@ -36,9 +44,6 @@ public abstract class User {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    public User() {
-    }
-
     public User(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean isDeleted) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -47,70 +52,6 @@ public abstract class User {
         this.salary = salary;
         this.type = type;
         this.isDeleted = isDeleted;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
-    }
-
-    public UserType getType() {
-        return type;
-    }
-
-    public void setType(UserType type) {
-        this.type = type;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     public String getName() {

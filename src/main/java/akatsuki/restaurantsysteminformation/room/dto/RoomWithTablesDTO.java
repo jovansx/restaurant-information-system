@@ -1,28 +1,27 @@
 package akatsuki.restaurantsysteminformation.room.dto;
 
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableRepresentationDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.room.Room;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class RoomWithTablesDTO extends RoomDTO {
-    private List<RestaurantTableRepresentationDTO> tables;
+@NoArgsConstructor
+public class RoomWithTablesDTO extends RoomCreateDTO {
+    private @Getter
+    @Setter
+    List<RestaurantTableDTO> tables;
+
+    public RoomWithTablesDTO(String name, List<RestaurantTableDTO> tables) {
+        super(name);
+        this.tables = tables;
+    }
 
     public RoomWithTablesDTO(Room room) {
         super(room.getName());
-        this.tables = new ArrayList<>();
-        for (RestaurantTable table : room.getRestaurantTables()) {
-            tables.add(new RestaurantTableRepresentationDTO(table));
-        }
-    }
-
-    public List<RestaurantTableRepresentationDTO> getTables() {
-        return tables;
-    }
-
-    public void setTables(List<RestaurantTableRepresentationDTO> tableIds) {
-        this.tables = tableIds;
+        this.tables = room.getRestaurantTables().stream().map(RestaurantTableDTO::new).collect(Collectors.toList());
     }
 }
