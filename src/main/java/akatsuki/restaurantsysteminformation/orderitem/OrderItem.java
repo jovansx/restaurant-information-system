@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.orderitem;
 
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public abstract class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "notes")

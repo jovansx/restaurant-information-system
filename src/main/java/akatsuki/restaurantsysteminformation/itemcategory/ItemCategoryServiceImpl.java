@@ -5,21 +5,17 @@ import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryDeleteException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNameException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ItemCategoryServiceImpl implements ItemCategoryService {
-    private ItemCategoryRepository itemCategoryRepository;
-    private ItemService itemService;
-
-    @Autowired
-    public void setItemCategoryRepository(ItemCategoryRepository itemCategoryRepository, ItemService itemService) {
-        this.itemCategoryRepository = itemCategoryRepository;
-        this.itemService = itemService;
-    }
+    private final ItemCategoryRepository itemCategoryRepository;
+    private final ItemService itemService;
 
     @Override
     public ItemCategory findByName(String name) {
