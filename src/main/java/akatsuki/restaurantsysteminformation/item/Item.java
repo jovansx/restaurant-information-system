@@ -34,10 +34,10 @@ public class Item {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "icon_base_64", nullable = false)
+    @Column(name = "icon_base_64")
     private byte[] iconBase64;
 
     @Column(name = "original", nullable = false)

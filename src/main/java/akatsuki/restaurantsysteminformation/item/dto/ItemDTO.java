@@ -21,10 +21,7 @@ public abstract class ItemDTO {
     @NotEmpty(message = "It cannot be null or empty.")
     private String name;
 
-    @NotEmpty(message = "It cannot be null or empty.")
     private String description;
-
-    @NotEmpty(message = "It cannot be null or empty.")
     private String iconBase64;
 
     @NotNull(message = "It cannot be null.")

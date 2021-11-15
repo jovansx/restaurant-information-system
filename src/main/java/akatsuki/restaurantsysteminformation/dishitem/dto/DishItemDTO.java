@@ -17,7 +17,7 @@ public class DishItemDTO {
     private ItemState state;
     private String chef;
     private String icon;
-    private List<DrinkItemDTOItemOfDishItem> itemList;
+    private List<DishItemOrderedDTO> itemList;
 
     public DishItemDTO(DishItem dishItem) {
         this.id = dishItem.getId();
@@ -30,6 +30,6 @@ public class DishItemDTO {
         this.state = dishItem.getState();
         this.icon = new String(dishItem.getItem().getIconBase64());
         this.itemList = new ArrayList<>();
-        itemList.add(new DrinkItemDTOItemOfDishItem(dishItem.getItem(), dishItem.getAmount()));
+        itemList.add(new DishItemOrderedDTO(dishItem.getItem().getName(), dishItem.getAmount()));
     }
 }
