@@ -1,21 +1,15 @@
 package akatsuki.restaurantsysteminformation.user;
 
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -42,6 +36,4 @@ public class UserServiceImpl implements UserService {
             throw new UserExistsException("User with the phone number " + phoneNumber + " already exists in the database.");
         }
     }
-
-
 }

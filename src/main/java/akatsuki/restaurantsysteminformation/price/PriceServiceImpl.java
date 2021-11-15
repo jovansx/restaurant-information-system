@@ -1,16 +1,12 @@
 package akatsuki.restaurantsysteminformation.price;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PriceServiceImpl implements PriceService {
-    private PriceRepository priceRepository;
-
-    @Autowired
-    public void setPriceRepository(PriceRepository priceRepository) {
-        this.priceRepository = priceRepository;
-    }
+    private final PriceRepository priceRepository;
 
     @Override
     public void save(Price price) {

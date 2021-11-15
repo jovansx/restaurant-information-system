@@ -1,11 +1,8 @@
 package akatsuki.restaurantsysteminformation.order.exception;
 
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.CONFLICT)
-public class OrderDeletionException extends RuntimeException {
+public class OrderDeletionException extends ConflictRuntimeException {
     public OrderDeletionException(String message) {
         super(message);
     }

@@ -101,9 +101,7 @@ public class OrderServiceImpl implements OrderService {
         if (waiter.getType() != UserType.WAITER) {
             throw new UserTypeNotValidException("User has to be waiter!");
         }
-        LocalDateTime createdAt = LocalDateTime.parse(orderDTO.getCreatedAt());
-
-        Order order = new Order(0, createdAt, false, true, waiter, new ArrayList<>(), new ArrayList<>());
+        Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
     }
 
@@ -162,6 +160,4 @@ public class OrderServiceImpl implements OrderService {
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
     }
-
-
 }

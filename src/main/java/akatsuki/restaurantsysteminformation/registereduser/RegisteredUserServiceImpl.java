@@ -2,30 +2,22 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
-import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final RegisteredUserRepository registeredUserRepository;
     private final UserService userService;
-
-    @Autowired
-    public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, UserService userService) {
-        this.registeredUserRepository = registeredUserRepository;
-        this.userService = userService;
-    }
-
 
     @Override
     public List<RegisteredUser> getAll() {

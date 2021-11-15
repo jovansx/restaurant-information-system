@@ -1,7 +1,11 @@
 package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-import akatsuki.restaurantsysteminformation.room.dto.RoomDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -9,12 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Room")
+@Table(name = "room")
 @Where(clause = "is_deleted = false")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "name", unique = true, nullable = false)
@@ -26,46 +34,16 @@ public class Room {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<RestaurantTable> restaurantTables;
 
-    public Room() {
-    }
-
     public Room(String name, boolean isDeleted, List<RestaurantTable> restaurantTables) {
         this.name = name;
         this.isDeleted = isDeleted;
         this.restaurantTables = restaurantTables;
     }
 
-    public Room(RoomDTO roomDTO) {
+    public Room(RoomCreateDTO roomDTO) {
         this.name = roomDTO.getName();
         this.isDeleted = false;
         this.restaurantTables = new ArrayList<>();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public List<RestaurantTable> getRestaurantTables() {
-        return restaurantTables;
-    }
-
-    public void setRestaurantTables(List<RestaurantTable> restaurantTables) {
-        this.restaurantTables = restaurantTables;
-    }
 }

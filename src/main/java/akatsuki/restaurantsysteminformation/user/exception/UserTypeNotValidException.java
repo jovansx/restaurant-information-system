@@ -1,13 +1,9 @@
 package akatsuki.restaurantsysteminformation.user.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UserTypeNotValidException extends RuntimeException {
-
+public class UserTypeNotValidException extends ConflictRuntimeException {
     public UserTypeNotValidException(String message) {
         super(message);
     }
-
 }

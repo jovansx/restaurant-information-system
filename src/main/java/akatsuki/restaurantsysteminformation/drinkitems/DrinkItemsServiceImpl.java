@@ -18,7 +18,7 @@ import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,22 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DrinkItemsServiceImpl implements DrinkItemsService {
-    private DrinkItemsRepository drinkItemsRepository;
-    private UnregisteredUserService unregisteredUserService;
-    private OrderService orderService;
-    private ItemService itemService;
-    private DrinkItemService drinkItemService;
-
-    @Autowired
-    public void setDrinkItemsRepository(DrinkItemsRepository drinkItemsRepository, UnregisteredUserService unregisteredUserService,
-                                        OrderService orderService, ItemService itemService, DrinkItemService drinkItemService) {
-        this.drinkItemsRepository = drinkItemsRepository;
-        this.unregisteredUserService = unregisteredUserService;
-        this.orderService = orderService;
-        this.itemService = itemService;
-        this.drinkItemService = drinkItemService;
-    }
+    private final DrinkItemsRepository drinkItemsRepository;
+    private final UnregisteredUserService unregisteredUserService;
+    private final OrderService orderService;
+    private final ItemService itemService;
+    private final DrinkItemService drinkItemService;
 
     @Override
     public DrinkItems getOne(long id) {
@@ -118,7 +109,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void create(DrinkItemsCreateDTO drinkItemsDTO) {
-        Order order = orderService.getOneWithDrinks(drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithDrinks((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
@@ -132,7 +123,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
-        Order order = orderService.getOneWithDrinks(drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithDrinks((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
@@ -149,8 +140,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
         List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
         drinkItems.getDrinkItemList().clear();
-        ref.forEach(drinkItem -> drinkItemService.delete(drinkItem));
-
+        ref.forEach(drinkItemService::delete);
         List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItemsRepository.save(drinkItems);

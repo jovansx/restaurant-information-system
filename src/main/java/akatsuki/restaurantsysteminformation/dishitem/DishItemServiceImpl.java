@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidSt
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidTypeException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
-import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
@@ -16,26 +15,19 @@ import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DishItemServiceImpl implements DishItemService {
-    private DishItemRepository dishItemRepository;
-    private UnregisteredUserService unregisteredUserService;
-    private OrderService orderService;
-    private ItemService itemService;
-
-    @Autowired
-    public void setDishItemRepository(DishItemRepository dishItemRepository, UnregisteredUserService unregisteredUserService, OrderService orderService, ItemService itemService) {
-        this.dishItemRepository = dishItemRepository;
-        this.unregisteredUserService = unregisteredUserService;
-        this.orderService = orderService;
-        this.itemService = itemService;
-    }
+    private final DishItemRepository dishItemRepository;
+    private final UnregisteredUserService unregisteredUserService;
+    private final OrderService orderService;
+    private final ItemService itemService;
 
     @Override
     public boolean isChefActive(UnregisteredUser user) {
@@ -70,7 +62,7 @@ public class DishItemServiceImpl implements DishItemService {
         else if (dishItem.getState().equals(ItemState.ON_HOLD) || dishItem.getState().equals(ItemState.PREPARATION))
             typeOfAllowedUser = UserType.CHEF;
         else
-            throw new DrinkItemsNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
+            throw new DishItemNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
 
         UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
         if (!bartender.getType().equals(typeOfAllowedUser)) {
@@ -160,5 +152,4 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setActive(false);
         dishItemRepository.save(dishItem);
     }
-
 }
