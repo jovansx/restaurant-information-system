@@ -11,5 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class RoomCreateDTO {
     @NotEmpty(message = "It cannot be empty.")
-    private @Getter @Setter String name;
+    private @Getter
+    @Setter
+    String name;
 }

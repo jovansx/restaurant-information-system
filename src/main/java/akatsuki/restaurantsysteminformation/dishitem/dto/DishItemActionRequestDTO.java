@@ -3,13 +3,16 @@ package akatsuki.restaurantsysteminformation.dishitem.dto;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Data
 public class DishItemActionRequestDTO {
-    //TODO nisam sig dal nam treba i @NotNUll
-    @Min(value = 1, message = "Id has to be a positive value.")
+    @NotNull(message = "It cannot be null.")
+    @Positive(message = "Id has to be a positive value.")
     private long userId;
 
-    @Min(value = 1, message = "Id has to be a positive value.")
+    @NotNull(message = "It cannot be null.")
+    @Positive(message = "Id has to be a positive value.")
     private long itemId;
 }

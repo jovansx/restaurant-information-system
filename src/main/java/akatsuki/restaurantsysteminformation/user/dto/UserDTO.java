@@ -1,7 +1,10 @@
 package akatsuki.restaurantsysteminformation.user.dto;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.*;
 

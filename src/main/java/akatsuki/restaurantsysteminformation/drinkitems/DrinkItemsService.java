@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
-import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 public interface DrinkItemsService {
 
-    DrinkItems getOne(long id);
+//    DrinkItems getOne(long id);
 
     List<DrinkItems> getAll();
 

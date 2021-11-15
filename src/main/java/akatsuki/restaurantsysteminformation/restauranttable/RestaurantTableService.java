@@ -1,7 +1,5 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
-import akatsuki.restaurantsysteminformation.order.Order;
-
 import java.util.List;
 
 public interface RestaurantTableService {

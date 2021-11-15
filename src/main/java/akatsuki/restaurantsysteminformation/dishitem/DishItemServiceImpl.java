@@ -60,7 +60,6 @@ public class DishItemServiceImpl implements DishItemService {
         return dishItemRepository.findAllActive();
     }
 
-    //TODO proveri
     @Override
     public DishItem changeStateOfDishItems(long itemId, long userId) {
         DishItem dishItem = dishItemRepository.findOneActiveAndFetchItemAndChefAndStateIsChangeable(itemId).orElseThrow(
@@ -76,7 +75,7 @@ public class DishItemServiceImpl implements DishItemService {
 
         UnregisteredUser chef = this.unregisteredUserService.getOne(userId);
         if (!chef.getType().equals(typeOfAllowedUser)) {
-            throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
+            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
         }
 
         if (dishItem.getState().equals(ItemState.ON_HOLD)) {
@@ -91,7 +90,6 @@ public class DishItemServiceImpl implements DishItemService {
         return dishItem;
     }
 
-    //TODO proveri
     @Override
     public void prepare(long id, long waiterId) {
         DishItem dishItem = getOneActive(id);
@@ -127,7 +125,7 @@ public class DishItemServiceImpl implements DishItemService {
             throw new DishItemInvalidTypeException("Item type is not DISH.");
         }
         DishItem dishItem = null;
-        for (DishItem di:order.getDishes()) {
+        for (DishItem di : order.getDishes()) {
             if (di.getId().equals(id)) {
                 dishItem = di;
                 break;

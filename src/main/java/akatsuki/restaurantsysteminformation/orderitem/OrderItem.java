@@ -1,22 +1,20 @@
 package akatsuki.restaurantsysteminformation.orderitem;
 
 import akatsuki.restaurantsysteminformation.enums.ItemState;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "MyOrderItem")
+@Table(name = "my_order_item")
 @Where(clause = "deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public abstract class OrderItem {
 
     @Id
@@ -47,18 +45,4 @@ public abstract class OrderItem {
         this.active = active;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        OrderItem orderItem = (OrderItem) o;
-
-        return id != null ? id.equals(orderItem.id) : orderItem.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

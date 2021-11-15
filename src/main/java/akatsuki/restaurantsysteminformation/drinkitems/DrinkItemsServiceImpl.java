@@ -34,12 +34,12 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private final ItemService itemService;
     private final DrinkItemService drinkItemService;
 
-    @Override
-    public DrinkItems getOne(long id) {
-        return drinkItemsRepository.findById(id).orElseThrow(
-                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
-        );
-    }
+//    @Override
+//    public DrinkItems getOne(long id) {
+//        return drinkItemsRepository.findById(id).orElseThrow(
+//                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
+//        );
+//    }
 
     @Override
     public boolean isBartenderActive(UnregisteredUser user) {
@@ -68,7 +68,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
-        DrinkItems drinkItems = getOne(itemId);
+        DrinkItems drinkItems = getOneActive(itemId);
         UserType typeOfAllowedUser;
         if (drinkItems.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
@@ -79,7 +79,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
         UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
         if (!bartender.getType().equals(typeOfAllowedUser)) {
-            throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
+            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
         }
 
         if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
@@ -109,7 +109,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void create(DrinkItemsCreateDTO drinkItemsDTO) {
-        Order order = orderService.getOneWithDrinks((long) drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
@@ -123,11 +123,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
-        Order order = orderService.getOneWithDrinks((long) drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
-        DrinkItems drinkItems = getOne(id);
+        DrinkItems drinkItems = getOneActive(id);
         boolean listIsInOrder = order.getDrinks().contains(drinkItems);
         if (!listIsInOrder) {
             throw new DrinkItemsNotContainedException("Drink items list with id " + id + " is not contained within order drinks.");
@@ -140,7 +140,10 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
         List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
         drinkItems.getDrinkItemList().clear();
-        ref.forEach(drinkItemService::delete);
+        drinkItemsRepository.save(drinkItems);
+        for (DrinkItem drinkItem : ref) {
+            drinkItemService.delete(drinkItem);
+        }
         List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItemsRepository.save(drinkItems);

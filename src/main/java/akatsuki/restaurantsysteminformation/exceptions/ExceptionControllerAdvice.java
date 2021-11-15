@@ -47,12 +47,12 @@ public class ExceptionControllerAdvice {
      * @param exception - ConstraintViolationException
      * @return ExceptionResponse
      */
-    @ExceptionHandler(value = { ConstraintViolationException.class })
+    @ExceptionHandler(value = {ConstraintViolationException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleResourceNotFoundException(ConstraintViolationException exception) {
         Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
         StringBuilder exceptionMessage = new StringBuilder();
-        for (ConstraintViolation<?> violation : violations ) {
+        for (ConstraintViolation<?> violation : violations) {
             exceptionMessage.append(violation.getMessageTemplate());
         }
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exceptionMessage.toString());

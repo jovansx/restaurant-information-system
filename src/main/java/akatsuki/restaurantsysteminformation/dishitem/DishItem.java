@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "dish_item")
 public class DishItem extends OrderItem {
 
     @Column(name = "amount", nullable = false)
