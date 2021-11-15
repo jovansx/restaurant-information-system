@@ -6,6 +6,7 @@ import akatsuki.restaurantsysteminformation.restauranttable.exception.Restaurant
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final RestaurantTableService restaurantTableService;
-
-    @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, RestaurantTableService restaurantTableService) {
-        this.roomRepository = roomRepository;
-        this.restaurantTableService = restaurantTableService;
-    }
 
     @Override
     public List<Room> getAll() {

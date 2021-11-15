@@ -8,13 +8,13 @@ import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableD
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableShapeNotValidException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import akatsuki.restaurantsysteminformation.room.Room;
-import akatsuki.restaurantsysteminformation.room.dto.RoomDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
 
 import java.util.ArrayList;
 
 public class Mapper {
 
-    public static Room convertRoomDTOToRoom(RoomDTO roomDTO) {
+    public static Room convertRoomDTOToRoom(RoomCreateDTO roomDTO) {
         return new Room(roomDTO.getName(), false, new ArrayList<>());
     }
 
