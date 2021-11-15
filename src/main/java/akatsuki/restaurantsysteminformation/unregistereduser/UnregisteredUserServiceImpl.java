@@ -7,6 +7,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +15,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private final UnregisteredUserRepository unregisteredUserRepository;
     private final UserService userService;
-
-    @Autowired
-    public UnregisteredUserServiceImpl(UnregisteredUserRepository unregisteredUserRepository, UserService userService) {
-        this.unregisteredUserRepository = unregisteredUserRepository;
-        this.userService = userService;
-    }
 
     @Override
     public UnregisteredUser getOne(long id) {
@@ -32,6 +28,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
+    //TODO nije validiran broj telefona dal vec postoji takav
     public void create(UnregisteredUser unregisteredUser) {
         checkPinCodeExistence(unregisteredUser.getPinCode());
         userService.checkEmailExistence(unregisteredUser.getEmailAddress());
@@ -109,8 +106,8 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
-    public UnregisteredUser checkPinCode(int pinCode, UserType type) {
-        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode + "")
+    public UnregisteredUser checkPinCode(String pinCode, UserType type) {
+        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode)
                 .orElseThrow(() -> new UserNotFoundException("User with the pin code " + pinCode + " is not found in the database."));
         if (!user.getType().equals(type))
             throw new UserNotFoundException("User with the pin code " + pinCode + " is not a " + type.name().toLowerCase());

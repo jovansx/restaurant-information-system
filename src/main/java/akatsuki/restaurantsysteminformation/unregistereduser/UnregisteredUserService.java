@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
-
 import akatsuki.restaurantsysteminformation.enums.UserType;
 
 import java.util.List;
@@ -17,5 +16,5 @@ public interface UnregisteredUserService {
 
     List<UnregisteredUser> getAll();
 
-    UnregisteredUser checkPinCode(int pinCode, UserType type);
+    UnregisteredUser checkPinCode(String pinCode, UserType type);
 }

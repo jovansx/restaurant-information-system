@@ -9,7 +9,7 @@ public class Mapper {
 
     public static RegisteredUser convertRegisteredUserDTOToRegisteredUser(RegisteredUserDTO registeredUserDTO) {
         try {
-            UserType.valueOf(registeredUserDTO.getType());
+            UserType.valueOf(registeredUserDTO.getType().toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new UserTypeNotValidException("User type for unregistered user is not valid.");
         }
@@ -19,7 +19,7 @@ public class Mapper {
                 registeredUserDTO.getEmailAddress(),
                 registeredUserDTO.getPhoneNumber(),
                 registeredUserDTO.getSalary(),
-                UserType.valueOf(registeredUserDTO.getType()),
+                UserType.valueOf(registeredUserDTO.getType().toUpperCase()),
                 false,
                 registeredUserDTO.getUsername(),
                 registeredUserDTO.getPassword()

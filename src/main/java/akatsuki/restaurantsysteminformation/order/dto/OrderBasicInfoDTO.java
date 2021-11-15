@@ -2,7 +2,7 @@ package akatsuki.restaurantsysteminformation.order.dto;
 
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.orderitem.dto.OrderItemIdDTO;
-import akatsuki.restaurantsysteminformation.user.dto.WaiterBasicInfoDTO;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.WaiterBasicInfoDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

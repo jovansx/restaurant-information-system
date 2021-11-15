@@ -2,51 +2,48 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.registereduser.mapper.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/registered-user")
+@RequiredArgsConstructor
+@Validated
 public class RegisteredUserController {
     private final RegisteredUserService registeredUserService;
 
-    @Autowired
-    public RegisteredUserController(RegisteredUserService registeredUserService) {
-        this.registeredUserService = registeredUserService;
-    }
-
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<RegisteredUser> getAll() {
         return registeredUserService.getAll();
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public RegisteredUser getOne(@PathVariable long id) {
+    public RegisteredUser getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return registeredUserService.getOne(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody RegisteredUserDTO registeredUserDTO) {
+    public void create(@RequestBody @Valid RegisteredUserDTO registeredUserDTO) {
         RegisteredUser user = Mapper.convertRegisteredUserDTOToRegisteredUser(registeredUserDTO);
         registeredUserService.create(user);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody RegisteredUserDTO registeredUserDTO, @PathVariable long id) {
+    public void update(@RequestBody @Valid RegisteredUserDTO registeredUserDTO,
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         RegisteredUser user = Mapper.convertRegisteredUserDTOToRegisteredUser(registeredUserDTO);
         registeredUserService.update(user, id);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.delete(id);
     }
 }
