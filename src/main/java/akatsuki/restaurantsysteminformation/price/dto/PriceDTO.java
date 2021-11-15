@@ -1,11 +1,15 @@
 package akatsuki.restaurantsysteminformation.price.dto;
 
 import akatsuki.restaurantsysteminformation.price.Price;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class PriceDTO {
 
     private LocalDateTime createdAt;
