@@ -57,8 +57,6 @@ public class RoomServiceImpl implements RoomService {
 //        roomRepository.save(foundRoom);
 //    }
 
-//    TODO Jelena aj proveri jel radi ovo
-    @Transactional
     @Override
     public void update(UpdateRoomDTO updateRoomDTO, long id) {
         Room foundRoom = getOne(id);

@@ -23,7 +23,7 @@ public class Room {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<RestaurantTable> restaurantTables;
 
     public Room() {
