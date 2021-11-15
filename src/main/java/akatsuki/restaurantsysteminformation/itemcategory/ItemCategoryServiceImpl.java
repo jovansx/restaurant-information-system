@@ -6,7 +6,6 @@ import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryD
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNameException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,16 +15,6 @@ import java.util.List;
 public class ItemCategoryServiceImpl implements ItemCategoryService {
     private final ItemCategoryRepository itemCategoryRepository;
     private final ItemService itemService;
-
-    @Override
-    public ItemCategory findByName(String name) {
-        return itemCategoryRepository.findByName(name);
-    }
-
-    @Override
-    public void save(ItemCategory itemCategory) {
-        itemCategoryRepository.save(itemCategory);
-    }
 
     @Override
     public ItemCategory getOne(long id) {
@@ -76,6 +65,16 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
             }
         });
         itemCategoryRepository.deleteById(id);
+    }
+
+    @Override
+    public ItemCategory findByName(String name) {
+        return itemCategoryRepository.findByName(name);
+    }
+
+    @Override
+    public void save(ItemCategory itemCategory) {
+        itemCategoryRepository.save(itemCategory);
     }
 
     public String firstLetterUppercase(String name) {
