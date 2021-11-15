@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
+import akatsuki.restaurantsysteminformation.room.dto.UpdateRoomDTO;
 
 import java.util.List;
 
@@ -12,7 +13,8 @@ public interface RoomService {
 
     void create(Room room);
 
-    void update(Room room, long id);
+//    void update(Room room, long id);
+    void update(UpdateRoomDTO room, long id);
 
     void delete(long id);
 
