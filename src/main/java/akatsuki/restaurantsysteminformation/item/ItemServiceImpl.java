@@ -144,7 +144,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    //TODO da li da delete i insert vracaju nesto
     @Override
     public void delete(long id) {
         Optional<Item> itemOptional = itemRepository.findOneActiveAndFetchAll(id);

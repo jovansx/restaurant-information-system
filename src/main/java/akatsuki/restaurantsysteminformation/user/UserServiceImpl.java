@@ -43,16 +43,5 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public void deleteValidation(long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        }
-        if (user.get().isDeleted()) {
-            throw new UserDeletedException("User with the id " + id + " already deleted.");
-        }
-    }
-
 
 }

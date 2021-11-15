@@ -51,6 +51,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
+    public boolean isBartenderActive(UnregisteredUser user) {
+        return drinkItemsRepository.findAllByActiveIsTrueAndBartender(user).isEmpty();
+    }
+
+    @Override
     public List<DrinkItems> getAll() {
         return drinkItemsRepository.findAllFetchBartender().orElseThrow(
                 () -> new DrinkItemsNotFoundException("There's no drink items list created."));
@@ -127,7 +132,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
-        Order order = orderService.getOneWithDrinks(drinkItemsDTO.getOrderId()); //TODO Obrati paznju, kad budemo promenili in-view na false, moraces fetchovati(jos na nekim mestima)
+        Order order = orderService.getOneWithDrinks(drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 

@@ -19,12 +19,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/room")
 public class RoomController {
     private final RoomService roomService;
-    private final RestaurantTableService restaurantTableService;
 
     @Autowired
-    public RoomController(RoomService roomService, RestaurantTableService restaurantTableService) {
+    public RoomController(RoomService roomService) {
         this.roomService = roomService;
-        this.restaurantTableService = restaurantTableService;
     }
 
     @GetMapping
@@ -45,34 +43,39 @@ public class RoomController {
         roomService.create(new Room(roomDTO));
     }
 
-    //TODO vidi s simicem sta cemo s ovim
+//    @PutMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void update(@RequestBody UpdateRoomDTO updateRoomDTO, @PathVariable long id) {
+//        List<CreateRestaurantTableDTO> newTablesDTO = updateRoomDTO.getNewTables();
+//        List<RestaurantTable> allTables = new ArrayList<>();
+//        newTablesDTO.forEach(tableDTO -> allTables.add(restaurantTableService.create(new RestaurantTable(tableDTO))));
+//
+//        List<UpdateRestaurantTableDTO> updateTablesDTO = updateRoomDTO.getUpdateTables();
+//        updateTablesDTO.forEach(tableDTO -> {
+//            RestaurantTable table = new RestaurantTable(tableDTO);
+//            roomService.checkTableInRoom(tableDTO.getId(), id);
+//            allTables.add(restaurantTableService.update(table, tableDTO.getId()));
+//        });
+//
+//        List<Long> deleteTableIds = updateRoomDTO.getDeleteTables();
+//        deleteTableIds.forEach(tableId -> {
+//            roomService.checkTableInRoom(tableId, id);
+//            restaurantTableService.delete(tableId);
+//        });
+//        List<RestaurantTable> roomTables = roomService.getRoomTables(id);
+//        roomTables.forEach(table -> {
+//            if (!allTables.contains(table)) {
+//                allTables.add(table);
+//            }
+//        });
+//        Room room = new Room(updateRoomDTO.getName(), false, allTables);
+//        roomService.update(room, id);
+//    }
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody UpdateRoomDTO updateRoomDTO, @PathVariable long id) {
-        List<CreateRestaurantTableDTO> newTablesDTO = updateRoomDTO.getNewTables();
-        List<RestaurantTable> allTables = new ArrayList<>();
-        newTablesDTO.forEach(tableDTO -> allTables.add(restaurantTableService.create(new RestaurantTable(tableDTO))));
-
-        List<UpdateRestaurantTableDTO> updateTablesDTO = updateRoomDTO.getUpdateTables();
-        updateTablesDTO.forEach(tableDTO -> {
-            RestaurantTable table = new RestaurantTable(tableDTO);
-            roomService.checkTableInRoom(tableDTO.getId(), id);
-            allTables.add(restaurantTableService.update(table, tableDTO.getId()));
-        });
-
-        List<Long> deleteTableIds = updateRoomDTO.getDeleteTables();
-        deleteTableIds.forEach(tableId -> {
-            roomService.checkTableInRoom(tableId, id);
-            restaurantTableService.delete(tableId);
-        });
-        List<RestaurantTable> roomTables = roomService.getRoomTables(id);
-        roomTables.forEach(table -> {
-            if (!allTables.contains(table)) {
-                allTables.add(table);
-            }
-        });
-        Room room = new Room(updateRoomDTO.getName(), false, allTables);
-        roomService.update(room, id);
+        roomService.update(updateRoomDTO, id);
     }
 
 

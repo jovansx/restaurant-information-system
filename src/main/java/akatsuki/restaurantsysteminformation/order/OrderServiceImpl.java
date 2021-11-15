@@ -10,31 +10,40 @@ import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardExceptio
 import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiveException;
 import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final RestaurantTableService restaurantTableService;
     private final UnregisteredUserService unregisteredUserService;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UnregisteredUserService unregisteredUserService) {
+    public OrderServiceImpl(OrderRepository orderRepository, @Lazy UnregisteredUserService unregisteredUserService, RestaurantTableService restaurantTableService) {
         this.unregisteredUserService = unregisteredUserService;
         this.orderRepository = orderRepository;
+        this.restaurantTableService = restaurantTableService;
     }
 
     @Override
     public List<Order> getAllActive() {
         return orderRepository.findAllByActiveIsTrue();
+    }
+
+    @Override
+    public Order getOneByRestaurantTable(long id) {
+        return restaurantTableService.getActiveOrderByTableId(id);
     }
 
     @Override
@@ -82,15 +91,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public boolean isWaiterActive(UnregisteredUser user) {
+        return orderRepository.findAllByActiveIsTrueAndWaiter(user).isEmpty();
+    }
+
+    @Override
     public void create(OrderCreateDTO orderDTO) {
-        UnregisteredUser waiter = unregisteredUserService.getOne(orderDTO.getWaiterId());   //TODO pomocu anotacija validiraj da nije null ili negativan broj
+        UnregisteredUser waiter = unregisteredUserService.getOne(orderDTO.getWaiterId());
         if (waiter.getType() != UserType.WAITER) {
             throw new UserTypeNotValidException("User has to be waiter!");
         }
-        LocalDateTime createdAt = LocalDateTime.parse(orderDTO.getCreatedAt());     // TODO Datum validiraj pomocu anotacija, za proslost i format
-        // TODO Kad saljes sa fronta - format ('2021-11-11T17:35:22')
+        LocalDateTime createdAt = LocalDateTime.parse(orderDTO.getCreatedAt());
 
-        Order order = new Order(0, createdAt, false, true, waiter, new HashSet<>(), new HashSet<>());
+        Order order = new Order(0, createdAt, false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
     }
 
