@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "MyOrder")
+@Table(name = "my_order")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,11 +30,11 @@ public class Order {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "is_discarded", nullable = false)
-    private boolean isDiscarded;
+    @Column(name = "discarded", nullable = false)
+    private boolean discarded;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UnregisteredUser waiter;
@@ -45,11 +45,11 @@ public class Order {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItems> drinks;
 
-    public Order(double totalPrice, LocalDateTime createdAt, boolean isDiscarded, boolean isActive, UnregisteredUser waiter, List<DishItem> dishes, List<DrinkItems> drinks) {
+    public Order(double totalPrice, LocalDateTime createdAt, boolean discarded, boolean active, UnregisteredUser waiter, List<DishItem> dishes, List<DrinkItems> drinks) {
         this.totalPrice = totalPrice;
         this.createdAt = createdAt;
-        this.isDiscarded = isDiscarded;
-        this.isActive = isActive;
+        this.discarded = discarded;
+        this.active = active;
         this.waiter = waiter;
         this.dishes = dishes;
         this.drinks = drinks;

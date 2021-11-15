@@ -1,8 +1,6 @@
 package akatsuki.restaurantsysteminformation.user;
 
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,17 +34,6 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = findByPhoneNumber(phoneNumber);
         if (user.isPresent()) {
             throw new UserExistsException("User with the phone number " + phoneNumber + " already exists in the database.");
-        }
-    }
-
-    @Override
-    public void deleteValidation(long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        }
-        if (user.get().isDeleted()) {
-            throw new UserDeletedException("User with the id " + id + " already deleted.");
         }
     }
 }

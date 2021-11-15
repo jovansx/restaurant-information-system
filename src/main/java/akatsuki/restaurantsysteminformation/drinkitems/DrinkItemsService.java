@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface DrinkItemsService {
     void create(DrinkItemsCreateDTO drinkItemsDTO);
 
     void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
+
+    boolean isBartenderActive(UnregisteredUser user);
 }

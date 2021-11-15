@@ -17,4 +17,6 @@ public interface UnregisteredUserService {
     List<UnregisteredUser> getAll();
 
     UnregisteredUser checkPinCode(String pinCode, UserType type);
+
+    boolean userCanBeDeleted(UnregisteredUser user);
 }

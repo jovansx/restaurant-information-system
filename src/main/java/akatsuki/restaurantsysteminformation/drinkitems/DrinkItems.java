@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "DrinkItems")
+@Table(name = "drink_items")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,9 +25,9 @@ public class DrinkItems extends OrderItem {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<DrinkItem> drinkItemList;
 
-    public DrinkItems(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItems, boolean active) {
+    public DrinkItems(String notes, LocalDateTime createdAt, boolean isDeleted, ItemState state, UnregisteredUser bartender, List<DrinkItem> drinkItemList, boolean active) {
         super(notes, createdAt, isDeleted, state, active);
         this.bartender = bartender;
-        this.drinkItemList = drinkItems;
+        this.drinkItemList = drinkItemList;
     }
 }

@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.order;
 
+import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select o from Order o left join fetch o.waiter w")
     Optional<List<Order>> findAllFetchWaiter();
+
+    @Query("select o from Order o left join fetch o.drinks dr join fetch o.waiter w where o.id = (:id)")
+    Optional<Order> findOrderByIdAndFetchDrinks(long id);
+
+    @Query("select o from Order o left join fetch o.dishes dr join fetch o.waiter w where o.id = (:id)")
+    Optional<Order> findOrderByIdAndFetchDishes(long id);
+
+    List<Order> findAllByActiveIsTrue();
+
+    List<Order> findAllByActiveIsTrueAndWaiter(UnregisteredUser waiter);
 }

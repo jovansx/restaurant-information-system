@@ -43,6 +43,12 @@ public class DishItemController {
         dishItemService.update(dishItemCreateDTO, id);
     }
 
+    @PutMapping("/prepare/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void prepare(@PathVariable long id, @RequestParam("waiterid") long waiterId) {
+        dishItemService.prepare(id, waiterId);
+    }
+
     @PutMapping("/change-state")
     public ItemsActiveDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
         return new ItemsActiveDTO(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));

@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,5 +47,13 @@ public class RestaurantTable {
         this.shape = shape;
         this.isDeleted = isDeleted;
         this.activeOrder = activeOrder;
+    }
+
+    public RestaurantTable(RestaurantTableCreateDTO tableDTO) {
+        this.name = tableDTO.getName();
+        this.state = TableState.valueOf(tableDTO.getState());
+        this.shape = TableShape.valueOf(tableDTO.getShape());
+        this.isDeleted = false;
+        this.activeOrder = null;
     }
 }

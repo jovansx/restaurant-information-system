@@ -1,9 +1,7 @@
 package akatsuki.restaurantsysteminformation.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import akatsuki.restaurantsysteminformation.enums.UserType;
+import lombok.*;
 
 import javax.validation.constraints.*;
 
@@ -34,13 +32,9 @@ public abstract class UserDTO {
     private double salary;
 
     @NotNull(message = "It cannot be null.")
-    private String type;
+    private UserType type;
 
-    public String getType() {
-        return this.type.toLowerCase();
-    }
-
-    public void setType(String type) {
-        this.type = type.toLowerCase();
+    public void setUserType(String type) {
+        this.type = UserType.valueOf(type.toUpperCase());
     }
 }

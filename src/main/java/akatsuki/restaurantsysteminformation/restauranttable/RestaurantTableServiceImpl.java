@@ -1,9 +1,11 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
+import akatsuki.restaurantsysteminformation.enums.TableState;
+import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
+import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,28 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestaurantTableServiceImpl implements RestaurantTableService {
     private final RestaurantTableRepository restaurantTableRepository;
+
+    @Override
+    public RestaurantTable getOne(long id) {
+        return restaurantTableRepository.findById(id).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
+    public RestaurantTable getOneWithOrder(long id) {
+        return restaurantTableRepository.findByIdAndFetchOrder(id).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
+    public Order getActiveOrderByTableId(long id) {
+        RestaurantTable table = getOneWithOrder(id);
+        if (table.getState().equals(TableState.FREE) || table.getActiveOrder() == null)
+            throw new RestaurantTableStateNotValidException("Restaurant table the id " + id + " is not taken.");
+        return table.getActiveOrder();
+    }
 
     @Override
     public RestaurantTable create(RestaurantTable restaurantTable) {
@@ -27,13 +51,10 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
 
     @Override
     public RestaurantTable update(RestaurantTable restaurantTable, long id) {
-        Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
-        if (tableMaybe.isEmpty()) {
-            throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
-        }
+        RestaurantTable table = getOne(id);
+
         checkNameExistence(restaurantTable.getName(), id);
 
-        RestaurantTable table = tableMaybe.get();
         table.setName(restaurantTable.getName());
         table.setShape(restaurantTable.getShape());
 
@@ -42,24 +63,9 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
 
     @Override
     public void delete(long id) {
-        RestaurantTable table = deleteValidation(id);
+        RestaurantTable table = getOne(id);
         table.setDeleted(true);
         restaurantTableRepository.save(table);
-    }
-
-    @Override
-    public RestaurantTable getOne(long id) {
-        return restaurantTableRepository.findById(id).orElseThrow(
-                () -> new RestaurantTableNotFoundException("Restaurant table the id " + id + " is not found in the database.")
-        );
-    }
-
-    private RestaurantTable deleteValidation(long id) {
-        Optional<RestaurantTable> tableMaybe = restaurantTableRepository.findById(id);
-        if (tableMaybe.isEmpty()) {
-            throw new RestaurantTableNotFoundException("Restaurant table with the id " + id + " is not found in the database.");
-        }
-        return tableMaybe.get();
     }
 
     private void checkNameExistence(String name, long id) {

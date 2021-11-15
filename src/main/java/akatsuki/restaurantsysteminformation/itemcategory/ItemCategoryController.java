@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Validated
 public class ItemCategoryController {
-    private final ItemCategoryServiceImpl itemCategoryService;
+    private final ItemCategoryService itemCategoryService;
 
     @GetMapping("/{id}")
     public ItemCategoryDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {

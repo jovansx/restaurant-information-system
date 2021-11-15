@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,12 @@ public class RegisteredUser extends User {
         super(firstName, lastName, emailAddress, phoneNumber, salary, type, isDeleted);
         this.username = username;
         this.password = password;
+    }
+
+    public RegisteredUser(RegisteredUserDTO registeredUserDTO) {
+        super(registeredUserDTO.getFirstName(), registeredUserDTO.getLastName(), registeredUserDTO.getEmailAddress(),
+                registeredUserDTO.getPhoneNumber(), registeredUserDTO.getSalary(), registeredUserDTO.getType(), false);
+        this.username = registeredUserDTO.getUsername();
+        this.password = registeredUserDTO.getPassword();
     }
 }

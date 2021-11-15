@@ -19,14 +19,11 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +39,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         return drinkItemsRepository.findById(id).orElseThrow(
                 () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
         );
+    }
+
+    @Override
+    public boolean isBartenderActive(UnregisteredUser user) {
+        return drinkItemsRepository.findAllByActiveIsTrueAndBartender(user).isEmpty();
     }
 
     @Override
@@ -66,9 +68,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
-        DrinkItems drinkItems = this.drinkItemsRepository.findById(itemId).orElseThrow(
-                () -> new DrinkItemsNotFoundException("Drink items with the id " + itemId + " are not found in the database.")
-        );
+        DrinkItems drinkItems = getOne(itemId);
         UserType typeOfAllowedUser;
         if (drinkItems.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
@@ -76,7 +76,6 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
             typeOfAllowedUser = UserType.BARTENDER;
         else
             throw new DrinkItemsNotFoundException("Drink items with state of  " + drinkItems.getState().name() + " are not valid for changing states.");
-
 
         UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
         if (!bartender.getType().equals(typeOfAllowedUser)) {
@@ -97,27 +96,34 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void delete(long id) {
-        DrinkItems drinkItems = getOne(id);
+        DrinkItems drinkItems = getOneActive(id);
+
+        Order order = orderService.getOrderByOrderItem(drinkItems);
+        order.getDrinks().remove(drinkItems);
+        orderService.updateTotalPriceAndSave(order);
+
         drinkItems.setDeleted(true);
-        drinkItemsRepository.save(drinkItems); //TODO vidi sta raditi sa povezanim entitetima DrinkItem
+        drinkItems.setActive(false);
+        drinkItemsRepository.save(drinkItems);
     }
 
     @Override
     public void create(DrinkItemsCreateDTO drinkItemsDTO) {
-        Order order = orderService.getOne(drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithDrinks((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
-        List<DrinkItem> drinkItemsOfList = getDrinks(order, drinkItemsDTOList);
+        List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         DrinkItems drinkItems = new DrinkItems(drinkItemsDTO.getNotes(), LocalDateTime.now(), false, ItemState.ON_HOLD, null, drinkItemsOfList, true);
         DrinkItems savedDrinkItems = drinkItemsRepository.save(drinkItems);
 
-        orderService.addDrinkItemsToCollection(savedDrinkItems, order);
+        order.getDrinks().add(savedDrinkItems);
+        orderService.updateTotalPriceAndSave(order);
     }
 
     @Override
     public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
-        Order order = orderService.getOne(drinkItemsDTO.getOrderId()); //TODO Obrati paznju, kad budemo promenili in-view na false, moraces fetchovati(jos na nekim mestima)
+        Order order = orderService.getOneWithDrinks((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
@@ -135,12 +141,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
         drinkItems.getDrinkItemList().clear();
         ref.forEach(drinkItemService::delete);
-
-        List<DrinkItem> drinkItemsOfList = getDrinks(order, drinkItemsDTOList);
+        List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItemsRepository.save(drinkItems);
-        
-        orderService.updateTotalPrice(order);
+
+        orderService.updateTotalPriceAndSave(order);
     }
 
     private void checkDrinks(List<DrinkItemCreateDTO> drinkItems) {
@@ -152,18 +157,15 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         });
     }
 
-    private List<DrinkItem> getDrinks(Order order, List<DrinkItemCreateDTO> drinkItemsDTOList) {
-        double totalPrice = 0;
+    private List<DrinkItem> getDrinks(List<DrinkItemCreateDTO> drinkItemsDTOList) {
         List<DrinkItem> drinkItemsOfList = new ArrayList<>();
 
-        for (DrinkItemCreateDTO drinkItemDTO: drinkItemsDTOList) {
+        for (DrinkItemCreateDTO drinkItemDTO : drinkItemsDTOList) {
             Item item = itemService.getOne(drinkItemDTO.getItemId());
             DrinkItem drinkItem = new DrinkItem(drinkItemDTO.getAmount(), item);
             DrinkItem savedDrinkItem = drinkItemService.create(drinkItem);
             drinkItemsOfList.add(savedDrinkItem);
-            totalPrice += savedDrinkItem.getAmount() * item.getLastDefinedPrice();
         }
-        order.setTotalPrice(totalPrice);
         return drinkItemsOfList;
     }
 }

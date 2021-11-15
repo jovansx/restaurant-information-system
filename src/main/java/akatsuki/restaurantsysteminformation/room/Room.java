@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
+import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,4 +39,11 @@ public class Room {
         this.isDeleted = isDeleted;
         this.restaurantTables = restaurantTables;
     }
+
+    public Room(RoomCreateDTO roomDTO) {
+        this.name = roomDTO.getName();
+        this.isDeleted = false;
+        this.restaurantTables = new ArrayList<>();
+    }
+
 }

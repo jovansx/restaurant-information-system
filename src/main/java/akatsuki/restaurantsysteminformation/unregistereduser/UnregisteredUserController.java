@@ -4,7 +4,6 @@ import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserEssentialsDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserTableDTO;
-import akatsuki.restaurantsysteminformation.unregistereduser.mapper.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -47,15 +46,13 @@ public class UnregisteredUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Valid UnregisteredUserDTO unregisteredUserDTO) {
-        UnregisteredUser user = Mapper.convertUnregisteredUserDTOToUnregisteredUser(unregisteredUserDTO);
-        unregisteredUserService.create(user);
+        unregisteredUserService.create(new UnregisteredUser(unregisteredUserDTO));
     }
 
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid UnregisteredUserDTO unregisteredUserDTO,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        UnregisteredUser user = Mapper.convertUnregisteredUserDTOToUnregisteredUser(unregisteredUserDTO);
-        unregisteredUserService.update(user, id);
+        unregisteredUserService.update(new UnregisteredUser(unregisteredUserDTO), id);
     }
 
     @DeleteMapping("/{id}")
