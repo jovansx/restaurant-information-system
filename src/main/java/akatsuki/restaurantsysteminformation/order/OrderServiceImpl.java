@@ -3,7 +3,9 @@ package akatsuki.restaurantsysteminformation.order;
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
 import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
@@ -15,10 +17,8 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +35,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     public void setOrderRepository(OrderRepository orderRepository, UnregisteredUserService unregisteredUserService,
-                                   RestaurantTableService restaurantTableService, ItemService itemService, DrinkItemsService drinkItemsService) {
+                                   RestaurantTableService restaurantTableService, ItemService itemService,
+                                   DrinkItemsService drinkItemsService) {
         this.unregisteredUserService = unregisteredUserService;
         this.orderRepository = orderRepository;
         this.restaurantTableService = restaurantTableService;
+        this.drinkItemsService = drinkItemsService;
+        this.itemService = itemService;
     }
 
     @Override
