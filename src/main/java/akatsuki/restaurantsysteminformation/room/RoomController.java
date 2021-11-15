@@ -2,9 +2,8 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableRepresentationDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurantTableDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomWithTablesDTO;
 import akatsuki.restaurantsysteminformation.room.dto.UpdateRoomDTO;
@@ -36,7 +35,7 @@ public class RoomController {
         List<Room> rooms = roomService.getAll();
         rooms.forEach(room -> {
             List<RestaurantTable> roomTables = roomService.getRoomTables(room.getId());
-            List<RestaurantTableRepresentationDTO> tablesDTO = Helper.getTablesDTO(roomTables);
+            List<RestaurantTableDTO> tablesDTO = Helper.getTablesDTO(roomTables);
             roomsDTO.add(new RoomWithTablesDTO(room.getName(), tablesDTO));
         });
         return roomsDTO;
@@ -47,7 +46,7 @@ public class RoomController {
     public RoomWithTablesDTO getOne(@PathVariable long id) {
         Room room = roomService.getOne(id);
         List<RestaurantTable> roomTables = roomService.getRoomTables(id);
-        List<RestaurantTableRepresentationDTO> tablesDTO = Helper.getTablesDTO(roomTables);
+        List<RestaurantTableDTO> tablesDTO = Helper.getTablesDTO(roomTables);
         return new RoomWithTablesDTO(room.getName(), tablesDTO);
     }
 
@@ -62,7 +61,7 @@ public class RoomController {
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody UpdateRoomDTO updateRoomDTO, @PathVariable long id) {
         // idi kroz nove stolove i dodaj ih u table repo
-        List<CreateRestaurantTableDTO> newTablesDTO = updateRoomDTO.getNewTables();
+        List<RestaurantTableCreateDTO> newTablesDTO = updateRoomDTO.getNewTables();
         List<RestaurantTable> allTables = new ArrayList<>();
         newTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = Mapper.convertCreateRestaurantTableDTOToRestaurantTable(tableDTO);
@@ -70,7 +69,7 @@ public class RoomController {
             allTables.add(savedTable);
         });
 
-        List<UpdateRestaurantTableDTO> updateTablesDTO = updateRoomDTO.getUpdateTables();
+        List<RestaurantTableDTO> updateTablesDTO = updateRoomDTO.getUpdateTables();
         updateTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = Mapper.convertCreateRestaurantTableDTOToRestaurantTable(tableDTO);
             // vidi da li su dobri id-jevi od stolova za update (moraju vec postojati u room.tables)

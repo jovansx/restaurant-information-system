@@ -1,17 +1,17 @@
 package akatsuki.restaurantsysteminformation.room.dto;
 
-import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurantTableDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 
 import java.util.List;
 
 public class UpdateRoomDTO {
-    List<CreateRestaurantTableDTO> newTables;
-    List<UpdateRestaurantTableDTO> updateTables;
+    List<RestaurantTableCreateDTO> newTables;
+    List<RestaurantTableDTO> updateTables;
     List<Long> deleteTables;
     private String name;
 
-    public UpdateRoomDTO(String name, List<CreateRestaurantTableDTO> newTables, List<UpdateRestaurantTableDTO> updateTables, List<Long> deleteTables) {
+    public UpdateRoomDTO(String name, List<RestaurantTableCreateDTO> newTables, List<RestaurantTableDTO> updateTables, List<Long> deleteTables) {
         this.name = name;
         this.newTables = newTables;
         this.updateTables = updateTables;
@@ -26,19 +26,19 @@ public class UpdateRoomDTO {
         this.name = name;
     }
 
-    public List<CreateRestaurantTableDTO> getNewTables() {
+    public List<RestaurantTableCreateDTO> getNewTables() {
         return newTables;
     }
 
-    public void setNewTables(List<CreateRestaurantTableDTO> newTables) {
+    public void setNewTables(List<RestaurantTableCreateDTO> newTables) {
         this.newTables = newTables;
     }
 
-    public List<UpdateRestaurantTableDTO> getUpdateTables() {
+    public List<RestaurantTableDTO> getUpdateTables() {
         return updateTables;
     }
 
-    public void setUpdateTables(List<UpdateRestaurantTableDTO> updateTables) {
+    public void setUpdateTables(List<RestaurantTableDTO> updateTables) {
         this.updateTables = updateTables;
     }
 

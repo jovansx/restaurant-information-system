@@ -3,8 +3,8 @@ package akatsuki.restaurantsysteminformation.room.mapper;
 import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.CreateRestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.UpdateRestaurantTableDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableShapeNotValidException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import akatsuki.restaurantsysteminformation.room.Room;
@@ -18,7 +18,7 @@ public class Mapper {
         return new Room(roomDTO.getName(), false, new ArrayList<>());
     }
 
-    public static RestaurantTable convertCreateRestaurantTableDTOToRestaurantTable(CreateRestaurantTableDTO createRestaurantTableDTO) {
+    public static RestaurantTable convertCreateRestaurantTableDTOToRestaurantTable(RestaurantTableCreateDTO createRestaurantTableDTO) {
         restaurantTableEnumsCheck(createRestaurantTableDTO.getState(), createRestaurantTableDTO.getShape());
         return new RestaurantTable(
                 createRestaurantTableDTO.getName(),
@@ -29,7 +29,7 @@ public class Mapper {
         );
     }
 
-    public static RestaurantTable convertCreateRestaurantTableDTOToRestaurantTable(UpdateRestaurantTableDTO updateRestaurantTableDTO) {
+    public static RestaurantTable convertCreateRestaurantTableDTOToRestaurantTable(RestaurantTableDTO updateRestaurantTableDTO) {
         restaurantTableEnumsCheck(updateRestaurantTableDTO.getState(), updateRestaurantTableDTO.getShape());
         return new RestaurantTable(
                 updateRestaurantTableDTO.getName(),

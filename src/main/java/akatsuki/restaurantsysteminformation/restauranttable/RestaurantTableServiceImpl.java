@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,13 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantTableServiceImpl implements RestaurantTableService {
     private final RestaurantTableRepository restaurantTableRepository;
-
-    @Autowired
-    public RestaurantTableServiceImpl(RestaurantTableRepository restaurantTableRepository) {
-        this.restaurantTableRepository = restaurantTableRepository;
-    }
 
     @Override
     public RestaurantTable create(RestaurantTable restaurantTable) {

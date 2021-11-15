@@ -1,22 +1,22 @@
 package akatsuki.restaurantsysteminformation.room.dto;
 
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableRepresentationDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 
 import java.util.List;
 
 public class RoomWithTablesDTO extends RoomDTO {
-    private List<RestaurantTableRepresentationDTO> tables;
+    private List<RestaurantTableDTO> tables;
 
-    public RoomWithTablesDTO(String name, List<RestaurantTableRepresentationDTO> tables) {
+    public RoomWithTablesDTO(String name, List<RestaurantTableDTO> tables) {
         super(name);
         this.tables = tables;
     }
 
-    public List<RestaurantTableRepresentationDTO> getTables() {
+    public List<RestaurantTableDTO> getTables() {
         return tables;
     }
 
-    public void setTables(List<RestaurantTableRepresentationDTO> tableIds) {
+    public void setTables(List<RestaurantTableDTO> tableIds) {
         this.tables = tableIds;
     }
 }
