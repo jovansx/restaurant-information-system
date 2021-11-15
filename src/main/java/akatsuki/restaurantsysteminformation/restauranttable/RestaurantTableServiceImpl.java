@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
 import akatsuki.restaurantsysteminformation.enums.TableState;
-import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;

@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 public class DrinkItemsController {
     private final DrinkItemsService drinkItemsService;
 
-    @GetMapping("/{id}")
-    public DrinkItemsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
-    }
+//    @GetMapping("/{id}")
+//    public DrinkItemsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+//        return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
+//    }
 
     @GetMapping
     public List<ItemsActiveDTO> getAll() {

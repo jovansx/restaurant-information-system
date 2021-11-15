@@ -12,7 +12,7 @@ public interface RoomService {
 
     void create(Room room);
 
-//    void update(Room room, long id);
+    //    void update(Room room, long id);
     void update(RoomUpdateDTO room, long id);
 
     void delete(long id);

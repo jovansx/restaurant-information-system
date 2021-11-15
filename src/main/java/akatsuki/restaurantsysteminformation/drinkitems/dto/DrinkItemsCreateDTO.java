@@ -1,12 +1,13 @@
 package akatsuki.restaurantsysteminformation.drinkitems.dto;
 
-import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class DrinkItemsCreateDTO {
 
-    @Min(value = 1, message = "Id has to be a positive value.")
+    @NotNull(message = "It cannot be null.")
+    @Positive(message = "Id has to be a positive value.")
     private int orderId;
 
     @NotNull
