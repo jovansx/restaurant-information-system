@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -56,7 +57,7 @@ public class UnregisteredUserController {
 
     @GetMapping("/pin-code/{pinCode}")
     public UnregisteredUserEssentialsDTO checkPinCode(@PathVariable @Pattern(regexp = "[0-9]{4}", message = "It has to be 4 digits number.") String pinCode,
-                                                      @RequestParam("usertype") String userType) {
+                                                      @RequestParam("usertype") @NotEmpty(message = "It cannot be empty.") String userType) {
         return new UnregisteredUserEssentialsDTO(unregisteredUserService.checkPinCode(pinCode, UserType.valueOf(userType.toUpperCase())));
     }
 }

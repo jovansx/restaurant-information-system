@@ -1,7 +1,7 @@
 package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemDTOForMenu;
+import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +28,8 @@ public class ItemController {
 
     @GetMapping("/category/{category}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDTOForMenu> getAllByCategory(@PathVariable String category) {
-        return itemService.getAllByCategory(category).stream().map(ItemDTOForMenu::new).collect(Collectors.toList());
+    public List<ItemForMenuDTO> getAllByCategory(@PathVariable @NotEmpty(message = "It cannot be empty.") String category) {
+        return itemService.getAllByCategory(category).stream().map(ItemForMenuDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

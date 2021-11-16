@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("CopyConstructorMissesField")
 @Entity
-@Table(name = "Item")
+@Table(name = "item")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +29,7 @@ public class Item {
     @Setter(AccessLevel.NONE)
     private Long id;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "code", nullable = false)
     private String code;
 
@@ -58,8 +60,8 @@ public class Item {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Price> prices;
 
-    public Item(String code, String name, String description, byte[] iconBase64, boolean original, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
-        this.code = code;
+    public Item(String name, String description, byte[] iconBase64, boolean original, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
+        this.code = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.iconBase64 = iconBase64;
@@ -72,7 +74,7 @@ public class Item {
     }
 
     public Item(ItemCreateDTO itemDTO) {
-        this.code = itemDTO.getCode();
+        this.code = UUID.randomUUID().toString();
         this.name = itemDTO.getName();
         this.description = itemDTO.getDescription();
         this.iconBase64 = itemDTO.getIconBase64().getBytes();

@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,8 +45,8 @@ public class DishItemController {
     }
 
     @PutMapping("/prepare/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void prepare(@PathVariable long id, @RequestParam("waiterid") long waiterId) {
+    public void prepare(@PathVariable @Positive(message = "Id has to be a positive value.") long id,
+                        @RequestParam("waiter_id") @Positive(message = "Waiter id has to be a positive value.") long waiterId) {
         dishItemService.prepare(id, waiterId);
     }
 
@@ -58,5 +59,4 @@ public class DishItemController {
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         dishItemService.delete(id);
     }
-
 }

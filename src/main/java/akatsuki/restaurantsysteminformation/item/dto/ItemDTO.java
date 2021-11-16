@@ -14,10 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public abstract class ItemDTO {
 
-    //TODO vidi ako se bude generisao kod, da validiramo pomocu patterna
-    @NotEmpty(message = "It cannot be null or empty.")
-    private String code;
-
     @NotEmpty(message = "It cannot be null or empty.")
     private String name;
 
