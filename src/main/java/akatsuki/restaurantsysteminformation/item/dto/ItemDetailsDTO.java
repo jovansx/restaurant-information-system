@@ -6,6 +6,7 @@ import akatsuki.restaurantsysteminformation.price.dto.PriceDTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,10 +16,12 @@ public class ItemDetailsDTO extends ItemDTO {
 
     private ItemCategoryDTO itemCategory;
     private List<PriceDTO> prices;
+    private String code;
 
     public ItemDetailsDTO(Item item) {
-        super(item.getCode(), item.getName(), item.getDescription(), new String(item.getIconBase64()), item.getType(), item.getComponents());
+        super(item.getName(), item.getDescription(), new String(item.getIconBase64()), item.getType(), item.getComponents());
         this.itemCategory = new ItemCategoryDTO(item.getItemCategory());
         this.prices = item.getPrices().stream().map(PriceDTO::new).collect(Collectors.toList());
+        this.code = item.getCode();
     }
 }
