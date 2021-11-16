@@ -18,7 +18,7 @@ import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,29 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DrinkItemsServiceImpl implements DrinkItemsService {
-    private DrinkItemsRepository drinkItemsRepository;
-    private UnregisteredUserService unregisteredUserService;
-    private OrderService orderService;
-    private ItemService itemService;
-    private DrinkItemService drinkItemService;
+    private final DrinkItemsRepository drinkItemsRepository;
+    private final UnregisteredUserService unregisteredUserService;
+    private final OrderService orderService;
+    private final ItemService itemService;
+    private final DrinkItemService drinkItemService;
 
-    @Autowired
-    public void setDrinkItemsRepository(DrinkItemsRepository drinkItemsRepository, UnregisteredUserService unregisteredUserService,
-                                        OrderService orderService, ItemService itemService, DrinkItemService drinkItemService) {
-        this.drinkItemsRepository = drinkItemsRepository;
-        this.unregisteredUserService = unregisteredUserService;
-        this.orderService = orderService;
-        this.itemService = itemService;
-        this.drinkItemService = drinkItemService;
-    }
-
-    @Override
-    public DrinkItems getOne(long id) {
-        return drinkItemsRepository.findById(id).orElseThrow(
-                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
-        );
-    }
+//    @Override
+//    public DrinkItems getOne(long id) {
+//        return drinkItemsRepository.findById(id).orElseThrow(
+//                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
+//        );
+//    }
 
     @Override
     public boolean isBartenderActive(UnregisteredUser user) {
@@ -77,7 +68,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
-        DrinkItems drinkItems = getOne(itemId);
+        DrinkItems drinkItems = getOneActive(itemId);
         UserType typeOfAllowedUser;
         if (drinkItems.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
@@ -88,7 +79,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
         UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
         if (!bartender.getType().equals(typeOfAllowedUser)) {
-            throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
+            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
         }
 
         if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
@@ -118,7 +109,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void create(DrinkItemsCreateDTO drinkItemsDTO) {
-        Order order = orderService.getOneWithDrinks(drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
@@ -132,11 +123,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
-        Order order = orderService.getOneWithDrinks(drinkItemsDTO.getOrderId());
+        Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
-        DrinkItems drinkItems = getOne(id);
+        DrinkItems drinkItems = getOneActive(id);
         boolean listIsInOrder = order.getDrinks().contains(drinkItems);
         if (!listIsInOrder) {
             throw new DrinkItemsNotContainedException("Drink items list with id " + id + " is not contained within order drinks.");
@@ -149,8 +140,10 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
         List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
         drinkItems.getDrinkItemList().clear();
-        ref.forEach(drinkItem -> drinkItemService.delete(drinkItem));
-
+        drinkItemsRepository.save(drinkItems);
+        for (DrinkItem drinkItem : ref) {
+            drinkItemService.delete(drinkItem);
+        }
         List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItemsRepository.save(drinkItems);

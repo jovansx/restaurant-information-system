@@ -1,19 +1,25 @@
 package akatsuki.restaurantsysteminformation.orderitem;
 
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "MyOrderItem")
+@Table(name = "my_order_item")
 @Where(clause = "deleted = false")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
 public abstract class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "notes")
@@ -31,9 +37,6 @@ public abstract class OrderItem {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    public OrderItem() {
-    }
-
     public OrderItem(String notes, LocalDateTime createdAt, boolean deleted, ItemState state, boolean active) {
         this.notes = notes;
         this.createdAt = createdAt;
@@ -42,51 +45,4 @@ public abstract class OrderItem {
         this.active = active;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public ItemState getState() {
-        return state;
-    }
-
-    public void setState(ItemState state) {
-        this.state = state;
-    }
 }

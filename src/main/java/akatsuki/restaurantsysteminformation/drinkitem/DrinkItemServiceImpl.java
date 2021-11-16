@@ -1,16 +1,12 @@
 package akatsuki.restaurantsysteminformation.drinkitem;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class DrinkItemServiceImpl implements DrinkItemService {
-    private DrinkItemRepository drinkItemRepository;
-
-    @Autowired
-    public void setDrinkItemRepository(DrinkItemRepository drinkItemRepository) {
-        this.drinkItemRepository = drinkItemRepository;
-    }
+    private final DrinkItemRepository drinkItemRepository;
 
     @Override
     public DrinkItem create(DrinkItem drinkItem) {

@@ -1,34 +1,28 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ItemCategory")
+@Table(name = "item_category")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ItemCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    public ItemCategory() {
-    }
-
     public ItemCategory(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.unregistereduser.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UnregisteredUserActiveException extends RuntimeException {
+public class UnregisteredUserActiveException extends ConflictRuntimeException {
     public UnregisteredUserActiveException(String message) {
         super(message);
     }

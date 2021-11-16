@@ -1,38 +1,25 @@
 package akatsuki.restaurantsysteminformation.drinkitems.dto;
 
-import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class DrinkItemsCreateDTO {
-    private long orderId;
+
+    @NotNull(message = "It cannot be null.")
+    @Positive(message = "Id has to be a positive value.")
+    private int orderId;
+
+    @NotNull
     private List<DrinkItemCreateDTO> drinkItemList;
     private String notes;
-
-    public DrinkItemsCreateDTO() {
-    }
-
-    public long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public List<DrinkItemCreateDTO> getDrinkItemList() {
-        return drinkItemList;
-    }
-
-    public void setDrinkItemList(List<DrinkItemCreateDTO> drinkItemList) {
-        this.drinkItemList = drinkItemList;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 }

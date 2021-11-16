@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
-import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +23,7 @@ public interface DrinkItemsRepository extends JpaRepository<DrinkItems, Long> {
             "and ( d.state = 1 or d.state = 2  or d.state = 3 )")
     Optional<DrinkItems> findOneActiveWithBartenderAndWithItems(Long id);
 
-    @Query("select d from DrinkItems d left join fetch d.bartender b")
+    @Query("select d from DrinkItems d join fetch d.drinkItemList dil join fetch dil.item i left join fetch d.bartender b")
     Optional<List<DrinkItems>> findAllFetchBartender();
 
     List<DrinkItems> findAllByActiveIsTrueAndBartender(UnregisteredUser bartender);

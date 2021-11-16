@@ -4,11 +4,17 @@ import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class DrinkItemsDTO {
 
     private long id;
@@ -31,53 +37,5 @@ public class DrinkItemsDTO {
         for (DrinkItem i : item.getDrinkItemList()) {
             itemList.add(new DrinkItemDTO(i));
         }
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getBartender() {
-        return bartender;
-    }
-
-    public void setBartender(String bartender) {
-        this.bartender = bartender;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public ItemState getState() {
-        return state;
-    }
-
-    public void setState(ItemState state) {
-        this.state = state;
-    }
-
-    public List<DrinkItemDTO> getItemList() {
-        return itemList;
-    }
-
-    public void setItemList(List<DrinkItemDTO> drinkItemList) {
-        this.itemList = drinkItemList;
     }
 }

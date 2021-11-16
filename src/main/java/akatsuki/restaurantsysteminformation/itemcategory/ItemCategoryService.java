@@ -3,11 +3,6 @@ package akatsuki.restaurantsysteminformation.itemcategory;
 import java.util.List;
 
 public interface ItemCategoryService {
-
-    ItemCategory findByName(String name);
-
-    void save(ItemCategory itemCategory);
-
     ItemCategory getOne(long id);
 
     List<ItemCategory> getAll();
@@ -17,6 +12,10 @@ public interface ItemCategoryService {
     void update(ItemCategory category, long id);
 
     void delete(long id);
+
+    ItemCategory findByName(String name);
+
+    void save(ItemCategory itemCategory);
 
     String firstLetterUppercase(String name);
 }

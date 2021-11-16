@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidSt
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidTypeException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
-import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
@@ -16,26 +15,19 @@ import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DishItemServiceImpl implements DishItemService {
-    private DishItemRepository dishItemRepository;
-    private UnregisteredUserService unregisteredUserService;
-    private OrderService orderService;
-    private ItemService itemService;
-
-    @Autowired
-    public void setDishItemRepository(DishItemRepository dishItemRepository, UnregisteredUserService unregisteredUserService, OrderService orderService, ItemService itemService) {
-        this.dishItemRepository = dishItemRepository;
-        this.unregisteredUserService = unregisteredUserService;
-        this.orderService = orderService;
-        this.itemService = itemService;
-    }
+    private final DishItemRepository dishItemRepository;
+    private final UnregisteredUserService unregisteredUserService;
+    private final OrderService orderService;
+    private final ItemService itemService;
 
     @Override
     public boolean isChefActive(UnregisteredUser user) {
@@ -57,29 +49,38 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
+    public DishItem findOneActiveAndFetchItemAndChef(long id) {
+        return dishItemRepository.findOneActiveAndFetchItemAndChef(id).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
     public List<DishItem> getAllActive() {
         return dishItemRepository.findAllActive();
     }
 
     @Override
     public DishItem changeStateOfDishItems(long itemId, long userId) {
-        DishItem dishItem = getOneActive(itemId);
+        DishItem dishItem = dishItemRepository.findOneActiveAndFetchItemAndChefAndStateIsChangeable(itemId).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + itemId + " is not found in the database.")
+        );
         UserType typeOfAllowedUser;
         if (dishItem.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
         else if (dishItem.getState().equals(ItemState.ON_HOLD) || dishItem.getState().equals(ItemState.PREPARATION))
             typeOfAllowedUser = UserType.CHEF;
         else
-            throw new DrinkItemsNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
+            throw new DishItemNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
 
-        UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
-        if (!bartender.getType().equals(typeOfAllowedUser)) {
-            throw new UserNotFoundException("User with the id " + userId + " is not a bartender.");
+        UnregisteredUser chef = this.unregisteredUserService.getOne(userId);
+        if (!chef.getType().equals(typeOfAllowedUser)) {
+            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
         }
 
         if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
-            dishItem.setChef(bartender);
+            dishItem.setChef(chef);
         } else if (dishItem.getState().equals(ItemState.PREPARATION)) {
             dishItem.setState(ItemState.READY);
         } else {
@@ -87,13 +88,6 @@ public class DishItemServiceImpl implements DishItemService {
         }
         dishItemRepository.save(dishItem);
         return dishItem;
-    }
-
-    @Override
-    public DishItem getOneWithChef(long id) {
-        return this.dishItemRepository.findOneActiveWithChef(id).orElseThrow(
-                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
-        );
     }
 
     @Override
@@ -112,7 +106,7 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public void create(DishItemCreateDTO itemCreateDTO) {
-        Order order = orderService.getOneWithDishes(itemCreateDTO.getOrderId());
+        Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
         Item item = itemService.getOne(itemCreateDTO.getItemId());
         if (!item.getType().equals(ItemType.DISH)) {
             throw new DishItemInvalidTypeException("Item type is not DISH.");
@@ -125,13 +119,20 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public void update(DishItemCreateDTO itemCreateDTO, long id) {
-        Order order = orderService.getOneWithDishes(itemCreateDTO.getOrderId());
+        Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
         Item item = itemService.getOne(itemCreateDTO.getItemId());
         if (!item.getType().equals(ItemType.DISH)) {
             throw new DishItemInvalidTypeException("Item type is not DISH.");
         }
-        DishItem dishItem = getOneActive(id);
-        if (!order.getDishes().contains(dishItem)) {
+        DishItem dishItem = null;
+        for (DishItem di : order.getDishes()) {
+            if (di.getId().equals(id)) {
+                dishItem = di;
+                break;
+            }
+        }
+
+        if (dishItem == null) {
             throw new DishItemOrderException("Dish item order id is not equal to " + itemCreateDTO.getOrderId() + ". Order cannot be changed.");
         }
 
@@ -143,8 +144,6 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setItem(item);
         dishItem.setAmount(itemCreateDTO.getAmount());
         dishItem.setNotes(itemCreateDTO.getNotes());
-        dishItemRepository.save(dishItem);
-
         orderService.updateTotalPriceAndSave(order);
     }
 
@@ -160,5 +159,4 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setActive(false);
         dishItemRepository.save(dishItem);
     }
-
 }

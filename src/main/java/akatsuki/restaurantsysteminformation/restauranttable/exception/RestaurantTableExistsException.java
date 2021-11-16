@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.restauranttable.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class RestaurantTableExistsException extends RuntimeException {
+public class RestaurantTableExistsException extends ConflictRuntimeException {
     public RestaurantTableExistsException(String message) {
         super(message);
     }

@@ -5,31 +5,16 @@ import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryDeleteException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNameException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ItemCategoryServiceImpl implements ItemCategoryService {
-    private ItemCategoryRepository itemCategoryRepository;
-    private ItemService itemService;
-
-    @Autowired
-    public void setItemCategoryRepository(ItemCategoryRepository itemCategoryRepository, ItemService itemService) {
-        this.itemCategoryRepository = itemCategoryRepository;
-        this.itemService = itemService;
-    }
-
-    @Override
-    public ItemCategory findByName(String name) {
-        return itemCategoryRepository.findByName(name);
-    }
-
-    @Override
-    public void save(ItemCategory itemCategory) {
-        itemCategoryRepository.save(itemCategory);
-    }
+    private final ItemCategoryRepository itemCategoryRepository;
+    private final ItemService itemService;
 
     @Override
     public ItemCategory getOne(long id) {
@@ -73,13 +58,23 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     @Override
     public void delete(long id) {
         getOne(id);
-        List<Item> items = itemService.getAll();
+        List<Item> items = itemService.getAllActive();
         items.forEach(item -> {
             if (item.getItemCategory().getId().equals(id)) {
                 throw new ItemCategoryDeleteException("Item category with the id " + id + " is contained by other items. It cannot be deleted.");
             }
         });
         itemCategoryRepository.deleteById(id);
+    }
+
+    @Override
+    public ItemCategory findByName(String name) {
+        return itemCategoryRepository.findByName(name);
+    }
+
+    @Override
+    public void save(ItemCategory itemCategory) {
+        itemCategoryRepository.save(itemCategory);
     }
 
     public String firstLetterUppercase(String name) {

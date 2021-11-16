@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DrinkItemsService {
 
-    DrinkItems getOne(long id);
+//    DrinkItems getOne(long id);
 
     List<DrinkItems> getAll();
 
@@ -24,4 +24,5 @@ public interface DrinkItemsService {
     void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
 
     boolean isBartenderActive(UnregisteredUser user);
+
 }

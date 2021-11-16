@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.order.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.NotFoundRuntimeException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class OrderNotFoundException extends RuntimeException {
+public class OrderNotFoundException extends NotFoundRuntimeException {
     public OrderNotFoundException(String message) {
         super(message);
     }

@@ -3,9 +3,9 @@ package akatsuki.restaurantsysteminformation.registereduser;
 import java.util.List;
 
 public interface RegisteredUserService {
-    List<RegisteredUser> getAll();
-
     RegisteredUser getOne(long id);
+
+    List<RegisteredUser> getAll();
 
     void create(RegisteredUser registeredUser);
 

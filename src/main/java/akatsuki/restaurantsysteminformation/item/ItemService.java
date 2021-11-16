@@ -5,7 +5,9 @@ import java.util.List;
 public interface ItemService {
     Item getOne(Long id);
 
-    List<Item> getAll();
+    Item getOneActive(Long id);
+
+    List<Item> getAllActive();
 
     void create(Item item);
 
@@ -18,4 +20,6 @@ public interface ItemService {
     void discardChanges();
 
     List<Item> getAllByCategory(String category);
+
+    double getCurrentPriceOfItem(Long itemId);
 }

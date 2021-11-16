@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.registereduser.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class RegisteredUserDeleteException extends RuntimeException {
+public class RegisteredUserDeleteException extends ConflictRuntimeException {
     public RegisteredUserDeleteException(String message) {
         super(message);
     }

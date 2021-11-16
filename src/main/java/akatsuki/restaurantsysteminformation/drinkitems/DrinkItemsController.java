@@ -1,71 +1,66 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsActionRequestDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTO;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTOActionRequest;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsDTOActive;
-import org.springframework.beans.factory.annotation.Autowired;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.ItemsActiveDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/drink-items")
+@RequiredArgsConstructor
+@Validated
 public class DrinkItemsController {
     private final DrinkItemsService drinkItemsService;
 
-    @Autowired
-    public DrinkItemsController(DrinkItemsService drinkItemsService) {
-        this.drinkItemsService = drinkItemsService;
-    }
-
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public DrinkItemsDTO getOne(@PathVariable long id) {
-        return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
-    }
+//    @GetMapping("/{id}")
+//    public DrinkItemsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+//        return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
+//    }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<ItemsDTOActive> getAll() {
-        return this.drinkItemsService.getAll().stream().map(ItemsDTOActive::new).collect(Collectors.toList());
+    public List<ItemsActiveDTO> getAll() {
+        return this.drinkItemsService.getAll().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/active/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public DrinkItemsDTO getOneActive(@PathVariable long id) {
+    public DrinkItemsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new DrinkItemsDTO(this.drinkItemsService.getOneActive(id));
     }
 
     @GetMapping("/active")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ItemsDTOActive> getAllActiveDrinkItems() {
-        return this.drinkItemsService.getAllActive().stream().map(ItemsDTOActive::new).collect(Collectors.toList());
+    public List<ItemsActiveDTO> getAllActiveDrinkItems() {
+        return this.drinkItemsService.getAllActive().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
     @PutMapping("/change-state")
-    @ResponseStatus(HttpStatus.OK)
-    public ItemsDTOActive changeStateOfDrinkItems(@RequestBody DrinkItemsDTOActionRequest dto) {
-        return new ItemsDTOActive(drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId()));
+    public ItemsActiveDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
+        return new ItemsActiveDTO(drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId()));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         drinkItemsService.delete(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody DrinkItemsCreateDTO drinkItemsDTO) {
+    public void create(@RequestBody @Valid DrinkItemsCreateDTO drinkItemsDTO) {
         drinkItemsService.create(drinkItemsDTO);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody DrinkItemsCreateDTO drinkItemsDTO, @PathVariable long id) {
+    public void update(@RequestBody DrinkItemsCreateDTO drinkItemsDTO,
+                       @PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         drinkItemsService.update(drinkItemsDTO, id);
     }
 }

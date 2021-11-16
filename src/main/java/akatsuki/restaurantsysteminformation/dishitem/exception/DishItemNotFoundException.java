@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.dishitem.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.NotFoundRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class DishItemNotFoundException extends RuntimeException {
+public class DishItemNotFoundException extends NotFoundRuntimeException {
     public DishItemNotFoundException(String message) {
         super(message);
     }

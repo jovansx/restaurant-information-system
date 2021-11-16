@@ -1,14 +1,12 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
-import akatsuki.restaurantsysteminformation.user.exception.UserDeletedException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
@@ -26,20 +24,10 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private OrderService orderService;
     private DrinkItemsService drinkItemsService;
     private DishItemService dishItemService;
-//
-//    @Autowired
-//    public UnregisteredUserServiceImpl(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
-//                                       OrderService orderService, DrinkItemsService drinkItemsService, DishItemService dishItemService) {
-//        this.unregisteredUserRepository = unregisteredUserRepository;
-//        this.userService = userService;
-//        this.drinkItemsService = drinkItemsService;
-//        this.dishItemService = dishItemService;
-//        this.orderService = orderService;
-//    }
 
     @Autowired
     public void setUnregisteredUserRepository(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
-                                              OrderService orderService, DrinkItemsService drinkItemsService, DishItemService dishItemService) {
+                                              OrderService orderService, DrinkItemsService drinkItemsService, @Lazy DishItemService dishItemService) {
         this.unregisteredUserRepository = unregisteredUserRepository;
         this.userService = userService;
         this.drinkItemsService = drinkItemsService;
@@ -55,29 +43,32 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
+    public List<UnregisteredUser> getAll() {
+        return unregisteredUserRepository.findAll();
+    }
+
+    @Override
     public void create(UnregisteredUser unregisteredUser) {
         checkPinCodeExistence(unregisteredUser.getPinCode());
         userService.checkEmailExistence(unregisteredUser.getEmailAddress());
         checkUserType(unregisteredUser.getType());
+        userService.checkPhoneNumberExistence(unregisteredUser.getPhoneNumber());
         unregisteredUserRepository.save(unregisteredUser);
     }
 
-    private void checkUserType(UserType type) {
-        if (type != UserType.WAITER && type != UserType.CHEF && type != UserType.BARTENDER) {
-            throw new UserTypeNotValidException("User type for unregistered user is not valid.");
-        }
-    }
-
     @Override
-    public boolean userCanBeDeleted(UnregisteredUser user) {
-        if (user.getType().equals(UserType.WAITER)) {
-            return orderService.isWaiterActive(user);
-        } else if (user.getType().equals(UserType.BARTENDER)) {
-            return drinkItemsService.isBartenderActive(user);
-        } else if (user.getType().equals(UserType.CHEF)) {
-            return dishItemService.isChefActive(user);
-        }
-        return false;
+    public void update(UnregisteredUser unregisteredUser, long id) {
+        UnregisteredUser user = getOne(id);
+        validateUpdate(id, unregisteredUser);
+
+        user.setFirstName(unregisteredUser.getFirstName());
+        user.setLastName(unregisteredUser.getLastName());
+        user.setEmailAddress(unregisteredUser.getEmailAddress());
+        user.setPhoneNumber(unregisteredUser.getPhoneNumber());
+        user.setSalary(unregisteredUser.getSalary());
+        user.setPinCode(unregisteredUser.getPinCode());
+
+        unregisteredUserRepository.save(user);
     }
 
     @Override
@@ -91,22 +82,12 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
-    public void update(UnregisteredUser unregisteredUser, long id) {
-        Optional<UnregisteredUser> user = unregisteredUserRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User with the id " + id + " is not found in the database.");
-        }
-        validateUpdate(id, unregisteredUser);
-
-        UnregisteredUser foundUser = user.get();
-        foundUser.setFirstName(unregisteredUser.getFirstName());
-        foundUser.setLastName(unregisteredUser.getLastName());
-        foundUser.setEmailAddress(unregisteredUser.getEmailAddress());
-        foundUser.setPhoneNumber(unregisteredUser.getPhoneNumber());
-        foundUser.setSalary(unregisteredUser.getSalary());
-        foundUser.setPinCode(unregisteredUser.getPinCode());
-
-        unregisteredUserRepository.save(foundUser);
+    public UnregisteredUser checkPinCode(String pinCode, UserType type) {
+        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode)
+                .orElseThrow(() -> new UserNotFoundException("User with the pin code " + pinCode + " is not found in the database."));
+        if (!user.getType().equals(type))
+            throw new UserNotFoundException("User with the pin code " + pinCode + " is not a " + type.name().toLowerCase());
+        return user;
     }
 
     private void validateUpdate(long id, UnregisteredUser unregisteredUser) {
@@ -135,18 +116,20 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         }
     }
 
-    @Override
-    public List<UnregisteredUser> getAll() {
-        return unregisteredUserRepository.findAll();
+    private void checkUserType(UserType type) {
+        if (type != UserType.WAITER && type != UserType.CHEF && type != UserType.BARTENDER) {
+            throw new UserTypeNotValidException("User type for unregistered user is not valid.");
+        }
     }
 
-    @Override
-    public UnregisteredUser checkPinCode(int pinCode, UserType type) {
-        UnregisteredUser user = unregisteredUserRepository.findByPinCode(pinCode + "")
-                .orElseThrow(() -> new UserNotFoundException("User with the pin code " + pinCode + " is not found in the database."));
-        if (!user.getType().equals(type))
-            throw new UserNotFoundException("User with the pin code " + pinCode + " is not a " + type.name().toLowerCase());
-        return user;
+    private boolean userCanBeDeleted(UnregisteredUser user) {
+        if (user.getType().equals(UserType.WAITER)) {
+            return orderService.isWaiterActive(user);
+        } else if (user.getType().equals(UserType.BARTENDER)) {
+            return drinkItemsService.isBartenderActive(user);
+        } else if (user.getType().equals(UserType.CHEF)) {
+            return dishItemService.isChefActive(user);
+        }
+        return false;
     }
-
 }

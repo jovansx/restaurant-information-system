@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.dishitem.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import akatsuki.restaurantsysteminformation.exceptions.ConflictRuntimeException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class DishItemOrderException extends RuntimeException {
+public class DishItemOrderException extends ConflictRuntimeException {
     public DishItemOrderException(String message) {
         super(message);
     }

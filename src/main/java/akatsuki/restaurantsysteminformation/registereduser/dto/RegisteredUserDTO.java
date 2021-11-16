@@ -1,31 +1,25 @@
 package akatsuki.restaurantsysteminformation.registereduser.dto;
 
-import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.user.dto.UserDTO;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisteredUserDTO extends UserDTO {
+
+    @NotNull(message = "It cannot be null.")
+    @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.")
     private String username;
+
+    @NotNull(message = "It cannot be null.")
+    @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.")
     private String password;
-
-    public RegisteredUserDTO(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, String username, String password) {
-        super(firstName, lastName, emailAddress, phoneNumber, salary, type);
-        this.username = username;
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

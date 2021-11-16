@@ -1,35 +1,45 @@
 package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
-import akatsuki.restaurantsysteminformation.item.dto.ItemDTOCreate;
+import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("CopyConstructorMissesField")
 @Entity
-@Table(name = "Item")
+@Table(name = "item")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "code", nullable = false)
     private String code;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "icon_base_64", nullable = false)
+    @Column(name = "icon_base_64")
     private byte[] iconBase64;
 
     @Column(name = "original", nullable = false)
@@ -50,11 +60,8 @@ public class Item {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Price> prices;
 
-    public Item() {
-    }
-
-    public Item(String code, String name, String description, byte[] iconBase64, boolean original, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
-        this.code = code;
+    public Item(String name, String description, byte[] iconBase64, boolean original, boolean deleted, ItemType type, List<String> components, ItemCategory itemCategory, List<Price> prices) {
+        this.code = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.iconBase64 = iconBase64;
@@ -66,8 +73,8 @@ public class Item {
         this.prices = prices;
     }
 
-    public Item(ItemDTOCreate itemDTO) {
-        this.code = itemDTO.getCode();
+    public Item(ItemCreateDTO itemDTO) {
+        this.code = UUID.randomUUID().toString();
         this.name = itemDTO.getName();
         this.description = itemDTO.getDescription();
         this.iconBase64 = itemDTO.getIconBase64().getBytes();
@@ -93,90 +100,6 @@ public class Item {
         Price newPrice = new Price(LocalDateTime.now(), item.getPrices().get(indexOfLastPrice).getValue());
         this.prices = new ArrayList<>();
         this.prices.add(newPrice);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public byte[] getIconBase64() {
-        return iconBase64;
-    }
-
-    public void setIconBase64(byte[] iconBase64) {
-        this.iconBase64 = iconBase64;
-    }
-
-    public boolean isOriginal() {
-        return original;
-    }
-
-    public void setOriginal(boolean original) {
-        this.original = original;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public ItemType getType() {
-        return type;
-    }
-
-    public void setType(ItemType type) {
-        this.type = type;
-    }
-
-    public List<String> getComponents() {
-        return components;
-    }
-
-    public void setComponents(List<String> components) {
-        this.components = components;
-    }
-
-    public ItemCategory getItemCategory() {
-        return itemCategory;
-    }
-
-    public void setItemCategory(ItemCategory itemCategory) {
-        this.itemCategory = itemCategory;
-    }
-
-    public List<Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(List<Price> prices) {
-        this.prices = prices;
     }
 
     public double getLastDefinedPrice() {

@@ -1,23 +1,16 @@
 package akatsuki.restaurantsysteminformation.orderitem.dto;
 
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
 public class OrderItemIdDTO {
 
-    private Long id;
-
-    public OrderItemIdDTO() {
-    }
+    private @Getter @Setter Long id;
 
     public OrderItemIdDTO(OrderItem item) {
         this.id = item.getId();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
