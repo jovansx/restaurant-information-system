@@ -8,7 +8,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderItemIdDTO {
 
-    private @Getter @Setter Long id;
+    private @Getter
+    @Setter
+    Long id;
 
     public OrderItemIdDTO(OrderItem item) {
         this.id = item.getId();

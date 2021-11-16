@@ -2,10 +2,7 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -18,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Room {
 
     @Id
@@ -31,7 +29,7 @@ public class Room {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<RestaurantTable> restaurantTables;
 
     public Room(String name, boolean isDeleted, List<RestaurantTable> restaurantTables) {
