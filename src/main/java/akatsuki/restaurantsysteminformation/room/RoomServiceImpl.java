@@ -12,7 +12,6 @@ import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -74,13 +73,13 @@ public class RoomServiceImpl implements RoomService {
     public void checkTableInRoom(long tableId, long id) {
         Room room = getOne(id);
         RestaurantTable table = restaurantTableService.getOne(tableId);
-        // TODO ovo ne radi sad jer nisu iste reference na sto W T F
+
         if (!room.getRestaurantTables().contains(table)) {
             throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
         }
     }
 
-    private List<RestaurantTable> createNewTables(List<CreateRestaurantTableDTO> newTablesDTO) {
+    private List<RestaurantTable> createNewTables(List<RestaurantTableCreateDTO> newTablesDTO) {
         List<RestaurantTable> tables = new ArrayList<>();
         newTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO));
@@ -89,7 +88,7 @@ public class RoomServiceImpl implements RoomService {
         return tables;
     }
 
-    private List<RestaurantTable> updateTables(List<UpdateRestaurantTableDTO> updateTablesDTO, long id) {
+    private List<RestaurantTable> updateTables(List<RestaurantTableDTO> updateTablesDTO, long id) {
         List<RestaurantTable> tables = new ArrayList<>();
         updateTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = new RestaurantTable(tableDTO);
@@ -107,15 +106,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void updateByRoomDTO(UpdateRoomDTO roomDTO, long id) {
+    public void updateByRoomDTO(RoomUpdateDTO roomDTO, long id) {
         checkNameExistence(roomDTO.getName(), id);
 
-        List<RestaurantTable> allTables = new ArrayList<>();
         List<RestaurantTable> newTables = createNewTables(roomDTO.getNewTables());
         List<RestaurantTable> updatedTables = updateTables(roomDTO.getUpdateTables(), id);
         deleteTables(roomDTO.getDeleteTables(), id);
 
-        allTables.addAll(updatedTables);
+        List<RestaurantTable> allTables = new ArrayList<>(updatedTables);
         List<RestaurantTable> roomTables = getRoomTables(id);
         roomTables.forEach(table -> {
             if (!allTables.contains(table)) {
@@ -127,7 +125,6 @@ public class RoomServiceImpl implements RoomService {
         Room room = new Room(roomDTO.getName(), false, allTables);
         update(room, id);
     }
-
 
 
     private void checkNameExistence(String name, long id) {

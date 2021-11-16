@@ -1,7 +1,5 @@
 package akatsuki.restaurantsysteminformation.room;
 
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomWithTablesDTO;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +37,7 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody @Valid UpdateRoomDTO updateRoomDTO,
+    public void update(@RequestBody @Valid RoomUpdateDTO updateRoomDTO,
                        @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
         roomService.updateByRoomDTO(updateRoomDTO, id);
     }
