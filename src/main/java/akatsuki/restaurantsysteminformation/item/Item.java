@@ -17,7 +17,7 @@ import java.util.List;
 
 @SuppressWarnings("CopyConstructorMissesField")
 @Entity
-@Table(name = "Item")
+@Table(name = "item")
 @Getter
 @Setter
 @NoArgsConstructor
