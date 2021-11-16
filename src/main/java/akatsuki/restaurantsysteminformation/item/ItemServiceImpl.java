@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -46,14 +47,34 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAll() {
-        return itemRepository.findAllAndFetchAll();
+    public List<Item> getAllActive() {
+        return itemRepository.findAllActiveIndexes().stream().map(this::getOneActive).collect(Collectors.toList());
+    }
+
+
+    private Item getOneWithAll(Long id) {
+        Item item = itemRepository.findOneAndFetchAll(id).orElseThrow(
+                () -> new ItemNotFoundException("Item with the id " + id + " is not found in the database."));
+        Optional<Item> item2 = itemRepository.findOneWithComponents(id);
+        if (item2.isEmpty()) {
+            item.setComponents(new ArrayList<>());
+        } else {
+            item.setComponents(item2.get().getComponents());
+        }
+        return item;
+    }
+
+    @Override
+    public Item getOneActive(Long id) {
+        Item item = getOneWithAll(id);
+        if (!item.isOriginal())
+            throw new ItemNotFoundException("Item with the id " + id + " is not found in the database.");
+        return item;
     }
 
     @Override
     public Item getOne(Long id) {
-        return itemRepository.findOneActiveAndFetchAll(id).orElseThrow(
-                () -> new ItemNotFoundException("Item with the id " + id + " is not found in the database."));
+        return getOneWithAll(id);
     }
 
     @Transactional
@@ -83,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
             original.setComponents(new ArrayList<>(copy.getComponents()));
             original.setItemCategory(copy.getItemCategory());
             Price p = copy.getPrices().get(0);
-            if (p.getValue() != original.getPrices().get(original.getPrices().size() - 1).getValue()) {
+            if (p.getValue() != getCurrentPriceOfItem(original.getId())) {
                 Price newPrice = new Price(p.getCreatedAt(), p.getValue());
                 original.getPrices().add(newPrice);
                 priceService.save(newPrice);
@@ -153,21 +174,25 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void delete(long id) {
-        Optional<Item> itemOptional = itemRepository.findOneActiveAndFetchAll(id);
-        if (itemOptional.isEmpty())
-            throw new ItemNotFoundException("Item with the id " + id + " is not found in the database.");
-        Item item = itemOptional.get();
-        String code = item.getCode();
-
-        List<Item> itemList = itemRepository.findAllByCodeEvenDeleted(code);
-
+        Item item = getOneActive(id);
+        List<Item> itemList = itemRepository.findAllByCodeEvenDeleted(item.getCode());
         if (itemList.size() == 1) {
-            Item i = itemList.get(0);
-            Item copy = new Item(i);
+            Item copy = new Item(item);
             priceService.save(copy.getPrices().get(0));
             copy.setOriginal(false);
             copy.setDeleted(true);
             itemRepository.save(copy);
+        } else if (itemList.size() == 2) {
+            for (Item i : itemList) {
+                if (!i.isOriginal()) {
+                    if (!i.isDeleted()) {
+                        i.setDeleted(true);
+                        itemRepository.save(i);
+                    } else {
+                        throw new ItemAlreadyDeletedException("Item with the id " + id + " is already deleted in the database.");
+                    }
+                }
+            }
         } else {
             throw new ItemAlreadyDeletedException("Item with the id " + id + " is already deleted in the database.");
         }
