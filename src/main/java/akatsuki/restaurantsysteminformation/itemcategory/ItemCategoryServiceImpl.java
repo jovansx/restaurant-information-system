@@ -17,16 +17,6 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     private final ItemService itemService;
 
     @Override
-    public ItemCategory findByName(String name) {
-        return itemCategoryRepository.findByName(name);
-    }
-
-    @Override
-    public void save(ItemCategory itemCategory) {
-        itemCategoryRepository.save(itemCategory);
-    }
-
-    @Override
     public ItemCategory getOne(long id) {
         return itemCategoryRepository.findById(id).orElseThrow(
                 () -> new ItemCategoryNotFoundException("Item category with the id " + id + " is not found in the database.")
@@ -75,6 +65,16 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
             }
         });
         itemCategoryRepository.deleteById(id);
+    }
+
+    @Override
+    public ItemCategory findByName(String name) {
+        return itemCategoryRepository.findByName(name);
+    }
+
+    @Override
+    public void save(ItemCategory itemCategory) {
+        itemCategoryRepository.save(itemCategory);
     }
 
     public String firstLetterUppercase(String name) {

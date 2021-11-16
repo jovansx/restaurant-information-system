@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Price")
+@Table(name = "price")
 @Data
 @NoArgsConstructor
 public class Price {
