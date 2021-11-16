@@ -22,8 +22,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDetailsDTO> getAll() {
-        return itemService.getAll().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
+    public List<ItemDetailsDTO> getAllActive() {
+        return itemService.getAllActive().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/category/{category}")
@@ -33,8 +33,8 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new ItemDetailsDTO(itemService.getOne(id));
+    public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new ItemDetailsDTO(itemService.getOneActive(id));
     }
 
     @PostMapping("/save-changes")

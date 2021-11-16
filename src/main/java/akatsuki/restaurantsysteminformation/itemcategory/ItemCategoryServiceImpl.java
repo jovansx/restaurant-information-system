@@ -58,7 +58,7 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     @Override
     public void delete(long id) {
         getOne(id);
-        List<Item> items = itemService.getAll();
+        List<Item> items = itemService.getAllActive();
         items.forEach(item -> {
             if (item.getItemCategory().getId().equals(id)) {
                 throw new ItemCategoryDeleteException("Item category with the id " + id + " is contained by other items. It cannot be deleted.");
