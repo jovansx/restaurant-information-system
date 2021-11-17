@@ -27,9 +27,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByItemCategoryAndOriginalIsTrueAndDeletedIsFalse(ItemCategory itemCategory);
 
-    @Query("select distinct i from Item i where (:code) = i.code")
-    List<Item> findAllByCodeEvenDeleted(String code);
-
     @Query("select i.id from Item i where i.deleted = false and i.original=true")
     List<Long> findAllActiveIndexes();
 
