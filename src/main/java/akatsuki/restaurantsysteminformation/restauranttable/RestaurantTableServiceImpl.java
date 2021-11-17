@@ -30,23 +30,14 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public Long getActiveOrderIdByTableId(long id) {
-        RestaurantTable table = getOneWithOrder(id);
-        if (table.getState().equals(TableState.FREE) || table.getActiveOrder() == null)
-            throw new RestaurantTableStateNotValidException("Restaurant table the id " + id + " is not taken.");
-        return table.getActiveOrder().getId();
+    public List<RestaurantTable> getAll() {
+        return restaurantTableRepository.findAll();
     }
-
 
     @Override
     public RestaurantTable create(RestaurantTable restaurantTable) {
         checkNameExistence(restaurantTable.getName(), -1);
         return restaurantTableRepository.save(restaurantTable);
-    }
-
-    @Override
-    public List<RestaurantTable> getAll() {
-        return restaurantTableRepository.findAll();
     }
 
     @Override
@@ -68,14 +59,21 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         restaurantTableRepository.save(table);
     }
 
+    @Override
+    public Long getActiveOrderIdByTableId(long id) {
+        RestaurantTable table = getOneWithOrder(id);
+        if (table.getState().equals(TableState.FREE) || table.getActiveOrder() == null)
+            throw new RestaurantTableStateNotValidException("Restaurant table the id " + id + " is not taken.");
+        return table.getActiveOrder().getId();
+    }
+
+
     private void checkNameExistence(String name, long id) {
         Optional<RestaurantTable> table = restaurantTableRepository.findByName(name);
-        if (id == -1 && table.isPresent()) {
+        if (id == -1 && table.isPresent())
             throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
-        }
 
-        if (table.isPresent() && table.get().getId() != id) {
+        if (table.isPresent() && table.get().getId() != id)
             throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
-        }
     }
 }

@@ -5,6 +5,8 @@ import java.util.List;
 public interface ItemCategoryService {
     ItemCategory getOne(long id);
 
+    ItemCategory getByName(String name);
+
     List<ItemCategory> getAll();
 
     void create(ItemCategory category);
@@ -12,8 +14,6 @@ public interface ItemCategoryService {
     void update(ItemCategory category, long id);
 
     void delete(long id);
-
-    ItemCategory findByName(String name);
 
     void save(ItemCategory itemCategory);
 

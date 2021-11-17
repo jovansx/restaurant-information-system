@@ -22,34 +22,19 @@ import java.util.stream.Collectors;
 public class DrinkItemsController {
     private final DrinkItemsService drinkItemsService;
 
-//    @GetMapping("/{id}")
-//    public DrinkItemsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-//        return new DrinkItemsDTO(this.drinkItemsService.getOne(id));
-//    }
+    @GetMapping("/active/{id}")
+    public DrinkItemsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new DrinkItemsDTO(this.drinkItemsService.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id));
+    }
 
     @GetMapping
     public List<ItemsActiveDTO> getAll() {
-        return this.drinkItemsService.getAll().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
-    }
-
-    @GetMapping("/active/{id}")
-    public DrinkItemsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new DrinkItemsDTO(this.drinkItemsService.getOneActive(id));
+        return this.drinkItemsService.findAllAndFetchBartenderAndItems().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/active")
     public List<ItemsActiveDTO> getAllActiveDrinkItems() {
-        return this.drinkItemsService.getAllActive().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
-    }
-
-    @PutMapping("/change-state")
-    public ItemsActiveDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
-        return new ItemsActiveDTO(drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId()));
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        drinkItemsService.delete(id);
+        return this.drinkItemsService.findAllActiveAndFetchBartenderAndItems().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -63,4 +48,15 @@ public class DrinkItemsController {
                        @PathVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         drinkItemsService.update(drinkItemsDTO, id);
     }
+
+    @PutMapping("/change-state")
+    public ItemsActiveDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
+        return new ItemsActiveDTO(drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId()));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        drinkItemsService.delete(id);
+    }
+
 }

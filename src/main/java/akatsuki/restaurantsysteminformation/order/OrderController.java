@@ -20,19 +20,19 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public OrderBasicInfoDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new OrderBasicInfoDTO(orderService.getOne(id));
+    public OrderBasicInfoDTO getOneWithAll(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new OrderBasicInfoDTO(orderService.getOneWithAll(id));
     }
 
     @GetMapping("/table/{id}")
     @ResponseStatus(HttpStatus.OK)
     public OrderBasicInfoDTO getOneByRestaurantTable(@PathVariable long id) {
-        return new OrderBasicInfoDTO(orderService.getOneByRestaurantTable(id));
+        return new OrderBasicInfoDTO(orderService.getOneByRestaurantTableId(id));
     }
 
     @GetMapping
     public List<OrderBasicInfoDTO> getAll() {
-        return orderService.getAll().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
+        return orderService.getAllWithAll().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/active")

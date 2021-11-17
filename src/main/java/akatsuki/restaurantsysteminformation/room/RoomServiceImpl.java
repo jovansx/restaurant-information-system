@@ -23,15 +23,15 @@ public class RoomServiceImpl implements RoomService {
     private final RestaurantTableService restaurantTableService;
 
     @Override
-    public List<Room> getAll() {
-        return roomRepository.findAll();
-    }
-
-    @Override
     public Room getOne(long id) {
         return roomRepository.findById(id).orElseThrow(
                 () -> new RoomNotFoundException("Room the id " + id + " is not found in the database.")
         );
+    }
+
+    @Override
+    public List<Room> getAll() {
+        return roomRepository.findAll();
     }
 
     @Override
@@ -55,28 +55,44 @@ public class RoomServiceImpl implements RoomService {
         Room room = getOne(id);
         room.setDeleted(true);
         room.getRestaurantTables().forEach(table -> {
-            if (table.getActiveOrder() != null) {
+            if (table.getActiveOrder() != null)
                 throw new RoomDeletionFailedException("Room with the id " + id + " cannot be deleted because it has active order.");
-            }
             restaurantTableService.delete(table.getId());
         });
         roomRepository.save(room);
     }
 
     @Override
-    public List<RestaurantTable> getRoomTables(long id) {
-        Room room = getOne(id);
-        return room.getRestaurantTables();
+    public void updateByRoomDTO(RoomUpdateDTO roomDTO, long id) {
+        checkNameExistence(roomDTO.getName(), id);
+
+        List<RestaurantTable> newTables = createNewTables(roomDTO.getNewTables());
+        List<RestaurantTable> updatedTables = updateTables(roomDTO.getUpdateTables(), id);
+        deleteTables(roomDTO.getDeleteTables(), id);
+
+        List<RestaurantTable> allTables = new ArrayList<>(updatedTables);
+        List<RestaurantTable> roomTables = getRoomTables(id);
+        roomTables.forEach(table -> {
+            if (!allTables.contains(table))
+                allTables.add(table);
+        });
+        allTables.addAll(newTables);
+
+        Room room = new Room(roomDTO.getName(), false, allTables);
+        update(room, id);
     }
 
     @Override
-    public void checkTableInRoom(long tableId, long id) {
+    public List<RestaurantTable> getRoomTables(long id) {
+        return getOne(id).getRestaurantTables();
+    }
+
+    private void checkTableInRoom(long tableId, long id) {
         Room room = getOne(id);
         RestaurantTable table = restaurantTableService.getOne(tableId);
 
-        if (!room.getRestaurantTables().contains(table)) {
+        if (!room.getRestaurantTables().contains(table))
             throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
-        }
     }
 
     private List<RestaurantTable> createNewTables(List<RestaurantTableCreateDTO> newTablesDTO) {
@@ -105,37 +121,14 @@ public class RoomServiceImpl implements RoomService {
         });
     }
 
-    @Override
-    public void updateByRoomDTO(RoomUpdateDTO roomDTO, long id) {
-        checkNameExistence(roomDTO.getName(), id);
-
-        List<RestaurantTable> newTables = createNewTables(roomDTO.getNewTables());
-        List<RestaurantTable> updatedTables = updateTables(roomDTO.getUpdateTables(), id);
-        deleteTables(roomDTO.getDeleteTables(), id);
-
-        List<RestaurantTable> allTables = new ArrayList<>(updatedTables);
-        List<RestaurantTable> roomTables = getRoomTables(id);
-        roomTables.forEach(table -> {
-            if (!allTables.contains(table)) {
-                allTables.add(table);
-            }
-        });
-        allTables.addAll(newTables);
-
-        Room room = new Room(roomDTO.getName(), false, allTables);
-        update(room, id);
-    }
-
 
     private void checkNameExistence(String name, long id) {
         Optional<Room> room = roomRepository.findByName(name);
-        if (id == -1 && room.isPresent()) {
+        if (id == -1 && room.isPresent())
             throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
-        }
 
-        if (room.isPresent() && room.get().getId() != id) {
+        if (room.isPresent() && room.get().getId() != id)
             throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
-        }
     }
 
 }

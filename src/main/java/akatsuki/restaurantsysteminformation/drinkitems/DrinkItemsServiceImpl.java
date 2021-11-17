@@ -34,77 +34,24 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private final ItemService itemService;
     private final DrinkItemService drinkItemService;
 
-//    @Override
-//    public DrinkItems getOne(long id) {
-//        return drinkItemsRepository.findById(id).orElseThrow(
-//                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
-//        );
-//    }
-
     @Override
-    public boolean isBartenderActive(UnregisteredUser user) {
-        return drinkItemsRepository.findAllByActiveIsTrueAndBartender(user).isEmpty();
-    }
-
-    @Override
-    public List<DrinkItems> getAll() {
-        return drinkItemsRepository.findAllFetchBartender().orElseThrow(
-                () -> new DrinkItemsNotFoundException("There's no drink items list created."));
-    }
-
-    @Override
-    public DrinkItems getOneActive(long id) {
-        return drinkItemsRepository.findOneActiveWithBartenderAndWithItems(id).orElseThrow(
+    public DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id) {
+        return drinkItemsRepository.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id).orElseThrow(
                 () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
         );
     }
 
     @Override
-    public List<DrinkItems> getAllActive() {
-        List<DrinkItems> drinkItemsList = drinkItemsRepository.findAllNotOnHoldActive();
-        drinkItemsList.addAll(drinkItemsRepository.findAllOnHoldActive());
+    public List<DrinkItems> findAllAndFetchBartenderAndItems() {
+        return drinkItemsRepository.findAllAndFetchBartenderAndItems().orElseThrow(
+                () -> new DrinkItemsNotFoundException("There's no drink items list created."));
+    }
+
+    @Override
+    public List<DrinkItems> findAllActiveAndFetchBartenderAndItems() {
+        List<DrinkItems> drinkItemsList = drinkItemsRepository.findAllActiveAndFetchBartenderAndItemsAndStateIsPreparationOrReady();
+        drinkItemsList.addAll(drinkItemsRepository.findAllActiveAndFetchItemsAndStateIsOnHold());
         return drinkItemsList;
-    }
-
-    @Override
-    public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
-        DrinkItems drinkItems = getOneActive(itemId);
-        UserType typeOfAllowedUser;
-        if (drinkItems.getState().equals(ItemState.READY))
-            typeOfAllowedUser = UserType.WAITER;
-        else if (drinkItems.getState().equals(ItemState.ON_HOLD) || drinkItems.getState().equals(ItemState.PREPARATION))
-            typeOfAllowedUser = UserType.BARTENDER;
-        else
-            throw new DrinkItemsNotFoundException("Drink items with state of  " + drinkItems.getState().name() + " are not valid for changing states.");
-
-        UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
-        if (!bartender.getType().equals(typeOfAllowedUser)) {
-            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
-        }
-
-        if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
-            drinkItems.setState(ItemState.PREPARATION);
-            drinkItems.setBartender(bartender);
-        } else if (drinkItems.getState().equals(ItemState.PREPARATION)) {
-            drinkItems.setState(ItemState.READY);
-        } else {
-            drinkItems.setState(ItemState.DELIVERED);
-        }
-        drinkItemsRepository.save(drinkItems);
-        return drinkItems;
-    }
-
-    @Override
-    public void delete(long id) {
-        DrinkItems drinkItems = getOneActive(id);
-
-        Order order = orderService.getOrderByOrderItem(drinkItems);
-        order.getDrinks().remove(drinkItems);
-        orderService.updateTotalPriceAndSave(order);
-
-        drinkItems.setDeleted(true);
-        drinkItems.setActive(false);
-        drinkItemsRepository.save(drinkItems);
     }
 
     @Override
@@ -121,29 +68,27 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         orderService.updateTotalPriceAndSave(order);
     }
 
+
     @Override
     public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
         Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
 
-        DrinkItems drinkItems = getOneActive(id);
+        DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id);
         boolean listIsInOrder = order.getDrinks().contains(drinkItems);
-        if (!listIsInOrder) {
+        if (!listIsInOrder)
             throw new DrinkItemsNotContainedException("Drink items list with id " + id + " is not contained within order drinks.");
-        }
 
         ItemState itemState = drinkItems.getState();
-        if (!itemState.equals(ItemState.ON_HOLD)) {
+        if (!itemState.equals(ItemState.ON_HOLD))
             throw new DrinkItemsInvalidStateException("Cannot change drink items list, because its state is " + itemState.name().toLowerCase() + ". Allowed state to change is 'on_hold'.");
-        }
 
         List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
         drinkItems.getDrinkItemList().clear();
         drinkItemsRepository.save(drinkItems);
-        for (DrinkItem drinkItem : ref) {
+        for (DrinkItem drinkItem : ref)
             drinkItemService.delete(drinkItem);
-        }
         List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItemsRepository.save(drinkItems);
@@ -151,12 +96,56 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         orderService.updateTotalPriceAndSave(order);
     }
 
+    @Override
+    public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
+        DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(itemId);
+        UserType typeOfAllowedUser;
+        if (drinkItems.getState().equals(ItemState.READY))
+            typeOfAllowedUser = UserType.WAITER;
+        else if (drinkItems.getState().equals(ItemState.ON_HOLD) || drinkItems.getState().equals(ItemState.PREPARATION))
+            typeOfAllowedUser = UserType.BARTENDER;
+        else
+            throw new DrinkItemsNotFoundException("Drink items with state of  " + drinkItems.getState().name() + " are not valid for changing states.");
+
+        UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
+        if (!bartender.getType().equals(typeOfAllowedUser))
+            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
+
+        if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
+            drinkItems.setState(ItemState.PREPARATION);
+            drinkItems.setBartender(bartender);
+        } else if (drinkItems.getState().equals(ItemState.PREPARATION))
+            drinkItems.setState(ItemState.READY);
+        else
+            drinkItems.setState(ItemState.DELIVERED);
+        drinkItemsRepository.save(drinkItems);
+        return drinkItems;
+    }
+
+    @Override
+    public void delete(long id) {
+        DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id);
+
+        Order order = orderService.getOneByOrderItem(drinkItems);
+        order.getDrinks().remove(drinkItems);
+        orderService.updateTotalPriceAndSave(order);
+
+        drinkItems.setDeleted(true);
+        drinkItems.setActive(false);
+        drinkItemsRepository.save(drinkItems);
+    }
+
+    @Override
+    public boolean isBartenderActive(UnregisteredUser user) {
+        return drinkItemsRepository.findAllByActiveIsTrueAndBartender(user).isEmpty();
+    }
+
+
     private void checkDrinks(List<DrinkItemCreateDTO> drinkItems) {
         drinkItems.forEach(drinkItem -> {
             Item item = itemService.getOne(drinkItem.getItemId());
-            if (item.getType() != ItemType.DRINK) {
+            if (item.getType() != ItemType.DRINK)
                 throw new ItemNotFoundException("Not correct type of drink item!");
-            }
         });
     }
 

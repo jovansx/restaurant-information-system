@@ -24,6 +24,11 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     }
 
     @Override
+    public ItemCategory getByName(String name) {
+        return itemCategoryRepository.findByName(name);
+    }
+
+    @Override
     public List<ItemCategory> getAll() {
         return itemCategoryRepository.findAll();
     }
@@ -33,9 +38,8 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
         List<ItemCategory> categories = getAll();
         String formattedName = firstLetterUppercase(category.getName());
         categories.forEach(existingCategory -> {
-            if (existingCategory.getName().equals(formattedName)) {
+            if (existingCategory.getName().equals(formattedName))
                 throw new ItemCategoryNameException("Similar category is recorded with required name " + formattedName + ".");
-            }
         });
         category.setName(formattedName);
         itemCategoryRepository.save(category);
@@ -45,12 +49,10 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     public void update(ItemCategory category, long id) {
         ItemCategory foundCategory = getOne(id);
         String formattedName = firstLetterUppercase(category.getName());
-        if (foundCategory.getName().equals(formattedName)) {
+        if (foundCategory.getName().equals(formattedName))
             throw new ItemCategoryNameException("The Name of chosen category is already set to " + formattedName + ".");
-        }
-        if (itemCategoryRepository.findByName(formattedName) != null) {
+        if (itemCategoryRepository.findByName(formattedName) != null)
             throw new ItemCategoryNameException("Cannot update to name " + formattedName + ".It already exists in the database.");
-        }
         foundCategory.setName(formattedName);
         itemCategoryRepository.save(foundCategory);
     }
@@ -60,16 +62,10 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
         getOne(id);
         List<Item> items = itemService.getAllActive();
         items.forEach(item -> {
-            if (item.getItemCategory().getId().equals(id)) {
+            if (item.getItemCategory().getId().equals(id))
                 throw new ItemCategoryDeleteException("Item category with the id " + id + " is contained by other items. It cannot be deleted.");
-            }
         });
         itemCategoryRepository.deleteById(id);
-    }
-
-    @Override
-    public ItemCategory findByName(String name) {
-        return itemCategoryRepository.findByName(name);
     }
 
     @Override
@@ -77,6 +73,7 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
         itemCategoryRepository.save(itemCategory);
     }
 
+    @Override
     public String firstLetterUppercase(String name) {
         name = name.trim();
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();

@@ -28,9 +28,15 @@ public class UnregisteredUserController {
         return new UnregisteredUserDTO(unregisteredUserService.getOne(id));
     }
 
+    //TODO Ovde nema DTO-a
     @GetMapping
     public List<UnregisteredUser> getAll() {
         return unregisteredUserService.getAll();
+    }
+
+    @GetMapping("/table")
+    public List<UnregisteredUserTableDTO> getAllForRowInTable() {
+        return unregisteredUserService.getAll().stream().map(UnregisteredUserTableDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -48,11 +54,6 @@ public class UnregisteredUserController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         unregisteredUserService.delete(id);
-    }
-
-    @GetMapping("/table")
-    public List<UnregisteredUserTableDTO> getAllForTable() {
-        return unregisteredUserService.getAll().stream().map(UnregisteredUserTableDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/pin-code/{pinCode}")

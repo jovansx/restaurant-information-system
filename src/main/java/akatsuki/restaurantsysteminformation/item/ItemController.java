@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
 
+    @GetMapping("/{id}")
+    public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new ItemDetailsDTO(itemService.getOneActive(id));
+    }
+
     @GetMapping
     public List<ItemDetailsDTO> getAllActive() {
         return itemService.getAllActive().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
@@ -29,22 +34,7 @@ public class ItemController {
     @GetMapping("/category/{category}")
     @ResponseStatus(HttpStatus.OK)
     public List<ItemForMenuDTO> getAllByCategory(@PathVariable @NotEmpty(message = "It cannot be empty.") String category) {
-        return itemService.getAllByCategory(category).stream().map(ItemForMenuDTO::new).collect(Collectors.toList());
-    }
-
-    @GetMapping("/{id}")
-    public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new ItemDetailsDTO(itemService.getOneActive(id));
-    }
-
-    @PostMapping("/save-changes")
-    public void saveChanges() {
-        this.itemService.saveChanges();
-    }
-
-    @PostMapping("/discard-changes")
-    public void discardChanges() {
-        this.itemService.discardChanges();
+        return itemService.getAllActiveByCategory(category).stream().map(ItemForMenuDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -62,5 +52,15 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemService.delete(id);
+    }
+
+    @PostMapping("/save-changes")
+    public void saveChanges() {
+        this.itemService.saveChanges();
+    }
+
+    @PostMapping("/discard-changes")
+    public void discardChanges() {
+        this.itemService.discardChanges();
     }
 }

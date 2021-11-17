@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
 public class DishItemController {
     private final DishItemService dishItemService;
 
-    @GetMapping("/active")
-    public List<ItemsActiveDTO> getAllActive() {
-        return this.dishItemService.getAllActive().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
-    }
-
     @GetMapping("/{id}")
     public DishItemDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new DishItemDTO(this.dishItemService.findOneActiveAndFetchItemAndChef(id));
+    }
+
+    @GetMapping("/active")
+    public List<ItemsActiveDTO> findAllActiveAndStateIsNotNewOrDelivered() {
+        return this.dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping

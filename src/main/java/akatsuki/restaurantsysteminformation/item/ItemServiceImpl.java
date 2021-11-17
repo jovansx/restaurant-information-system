@@ -32,36 +32,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAllByCategory(String categoryName) {
-        ItemCategory itemCategory = itemCategoryService.findByName(itemCategoryService.firstLetterUppercase(categoryName));
-        if (itemCategory == null)
-            throw new ItemCategoryNotFoundException("Item category with the name " + categoryName.toLowerCase() + " not found in the database.");
-        return itemRepository.findAllByItemCategoryAndOriginalIsTrueAndDeletedIsFalse(itemCategory);
-    }
-
-    @Override
-    public double getCurrentPriceOfItem(Long itemId) {
-        Item item = getOne(itemId);
-        int index = item.getPrices().size() - 1;
-        return item.getPrices().get(index).getValue();
-    }
-
-    @Override
-    public List<Item> getAllActive() {
-        return itemRepository.findAllActiveIndexes().stream().map(this::getOneActive).collect(Collectors.toList());
-    }
-
-
-    private Item getOneWithAll(Long id) {
-        Item item = itemRepository.findOneAndFetchAll(id).orElseThrow(
-                () -> new ItemNotFoundException("Item with the id " + id + " is not found in the database."));
-        Optional<Item> item2 = itemRepository.findOneWithComponents(id);
-        if (item2.isEmpty()) {
-            item.setComponents(new ArrayList<>());
-        } else {
-            item.setComponents(item2.get().getComponents());
-        }
-        return item;
+    public Item getOne(Long id) {
+        return getOneWithAll(id);
     }
 
     @Override
@@ -73,8 +45,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getOne(Long id) {
-        return getOneWithAll(id);
+    public List<Item> getAllActive() {
+        return itemRepository.findAllActiveIndexes().stream().map(this::getOneActive).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Item> getAllActiveByCategory(String categoryName) {
+        ItemCategory itemCategory = itemCategoryService.getByName(itemCategoryService.firstLetterUppercase(categoryName));
+        if (itemCategory == null)
+            throw new ItemCategoryNotFoundException("Item category with the name " + categoryName.toLowerCase() + " not found in the database.");
+        return itemRepository.findAllByItemCategoryAndOriginalIsTrueAndDeletedIsFalse(itemCategory);
     }
 
     @Transactional
@@ -86,31 +66,11 @@ public class ItemServiceImpl implements ItemService {
             if (originalItemOptional.isEmpty()) {
                 item.setOriginal(true);
                 itemRepository.save(item);
-            } else {
+            } else
                 assignItemFields(item, originalItemOptional.get());
-            }
 
         }
         itemRepository.removeAllByOriginalIsFalse();
-    }
-
-    private void assignItemFields(Item copy, Item original) {
-        if (copy.isDeleted()) {
-            original.setDeleted(true);
-        } else {
-            original.setName(copy.getName());
-            original.setDescription(copy.getDescription());
-            original.setIconBase64(copy.getIconBase64());
-            original.setComponents(new ArrayList<>(copy.getComponents()));
-            original.setItemCategory(copy.getItemCategory());
-            Price p = copy.getPrices().get(0);
-            if (p.getValue() != getCurrentPriceOfItem(original.getId())) {
-                Price newPrice = new Price(p.getCreatedAt(), p.getValue());
-                original.getPrices().add(newPrice);
-                priceService.save(newPrice);
-            }
-        }
-        itemRepository.save(original);
     }
 
     @Transactional
@@ -121,37 +81,28 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void create(Item item) {
-        ItemCategory itemCategory = itemCategoryService.findByName(item.getItemCategory().getName());
-        if (itemCategory != null) {
+        ItemCategory itemCategory = itemCategoryService.getByName(item.getItemCategory().getName());
+        if (itemCategory != null)
             item.setItemCategory(itemCategory);
-        } else {
+        else
             throw new ItemCategoryNotFoundException("Item category with the name " + item.getItemCategory().getName() + " not found in the database.");
-        }
-        if (checkIfCodeAlreadyExist(item.getCode())) {
+        if (checkIfCodeAlreadyExist(item.getCode()))
             throw new ItemExistsException("Item with the code " + item.getCode() + " is already in the database.");
-        }
         priceService.save(item.getPrices().get(0));
         itemRepository.save(item);
     }
 
-    private boolean checkIfCodeAlreadyExist(String code) {
-        List<Item> itemList = itemRepository.findAllByCode(code);
-        return !itemList.isEmpty();
-    }
-
     @Override
     public void update(Item item, long id) {
-        ItemCategory itemCategory = itemCategoryService.findByName(item.getItemCategory().getName());
-        if (itemCategory != null) {
+        ItemCategory itemCategory = itemCategoryService.getByName(item.getItemCategory().getName());
+        if (itemCategory != null)
             item.setItemCategory(itemCategory);
-        } else {
+        else
             throw new ItemCategoryNotFoundException("Item category with the code " + item.getCode() + " not found in the database.");
-        }
 
         Optional<Item> itemOptional = itemRepository.findByIdAndOriginalIsTrueAndDeletedIsFalse(id);
-        if (itemOptional.isEmpty()) {
+        if (itemOptional.isEmpty())
             throw new ItemNotFoundException("Item with the id " + id + " is not found in the database.");
-        }
         Item foundItem = itemOptional.get();
         if (!foundItem.getCode().equals(item.getCode()))
             throw new ItemCodeNotValidException("Item cannot change its code.");
@@ -166,9 +117,8 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemExistsException("Item with the code " + item.getCode() + " already have copy in the database.");
 
         for (Item i : itemList) {
-            if (!i.isOriginal()) {
+            if (!i.isOriginal())
                 assignItemFields(item, i);
-            }
         }
     }
 
@@ -188,15 +138,54 @@ public class ItemServiceImpl implements ItemService {
                     if (!i.isDeleted()) {
                         i.setDeleted(true);
                         itemRepository.save(i);
-                    } else {
+                    } else
                         throw new ItemAlreadyDeletedException("Item with the id " + id + " is already deleted in the database.");
-                    }
                 }
             }
-        } else {
+        } else
             throw new ItemAlreadyDeletedException("Item with the id " + id + " is already deleted in the database.");
-        }
+    }
 
+    @Override
+    public double getCurrentPriceOfItem(Long itemId) {
+        Item item = getOne(itemId);
+        int index = item.getPrices().size() - 1;
+        return item.getPrices().get(index).getValue();
+    }
+
+    private Item getOneWithAll(Long id) {
+        Item item = itemRepository.findOneAndFetchItemCategoryAndPrices(id).orElseThrow(
+                () -> new ItemNotFoundException("Item with the id " + id + " is not found in the database."));
+        Optional<Item> item2 = itemRepository.findOneAndFetchComponents(id);
+        if (item2.isEmpty())
+            item.setComponents(new ArrayList<>());
+        else
+            item.setComponents(item2.get().getComponents());
+        return item;
+    }
+
+    private void assignItemFields(Item copy, Item original) {
+        if (copy.isDeleted())
+            original.setDeleted(true);
+        else {
+            original.setName(copy.getName());
+            original.setDescription(copy.getDescription());
+            original.setIconBase64(copy.getIconBase64());
+            original.setComponents(new ArrayList<>(copy.getComponents()));
+            original.setItemCategory(copy.getItemCategory());
+            Price p = copy.getPrices().get(0);
+            if (p.getValue() != getCurrentPriceOfItem(original.getId())) {
+                Price newPrice = new Price(p.getCreatedAt(), p.getValue());
+                original.getPrices().add(newPrice);
+                priceService.save(newPrice);
+            }
+        }
+        itemRepository.save(original);
+    }
+
+    private boolean checkIfCodeAlreadyExist(String code) {
+        List<Item> itemList = itemRepository.findAllByCode(code);
+        return !itemList.isEmpty();
     }
 
 }
