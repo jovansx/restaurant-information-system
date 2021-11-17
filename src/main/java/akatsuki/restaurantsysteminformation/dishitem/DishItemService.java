@@ -6,24 +6,20 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import java.util.List;
 
 public interface DishItemService {
-    void create(DishItemCreateDTO dishItem);
-
-    List<DishItem> getAllActive();
-
-
-    DishItem getOne(long id);
-
-    DishItem getOneActive(long id);
 
     DishItem findOneActiveAndFetchItemAndChef(long id);
 
-    DishItem changeStateOfDishItems(long itemId, long userId);
+    List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
 
-    void delete(long id);
+    void create(DishItemCreateDTO dishItem);
 
     void update(DishItemCreateDTO dishItemCreateDTO, long id);
 
+    DishItem changeStateOfDishItems(long itemId, long userId);
+
     void prepare(long id, long waiterId);
+
+    void delete(long id);
 
     boolean isChefActive(UnregisteredUser user);
 }

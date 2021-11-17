@@ -9,6 +9,8 @@ public interface ItemService {
 
     List<Item> getAllActive();
 
+    List<Item> getAllActiveByCategory(String category);
+
     void create(Item item);
 
     void update(Item item, long id);
@@ -18,8 +20,6 @@ public interface ItemService {
     void saveChanges();
 
     void discardChanges();
-
-    List<Item> getAllByCategory(String category);
 
     double getCurrentPriceOfItem(Long itemId);
 }

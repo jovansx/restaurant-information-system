@@ -8,31 +8,29 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<Order> getAll();
-
-    List<Order> getAllActive();
-
-    Order getOne(long id);
-
-    void create(OrderCreateDTO order);
-
-    void updateTotalPriceAndSave(Order order);
-
-    void discard(long id);
-
-    void charge(long id);
-
-    void delete(long id);
-
-    Order getOrderByOrderItem(OrderItem orderItem);
-
-    Order getOneWithDishes(Long orderId);
+    Order getOneByOrderItem(OrderItem orderItem);
 
     Order getOneWithAll(Long orderId);
 
+    Order getOneWithDishes(Long orderId);
+
     Order getOneWithDrinks(Long orderId);
 
-    Order getOneByRestaurantTable(long id);
+    Order getOneByRestaurantTableId(long id);
+
+    List<Order> getAllWithAll();
+
+    List<Order> getAllActive();
+
+    void create(OrderCreateDTO order);
+
+    void delete(long id);
+
+    void updateTotalPriceAndSave(Order order);
+
+    void charge(long id);
+
+    void discard(long id);
 
     boolean isWaiterActive(UnregisteredUser user);
 

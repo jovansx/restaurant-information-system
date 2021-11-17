@@ -11,14 +11,14 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    @Query("select o.id from Order o")
-    List<Long> findAllIndexes();
-
     @Query("select o from Order o left join fetch o.drinks dr join fetch o.waiter w where o.id = (:id)")
-    Optional<Order> findOrderByIdAndFetchDrinks(long id);
+    Optional<Order> findByIdAndFetchWaiterAndDrinks(long id);
 
     @Query("select o from Order o left join fetch o.dishes dr left join fetch dr.item join fetch o.waiter w where o.id = (:id)")
-    Optional<Order> findOrderByIdAndFetchDishes(long id);
+    Optional<Order> findByIdAndFetchWaiterAndFetchDishesAndItems(long id);
 
     List<Order> findAllByActiveIsTrueAndWaiter(UnregisteredUser waiter);
+
+    @Query("select o.id from Order o")
+    List<Long> findAllIndexes();
 }

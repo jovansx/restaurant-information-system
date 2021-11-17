@@ -74,9 +74,8 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     @Override
     public void delete(long id) {
         UnregisteredUser user = getOne(id);
-        if (!userCanBeDeleted(user)) {
+        if (!userCanBeDeleted(user))
             throw new UnregisteredUserActiveException("User with the id " + id + " is currently active and cannot be deleted now.");
-        }
         user.setDeleted(true);
         unregisteredUserRepository.save(user);
     }
@@ -96,40 +95,34 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         Optional<User> userByEmail = userService.findByEmail(unregisteredUser.getEmailAddress());
         Optional<User> userByPhoneNumber = userService.findByPhoneNumber(unregisteredUser.getPhoneNumber());
 
-        if (userByPinCode.isPresent() && id != userByPinCode.get().getId()) {
+        if (userByPinCode.isPresent() && id != userByPinCode.get().getId())
             throw new UserExistsException("User with the pin code " + unregisteredUser.getPinCode() + " already exists in the database.");
-        }
 
-        if (userByEmail.isPresent() && id != userByEmail.get().getId()) {
+        if (userByEmail.isPresent() && id != userByEmail.get().getId())
             throw new UserExistsException("User with the email " + unregisteredUser.getEmailAddress() + " already exists in the database.");
-        }
 
-        if (userByPhoneNumber.isPresent() && id != userByPhoneNumber.get().getId()) {
+        if (userByPhoneNumber.isPresent() && id != userByPhoneNumber.get().getId())
             throw new UserExistsException("User with the phone number " + unregisteredUser.getPhoneNumber() + " already exists in the database.");
-        }
     }
 
     private void checkPinCodeExistence(String pinCode) {
         Optional<UnregisteredUser> user = unregisteredUserRepository.findByPinCode(pinCode);
-        if (user.isPresent()) {
+        if (user.isPresent())
             throw new UserExistsException("User with the pin code " + pinCode + " already exists in the database.");
-        }
     }
 
     private void checkUserType(UserType type) {
-        if (type != UserType.WAITER && type != UserType.CHEF && type != UserType.BARTENDER) {
+        if (type != UserType.WAITER && type != UserType.CHEF && type != UserType.BARTENDER)
             throw new UserTypeNotValidException("User type for unregistered user is not valid.");
-        }
     }
 
     private boolean userCanBeDeleted(UnregisteredUser user) {
-        if (user.getType().equals(UserType.WAITER)) {
+        if (user.getType().equals(UserType.WAITER))
             return orderService.isWaiterActive(user);
-        } else if (user.getType().equals(UserType.BARTENDER)) {
+        else if (user.getType().equals(UserType.BARTENDER))
             return drinkItemsService.isBartenderActive(user);
-        } else if (user.getType().equals(UserType.CHEF)) {
+        else if (user.getType().equals(UserType.CHEF))
             return dishItemService.isChefActive(user);
-        }
         return false;
     }
 }

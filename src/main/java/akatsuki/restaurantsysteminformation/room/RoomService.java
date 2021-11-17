@@ -6,9 +6,9 @@ import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import java.util.List;
 
 public interface RoomService {
-    List<Room> getAll();
-
     Room getOne(long id);
+
+    List<Room> getAll();
 
     void create(Room room);
 
@@ -16,10 +16,8 @@ public interface RoomService {
 
     void delete(long id);
 
-    List<RestaurantTable> getRoomTables(long id);
-
-    void checkTableInRoom(long tableId, long id);
-
     void updateByRoomDTO(RoomUpdateDTO roomDTO, long id);
+
+    List<RestaurantTable> getRoomTables(long id);
 
 }
