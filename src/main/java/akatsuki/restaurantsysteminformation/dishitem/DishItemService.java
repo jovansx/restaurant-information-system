@@ -15,9 +15,7 @@ public interface DishItemService {
 
     void update(DishItemCreateDTO dishItemCreateDTO, long id);
 
-    DishItem changeStateOfDishItems(long itemId, long userId);
-
-    void prepare(long id, long waiterId);
+    void changeStateOfDishItems(long itemId, long userId);
 
     void delete(long id);
 

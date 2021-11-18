@@ -9,15 +9,13 @@ public interface DrinkItemsService {
 
     DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id);
 
-    List<DrinkItems> findAllAndFetchBartenderAndItems();
-
     List<DrinkItems> findAllActiveAndFetchBartenderAndItems();
 
     void create(DrinkItemsCreateDTO drinkItemsDTO);
 
     void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
 
-    DrinkItems changeStateOfDrinkItems(long itemId, long userId);
+    void changeStateOfDrinkItems(long itemId, long userId);
 
     void delete(long id);
 

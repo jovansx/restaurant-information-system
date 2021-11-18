@@ -42,12 +42,6 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
-    public List<DrinkItems> findAllAndFetchBartenderAndItems() {
-        return drinkItemsRepository.findAllAndFetchBartenderAndItems().orElseThrow(
-                () -> new DrinkItemsNotFoundException("There's no drink items list created."));
-    }
-
-    @Override
     public List<DrinkItems> findAllActiveAndFetchBartenderAndItems() {
         List<DrinkItems> drinkItemsList = drinkItemsRepository.findAllActiveAndFetchBartenderAndItemsAndStateIsPreparationOrReady();
         drinkItemsList.addAll(drinkItemsRepository.findAllActiveAndFetchItemsAndStateIsOnHold());
@@ -97,7 +91,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
-    public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
+    public void changeStateOfDrinkItems(long itemId, long userId) {
         DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(itemId);
         UserType typeOfAllowedUser;
         if (drinkItems.getState().equals(ItemState.READY))
@@ -119,13 +113,13 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         else
             drinkItems.setState(ItemState.DELIVERED);
         drinkItemsRepository.save(drinkItems);
-        return drinkItems;
     }
 
     @Override
     public void delete(long id) {
         DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id);
-
+        if (!drinkItems.getState().equals(ItemState.ON_HOLD))
+            throw new DrinkItemsNotFoundException("Drink items with state of " + drinkItems.getState().name().toLowerCase() + " cannot be deleted.");
         Order order = orderService.getOneByOrderItem(drinkItems);
         order.getDrinks().remove(drinkItems);
         orderService.updateTotalPriceAndSave(order);

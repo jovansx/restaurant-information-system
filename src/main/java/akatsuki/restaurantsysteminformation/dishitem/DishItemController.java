@@ -31,31 +31,4 @@ public class DishItemController {
         return this.dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO) {
-        dishItemService.create(dishItemCreateDTO);
-    }
-
-    @PutMapping("/{id}")
-    public void update(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO,
-                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        dishItemService.update(dishItemCreateDTO, id);
-    }
-
-    @PutMapping("/prepare/{id}")
-    public void prepare(@PathVariable @Positive(message = "Id has to be a positive value.") long id,
-                        @RequestParam("waiter_id") @Positive(message = "Waiter id has to be a positive value.") long waiterId) {
-        dishItemService.prepare(id, waiterId);
-    }
-
-    @PutMapping("/change-state")
-    public ItemsActiveDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
-        return new ItemsActiveDTO(dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId()));
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        dishItemService.delete(id);
-    }
 }

@@ -82,43 +82,32 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
-    public void prepare(long id, long waiterId) {
-        DishItem dishItem = getOneActive(id);
-        if (!dishItem.getState().equals(ItemState.NEW))
-            throw new DishItemInvalidStateException("Cannot preapre dish item, because its state is " + dishItem.getState().name().toLowerCase() + ".");
-        Order order = orderService.getOneByOrderItem(dishItem);
-        if (!order.getWaiter().getId().equals(waiterId))
-            throw new DishItemOrderException("Dish item does not belong to waiter with the id of  " + waiterId + ".");
-        dishItem.setState(ItemState.ON_HOLD);
-        dishItemRepository.save(dishItem);
-    }
-
-    @Override
-    public DishItem changeStateOfDishItems(long itemId, long userId) {
-        DishItem dishItem = dishItemRepository.findOneActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered(itemId).orElseThrow(
+    public void changeStateOfDishItems(long itemId, long userId) {
+        DishItem dishItem = dishItemRepository.findOneActiveAndFetchItemAndChefAndStateIsNotDelivered(itemId).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + itemId + " is not found in the database.")
         );
         UserType typeOfAllowedUser;
-        if (dishItem.getState().equals(ItemState.READY))
+        if (dishItem.getState().equals(ItemState.NEW) || dishItem.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
         else if (dishItem.getState().equals(ItemState.ON_HOLD) || dishItem.getState().equals(ItemState.PREPARATION))
             typeOfAllowedUser = UserType.CHEF;
         else
             throw new DishItemNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
 
-        UnregisteredUser chef = this.unregisteredUserService.getOne(userId);
-        if (!chef.getType().equals(typeOfAllowedUser))
+        UnregisteredUser user = this.unregisteredUserService.getOne(userId);
+        if (!user.getType().equals(typeOfAllowedUser))
             throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
 
-        if (dishItem.getState().equals(ItemState.ON_HOLD)) {
+        if(dishItem.getState().equals(ItemState.NEW)) {
+            dishItem.setState(ItemState.ON_HOLD);
+        } else if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
-            dishItem.setChef(chef);
+            dishItem.setChef(user);
         } else if (dishItem.getState().equals(ItemState.PREPARATION))
             dishItem.setState(ItemState.READY);
         else
             dishItem.setState(ItemState.DELIVERED);
         dishItemRepository.save(dishItem);
-        return dishItem;
     }
 
     @Override
