@@ -21,7 +21,7 @@ public class UnregisteredUserDTO extends UserDTO {
 
     public UnregisteredUserDTO(UnregisteredUser user) {
         super(user.getFirstName(), user.getLastName(), user.getEmailAddress(),
-                user.getPhoneNumber(), user.getSalary(), user.getType());
+                user.getPhoneNumber(), user.getSalary().get(user.getSalary().size()-1).getValue(), user.getType());
         this.pinCode = user.getPinCode();
     }
 }

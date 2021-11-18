@@ -21,6 +21,8 @@ import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableRepository;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomRepository;
+import akatsuki.restaurantsysteminformation.salary.Salary;
+import akatsuki.restaurantsysteminformation.salary.SalaryRepository;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +31,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @Slf4j
@@ -41,29 +45,78 @@ public class DbConfiguration {
                                               PriceRepository priceRepository, ItemCategoryRepository itemCategoryRepository,
                                               ItemRepository itemRepository, DishItemRepository dishItemRepository,
                                               DrinkItemRepository drinkItemRepository, DrinkItemsRepository drinkItemsRepository,
-                                              RestaurantTableRepository restaurantTableRepository, RoomRepository roomRepository, OrderRepository orderRepository) {
+                                              RestaurantTableRepository restaurantTableRepository,
+                                              SalaryRepository salaryRepository,
+                                              RoomRepository roomRepository, OrderRepository orderRepository) {
         return (args) -> {
-//            UnregisteredUsers
-            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", 2000, UserType.WAITER, false, "1111");
+            //Salaries
+
+            Salary s1 = new Salary(LocalDateTime.of(2021, 1,1,0,0), 1000);
+            Salary s2 = new Salary(LocalDateTime.of(2021, 2,1,0,0), 2000);
+            Salary s3 = new Salary(LocalDateTime.of(2021, 5,1,0,0), 2500);
+            Salary s4 = new Salary(LocalDateTime.of(2021, 6,1,0,0), 2800);
+            Salary s5 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s6 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s7 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s8 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s9 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s10 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s11 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 1900);
+            Salary s12 = new Salary(LocalDateTime.of(2021, 7,15,0,0), 2100);
+
+            salaryRepository.save(s1); salaryRepository.save(s2); salaryRepository.save(s3);
+            salaryRepository.save(s4); salaryRepository.save(s5);
+            salaryRepository.save(s6);
+            salaryRepository.save(s7);
+            salaryRepository.save(s8);
+            salaryRepository.save(s9);
+            salaryRepository.save(s10);
+            salaryRepository.save(s11);
+            salaryRepository.save(s12);
+            List<Salary> sal1 = new ArrayList<>();
+            List<Salary> sal2 = new ArrayList<>();
+            List<Salary> sal3 = new ArrayList<>();
+            List<Salary> sal4 = new ArrayList<>();
+            List<Salary> sal5 = new ArrayList<>();
+            List<Salary> sal6 = new ArrayList<>();
+            List<Salary> sal7 = new ArrayList<>();
+            List<Salary> sal8 = new ArrayList<>();
+            List<Salary> sal9 = new ArrayList<>();
+            List<Salary> sal10 = new ArrayList<>();
+            List<Salary> sal11 = new ArrayList<>();
+            sal1.add(s1);
+            sal2.add(s2);
+            sal3.add(s3);
+            sal4.add(s4);
+            sal5.add(s5);
+            sal6.add(s6);
+            sal7.add(s7);
+            sal8.add(s8);
+            sal9.add(s9);
+            sal10.add(s10);
+            sal11.add(s11);
+            sal11.add(s12);
+
+            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", sal1, UserType.WAITER, false, "1111");
             unregisteredUserRepository.save(waiter1);
-            UnregisteredUser bartender1 = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "0611111112", 2500, UserType.BARTENDER, false, "1112");
+            UnregisteredUser bartender1 = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "0611111112", sal2, UserType.BARTENDER, false, "1112");
             unregisteredUserRepository.save(bartender1);
-            UnregisteredUser chef1 = new UnregisteredUser("Elon", "Musk", "elonmusk@gmail.com", "0611111113", 2250, UserType.CHEF, false, "1113");
+            UnregisteredUser chef1 = new UnregisteredUser("Elon", "Musk", "elonmusk@gmail.com", "0611111113", sal3, UserType.CHEF, false, "1113");
             unregisteredUserRepository.save(chef1);
-            UnregisteredUser waiter2 = new UnregisteredUser("Chili", "Kalibrk", "chilikalibrk@gmail.com", "0611111117", 3000, UserType.WAITER, false, "1114");
+            UnregisteredUser waiter2 = new UnregisteredUser("Chili", "Kalibrk", "chilikalibrk@gmail.com", "0611111117", sal4, UserType.WAITER, false, "1114");
             unregisteredUserRepository.save(waiter2);
-            UnregisteredUser bartender2 = new UnregisteredUser("Simon", "Cowel", "simoncowel@gmail.com", "0611111118", 3500, UserType.BARTENDER, false, "1115");
+            UnregisteredUser bartender2 = new UnregisteredUser("Simon", "Cowel", "simoncowel@gmail.com", "0611111118", sal5, UserType.BARTENDER, false, "1115");
             unregisteredUserRepository.save(bartender2);
-            UnregisteredUser chef2 = new UnregisteredUser("Eloner", "Muskila", "elonermuskila@gmail.com", "0611111119", 3250, UserType.CHEF, false, "1116");
+            UnregisteredUser chef2 = new UnregisteredUser("Eloner", "Muskila", "elonermuskila@gmail.com", "0611111119", sal6, UserType.CHEF, false, "1116");
             unregisteredUserRepository.save(chef2);
-            UnregisteredUser waiter3 = new UnregisteredUser("Calikikoki", "Garibai", "calikikoki@gmail.com", "0611111121", 4000, UserType.WAITER, false, "1117");
+            UnregisteredUser waiter3 = new UnregisteredUser("Calikikoki", "Garibai", "calikikoki@gmail.com", "0611111121", sal7, UserType.WAITER, false, "1117");
             unregisteredUserRepository.save(waiter3);
-            UnregisteredUser waiter4 = new UnregisteredUser("Kalionear", "Calioki", "kalionear@gmail.com", "0611111122", 4000, UserType.WAITER, false, "1118");
+            UnregisteredUser waiter4 = new UnregisteredUser("Kalionear", "Calioki", "kalionear@gmail.com", "0611111122", sal8, UserType.WAITER, false, "1118");
             unregisteredUserRepository.save(waiter4);
 //            RegisteredUsers
-            registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "0611111114", 3000, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
-            registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "0611111115", 3000, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
-            registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "0611111116", 3000, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));
+            registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "0611111114", sal9, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
+            registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "0611111115", sal10, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
+            registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "0611111116", sal11, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));
 //            Prices
             Price p1 = new Price(LocalDateTime.of(2021, 11, 3, 0, 0, 0), 5);
             Price p2 = new Price(LocalDateTime.of(2021, 11, 4, 0, 0, 0), 8);
@@ -133,8 +186,30 @@ public class DbConfiguration {
             DrinkItems drinkItems4 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.READY, bartender1, Collections.singletonList(drinkItem5), true);
             drinkItemsRepository.save(drinkItems4);
 //          Order
-            Order order1 = new Order(8, LocalDateTime.of(2021, 11, 3, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
+            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
+            //dummy
+            Order order2 = new Order(1100, LocalDateTime.of(2021, 1,1,0,0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order3 = new Order(1000, LocalDateTime.of(2021, 2,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order4 = new Order(1200, LocalDateTime.of(2021, 3,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order5 = new Order(1200, LocalDateTime.of(2021, 3,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order6 = new Order(1200, LocalDateTime.of(2021, 4,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order7 = new Order(1200, LocalDateTime.of(2021, 5,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order8 = new Order(1200, LocalDateTime.of(2021, 5,20,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order9 = new Order(1200, LocalDateTime.of(2021, 5,15,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order10 = new Order(1200, LocalDateTime.of(2021, 6,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+
+
+
             orderRepository.save(order1);
+            orderRepository.save(order2);
+            orderRepository.save(order3);
+            orderRepository.save(order4);
+            orderRepository.save(order5);
+            orderRepository.save(order6);
+            orderRepository.save(order7);
+            orderRepository.save(order8);
+            orderRepository.save(order9);
+            orderRepository.save(order10);
 //          RestaurantTable
             RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.TAKEN, TableShape.CIRCLE, false, order1);
             restaurantTableRepository.save(restaurantTable1);
