@@ -31,6 +31,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return registeredUserRepository.findAll();
     }
 
+    //TODO Dodaj rolu
     @Override
     public void create(RegisteredUser registeredUser) {
         checkUsernameExistence(registeredUser.getUsername());

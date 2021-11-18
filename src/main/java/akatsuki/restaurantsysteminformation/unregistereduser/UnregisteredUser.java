@@ -21,7 +21,8 @@ public class UnregisteredUser extends User {
     @Column(name = "pin_code", unique = true, nullable = false)
     private String pinCode;
 
-    public UnregisteredUser(String firstName, String lastName, String emailAddress, String phoneNumber, double salary, UserType type, boolean isDeleted, String pinCode) {
+    public UnregisteredUser(String firstName, String lastName, String emailAddress, String phoneNumber,
+                            double salary, UserType type, boolean isDeleted, String pinCode) {
         super(firstName, lastName, emailAddress, phoneNumber, salary, type, isDeleted);
         this.pinCode = pinCode;
     }
