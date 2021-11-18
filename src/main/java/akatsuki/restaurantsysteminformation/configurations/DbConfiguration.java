@@ -59,10 +59,10 @@ public class DbConfiguration {
             Salary s6 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
             Salary s7 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
             Salary s8 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
-            Salary s9 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
-            Salary s10 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s9 = new Salary(LocalDateTime.of(2021, 10,1,0,0), 2100);
+            Salary s10 = new Salary(LocalDateTime.of(2021, 10,1,0,0), 2100);
             Salary s11 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 1900);
-            Salary s12 = new Salary(LocalDateTime.of(2021, 7,15,0,0), 2100);
+            Salary s12 = new Salary(LocalDateTime.of(2020, 12,15,0,0), 2100);
 
             salaryRepository.save(s1); salaryRepository.save(s2); salaryRepository.save(s3);
             salaryRepository.save(s4); salaryRepository.save(s5);
@@ -192,11 +192,11 @@ public class DbConfiguration {
             Order order3 = new Order(1000, LocalDateTime.of(2021, 2,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order4 = new Order(1200, LocalDateTime.of(2021, 3,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order5 = new Order(1200, LocalDateTime.of(2021, 3,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order6 = new Order(1200, LocalDateTime.of(2021, 4,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order6 = new Order(1200, LocalDateTime.of(2021, 3,31,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order7 = new Order(1200, LocalDateTime.of(2021, 5,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order8 = new Order(1200, LocalDateTime.of(2021, 5,20,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order9 = new Order(1200, LocalDateTime.of(2021, 5,15,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order10 = new Order(1200, LocalDateTime.of(2021, 6,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order10 = new Order(1200, LocalDateTime.of(2020, 12,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
 
 
 
