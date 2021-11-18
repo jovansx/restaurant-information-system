@@ -1,14 +1,17 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsActionRequestDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +26,7 @@ import javax.validation.constraints.Positive;
 public class DrinkItemsStreamController {
 
     private final DrinkItemsService drinkItemsService;
+    private final SimpMessagingTemplate template;
 
     @MessageMapping({"/drink-items/create"})
     @SendTo("/topic/drink-items")
@@ -42,8 +46,12 @@ public class DrinkItemsStreamController {
     @MessageMapping({"/drink-items/change-state"})
     @SendTo("/topic/drink-items")
     public SocketResponseDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
-        drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
-        return new SocketResponseDTO(true, "Drink items state is successfully changed!");
+        DrinkItems drinkItems = drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items state is successfully changed!");
+        if (drinkItems.getState().equals(ItemState.READY)) {
+            this.template.convertAndSend("/topic/order", socketResponseDTO);
+        }
+        return socketResponseDTO;
     }
 
     @MessageMapping({"/drink-items/delete/{id}"})

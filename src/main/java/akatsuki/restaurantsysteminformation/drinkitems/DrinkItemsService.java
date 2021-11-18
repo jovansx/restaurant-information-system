@@ -15,7 +15,7 @@ public interface DrinkItemsService {
 
     void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
 
-    void changeStateOfDrinkItems(long itemId, long userId);
+    DrinkItems changeStateOfDrinkItems(long itemId, long userId);
 
     void delete(long id);
 
