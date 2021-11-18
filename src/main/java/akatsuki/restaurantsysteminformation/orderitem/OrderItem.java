@@ -44,5 +44,4 @@ public abstract class OrderItem {
         this.state = state;
         this.active = active;
     }
-
 }

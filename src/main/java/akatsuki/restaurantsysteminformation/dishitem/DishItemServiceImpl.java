@@ -41,7 +41,6 @@ public class DishItemServiceImpl implements DishItemService {
         return dishItemRepository.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
     }
 
-
     @Override
     public void create(DishItemCreateDTO itemCreateDTO) {
         Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
@@ -133,5 +132,4 @@ public class DishItemServiceImpl implements DishItemService {
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
     }
-
 }
