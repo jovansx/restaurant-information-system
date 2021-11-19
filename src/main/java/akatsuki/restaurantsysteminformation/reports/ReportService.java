@@ -6,4 +6,5 @@ public interface ReportService {
 
     ReportDTO getMonthlyReport(int year);
     ReportDTO getQuarterlyReport(int year);
+    ReportDTO getWeeklyReport(int month, int year);
 }

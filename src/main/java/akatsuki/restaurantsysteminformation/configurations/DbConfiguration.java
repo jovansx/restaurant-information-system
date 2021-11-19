@@ -52,12 +52,12 @@ public class DbConfiguration {
             //Salaries
 
             Salary s1 = new Salary(LocalDateTime.of(2021, 1,1,0,0), 1000);
-            Salary s2 = new Salary(LocalDateTime.of(2021, 2,1,0,0), 2000);
-            Salary s3 = new Salary(LocalDateTime.of(2021, 5,1,0,0), 2500);
-            Salary s4 = new Salary(LocalDateTime.of(2021, 6,1,0,0), 2800);
-            Salary s5 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
-            Salary s6 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
-            Salary s7 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
+            Salary s2 = new Salary(LocalDateTime.of(2021, 1,1,0,0), 2000);
+            Salary s3 = new Salary(LocalDateTime.of(2021, 1,2,0,0), 2500);
+            Salary s4 = new Salary(LocalDateTime.of(2021, 3,8,0,0), 2800);
+            Salary s5 = new Salary(LocalDateTime.of(2021, 3,8,0,1), 2100);
+            Salary s6 = new Salary(LocalDateTime.of(2021, 3,13,3,0), 2100);
+            Salary s7 = new Salary(LocalDateTime.of(2021, 3,28,2,0), 2100);
             Salary s8 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
             Salary s9 = new Salary(LocalDateTime.of(2021, 10,1,0,0), 2100);
             Salary s10 = new Salary(LocalDateTime.of(2021, 10,1,0,0), 2100);

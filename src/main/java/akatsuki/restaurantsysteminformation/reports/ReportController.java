@@ -24,4 +24,9 @@ public class ReportController {
     public ReportDTO getQuarterlyReport(@RequestParam("year") int year) {
         return reportService.getQuarterlyReport(year);
     }
+
+    @GetMapping("/weekly")
+    public ReportDTO getWeeklyReport(@RequestParam("year") int year, @RequestParam("month") int month) {
+        return reportService.getWeeklyReport(month, year);
+    }
 }
