@@ -81,7 +81,7 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
-    public void changeStateOfDishItems(long itemId, long userId) {
+    public DishItem changeStateOfDishItems(long itemId, long userId) {
         DishItem dishItem = dishItemRepository.findOneActiveAndFetchItemAndChefAndStateIsNotDelivered(itemId).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + itemId + " is not found in the database.")
         );
@@ -99,6 +99,7 @@ public class DishItemServiceImpl implements DishItemService {
 
         if(dishItem.getState().equals(ItemState.NEW)) {
             dishItem.setState(ItemState.ON_HOLD);
+
         } else if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
             dishItem.setChef(user);
@@ -107,6 +108,7 @@ public class DishItemServiceImpl implements DishItemService {
         else
             dishItem.setState(ItemState.DELIVERED);
         dishItemRepository.save(dishItem);
+        return dishItem;
     }
 
     @Override

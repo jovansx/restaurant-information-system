@@ -91,7 +91,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
-    public void changeStateOfDrinkItems(long itemId, long userId) {
+    public DrinkItems changeStateOfDrinkItems(long itemId, long userId) {
         DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(itemId);
         UserType typeOfAllowedUser;
         if (drinkItems.getState().equals(ItemState.READY))
@@ -113,6 +113,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         else
             drinkItems.setState(ItemState.DELIVERED);
         drinkItemsRepository.save(drinkItems);
+        return drinkItems;
     }
 
     @Override
