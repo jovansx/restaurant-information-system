@@ -47,29 +47,30 @@ public class DbConfiguration {
                                               PriceRepository priceRepository, ItemCategoryRepository itemCategoryRepository,
                                               ItemRepository itemRepository, DishItemRepository dishItemRepository,
                                               DrinkItemRepository drinkItemRepository, DrinkItemsRepository drinkItemsRepository,
-                                              RestaurantTableRepository restaurantTableRepository,
                                               SalaryRepository salaryRepository,
-                                              RoomRepository roomRepository, OrderRepository orderRepository) {
-                                              RestaurantTableRepository restaurantTableRepository, RoomRepository roomRepository, OrderRepository orderRepository,
+                                              RoomRepository roomRepository, OrderRepository orderRepository, RestaurantTableRepository restaurantTableRepository,
                                               RoleRepository roleRepository) {
         return (args) -> {
             //Salaries
 
-            Salary s1 = new Salary(LocalDateTime.of(2021, 1,1,0,0), 1000);
-            Salary s2 = new Salary(LocalDateTime.of(2021, 1,1,0,0), 2000);
-            Salary s3 = new Salary(LocalDateTime.of(2021, 1,2,0,0), 2500);
-            Salary s4 = new Salary(LocalDateTime.of(2021, 3,8,0,0), 2800);
-            Salary s5 = new Salary(LocalDateTime.of(2021, 3,8,0,1), 2100);
-            Salary s6 = new Salary(LocalDateTime.of(2021, 3,13,3,0), 2100);
-            Salary s7 = new Salary(LocalDateTime.of(2021, 3,28,2,0), 2100);
-            Salary s8 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 2100);
-            Salary s9 = new Salary(LocalDateTime.of(2021, 10,1,0,0), 2100);
-            Salary s10 = new Salary(LocalDateTime.of(2021, 10,1,0,0), 2100);
-            Salary s11 = new Salary(LocalDateTime.of(2021, 7,1,0,0), 1900);
-            Salary s12 = new Salary(LocalDateTime.of(2020, 12,15,0,0), 2100);
+            Salary s1 = new Salary(LocalDateTime.of(2021, 1, 1, 0, 0), 1000);
+            Salary s2 = new Salary(LocalDateTime.of(2021, 1, 1, 0, 0), 2000);
+            Salary s3 = new Salary(LocalDateTime.of(2021, 1, 2, 0, 0), 2500);
+            Salary s4 = new Salary(LocalDateTime.of(2021, 3, 8, 0, 0), 2800);
+            Salary s5 = new Salary(LocalDateTime.of(2021, 3, 8, 0, 1), 2100);
+            Salary s6 = new Salary(LocalDateTime.of(2021, 3, 13, 3, 0), 2100);
+            Salary s7 = new Salary(LocalDateTime.of(2021, 3, 28, 2, 0), 2100);
+            Salary s8 = new Salary(LocalDateTime.of(2021, 7, 1, 0, 0), 2100);
+            Salary s9 = new Salary(LocalDateTime.of(2021, 10, 1, 0, 0), 2100);
+            Salary s10 = new Salary(LocalDateTime.of(2021, 10, 1, 0, 0), 2100);
+            Salary s11 = new Salary(LocalDateTime.of(2021, 7, 1, 0, 0), 1900);
+            Salary s12 = new Salary(LocalDateTime.of(2020, 12, 15, 0, 0), 2100);
 
-            salaryRepository.save(s1); salaryRepository.save(s2); salaryRepository.save(s3);
-            salaryRepository.save(s4); salaryRepository.save(s5);
+            salaryRepository.save(s1);
+            salaryRepository.save(s2);
+            salaryRepository.save(s3);
+            salaryRepository.save(s4);
+            salaryRepository.save(s5);
             salaryRepository.save(s6);
             salaryRepository.save(s7);
             salaryRepository.save(s8);
@@ -101,7 +102,6 @@ public class DbConfiguration {
             sal11.add(s11);
             sal11.add(s12);
 
-            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", sal1, UserType.WAITER, false, "1111");
 //            Roles
             Role manager = new Role("MANAGER");
             roleRepository.save(manager);
@@ -110,7 +110,7 @@ public class DbConfiguration {
             Role admin = new Role("ADMIN");
             roleRepository.save(admin);
 //            UnregisteredUsers
-            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", 2000, UserType.WAITER, false, "1111");
+            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", sal1, UserType.WAITER, false, "1111");
             unregisteredUserRepository.save(waiter1);
             UnregisteredUser bartender1 = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "0611111112", sal2, UserType.BARTENDER, false, "1112");
             unregisteredUserRepository.save(bartender1);
@@ -201,16 +201,15 @@ public class DbConfiguration {
 //          Order
             Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
             //dummy
-            Order order2 = new Order(1100, LocalDateTime.of(2021, 1,1,0,0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order3 = new Order(1000, LocalDateTime.of(2021, 2,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order4 = new Order(1200, LocalDateTime.of(2021, 3,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order5 = new Order(1200, LocalDateTime.of(2021, 3,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order6 = new Order(1200, LocalDateTime.of(2021, 3,31,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order7 = new Order(1200, LocalDateTime.of(2021, 5,1,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order8 = new Order(1200, LocalDateTime.of(2021, 5,20,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order9 = new Order(1200, LocalDateTime.of(2021, 5,15,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order10 = new Order(1200, LocalDateTime.of(2020, 12,10,2,2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-
+            Order order2 = new Order(1100, LocalDateTime.of(2021, 1, 1, 0, 0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order3 = new Order(1000, LocalDateTime.of(2021, 2, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order4 = new Order(1200, LocalDateTime.of(2021, 3, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order5 = new Order(1200, LocalDateTime.of(2021, 3, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order6 = new Order(1200, LocalDateTime.of(2021, 3, 31, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order7 = new Order(1200, LocalDateTime.of(2021, 5, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order8 = new Order(1200, LocalDateTime.of(2021, 5, 20, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order9 = new Order(1200, LocalDateTime.of(2021, 5, 15, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order10 = new Order(1200, LocalDateTime.of(2020, 12, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
 
 
             orderRepository.save(order1);
@@ -233,7 +232,6 @@ public class DbConfiguration {
             roomRepository.save(room1);
 
             log.info("Database is populated");
-            };
-        }
+        };
     }
 }
