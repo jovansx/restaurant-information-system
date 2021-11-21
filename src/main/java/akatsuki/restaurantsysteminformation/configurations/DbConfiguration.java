@@ -19,6 +19,8 @@ import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUserRepository;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableRepository;
+import akatsuki.restaurantsysteminformation.role.Role;
+import akatsuki.restaurantsysteminformation.role.RoleRepository;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomRepository;
 import akatsuki.restaurantsysteminformation.salary.Salary;
@@ -48,6 +50,8 @@ public class DbConfiguration {
                                               RestaurantTableRepository restaurantTableRepository,
                                               SalaryRepository salaryRepository,
                                               RoomRepository roomRepository, OrderRepository orderRepository) {
+                                              RestaurantTableRepository restaurantTableRepository, RoomRepository roomRepository, OrderRepository orderRepository,
+                                              RoleRepository roleRepository) {
         return (args) -> {
             //Salaries
 
@@ -98,6 +102,15 @@ public class DbConfiguration {
             sal11.add(s12);
 
             UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", sal1, UserType.WAITER, false, "1111");
+//            Roles
+            Role manager = new Role("MANAGER");
+            roleRepository.save(manager);
+            Role system_admin = new Role("SYSTEM_ADMIN");
+            roleRepository.save(system_admin);
+            Role admin = new Role("ADMIN");
+            roleRepository.save(admin);
+//            UnregisteredUsers
+            UnregisteredUser waiter1 = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "0611111111", 2000, UserType.WAITER, false, "1111");
             unregisteredUserRepository.save(waiter1);
             UnregisteredUser bartender1 = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "0611111112", sal2, UserType.BARTENDER, false, "1112");
             unregisteredUserRepository.save(bartender1);
@@ -114,9 +127,9 @@ public class DbConfiguration {
             UnregisteredUser waiter4 = new UnregisteredUser("Kalionear", "Calioki", "kalionear@gmail.com", "0611111122", sal8, UserType.WAITER, false, "1118");
             unregisteredUserRepository.save(waiter4);
 //            RegisteredUsers
-            registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "0611111114", sal9, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq"));
-            registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "0611111115", sal10, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC"));
-            registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "0611111116", sal11, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66"));
+            registeredUserRepository.save(new RegisteredUser("Brad", "Pitt", "bradpitt@gmail.com", "0611111114", sal9, UserType.MANAGER, false, "bradpitt", "$2a$04$DbLOb2nXmJyS4cryCilJC.G1xlMYVoKNg0KSyGgGv/QswcfLnTTvq", manager));
+            registeredUserRepository.save(new RegisteredUser("Michael", "Douglas", "michaeldouglas@gmail.com", "0611111115", sal10, UserType.ADMIN, false, "michaeldouglas", "$2a$04$7yyD1PQZkTgZ4gr14l34zu/Pblf0Zde.Si1OaugvF/bTJ05fehdOC", admin));
+            registeredUserRepository.save(new RegisteredUser("Liam", "Neeson", "liamneeson@gmail.com", "0611111116", sal11, UserType.SYSTEM_ADMIN, false, "liamneeson", "$2a$04$DW.8hGuG2saGv1srE/DLKuTgwjkcea6jMOqjjaTym/ufxnSihDU66", system_admin));
 //            Prices
             Price p1 = new Price(LocalDateTime.of(2021, 11, 3, 0, 0, 0), 5);
             Price p2 = new Price(LocalDateTime.of(2021, 11, 4, 0, 0, 0), 8);
@@ -220,7 +233,7 @@ public class DbConfiguration {
             roomRepository.save(room1);
 
             log.info("Database is populated");
-        };
+            };
+        }
     }
-
 }
