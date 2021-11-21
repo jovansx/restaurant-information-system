@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.dishitem;
 
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
+import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import java.util.List;
@@ -16,8 +17,6 @@ public interface DishItemService {
     void update(DishItemCreateDTO dishItemCreateDTO, long id);
 
     DishItem changeStateOfDishItems(long itemId, long userId);
-
-    void prepare(long id, long waiterId);
 
     void delete(long id);
 

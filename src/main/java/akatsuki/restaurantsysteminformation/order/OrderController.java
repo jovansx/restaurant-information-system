@@ -25,7 +25,6 @@ public class OrderController {
     }
 
     @GetMapping("/table/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public OrderBasicInfoDTO getOneByRestaurantTable(@PathVariable long id) {
         return new OrderBasicInfoDTO(orderService.getOneByRestaurantTableId(id));
     }
@@ -36,29 +35,7 @@ public class OrderController {
     }
 
     @GetMapping("/active")
-    @ResponseStatus(HttpStatus.OK)
     public List<OrderBasicInfoDTO> getAllActive() {
         return orderService.getAllActive().stream().map(OrderBasicInfoDTO::new).collect(Collectors.toList());
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid OrderCreateDTO orderCreateDTO) {
-        orderService.create(orderCreateDTO);
-    }
-
-    @PutMapping("/{id}")
-    public void discard(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        orderService.discard(id);
-    }
-
-    @PutMapping("/charge/{id}")
-    public void charge(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        orderService.charge(id);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        orderService.delete(id);
     }
 }

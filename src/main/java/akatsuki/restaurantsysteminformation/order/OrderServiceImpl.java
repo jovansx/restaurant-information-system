@@ -166,6 +166,4 @@ public class OrderServiceImpl implements OrderService {
     public boolean isWaiterActive(UnregisteredUser user) {
         return orderRepository.findAllByActiveIsTrueAndWaiter(user).isEmpty();
     }
-
-
 }
