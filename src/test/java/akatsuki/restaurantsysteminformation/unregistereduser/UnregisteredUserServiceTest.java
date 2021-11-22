@@ -1,12 +1,10 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
-import akatsuki.restaurantsysteminformation.dishitem.DishItem;
-import akatsuki.restaurantsysteminformation.dishitem.DishItemRepository;
-import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
+import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.order.OrderServiceImpl;
+import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.salary.Salary;
-import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.UserServiceImpl;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
@@ -23,8 +21,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
 class UnregisteredUserServiceTest {
 
@@ -36,6 +32,15 @@ class UnregisteredUserServiceTest {
 
     @Mock
     UserServiceImpl userServiceMock;
+
+    @Mock
+    private OrderService orderServiceMock;
+
+    @Mock
+    private DrinkItemsService drinkItemsServiceMock;
+
+    @Mock
+    private DishItemService dishItemServiceMock;
 
     @Test
     void getOne() {
@@ -59,18 +64,14 @@ class UnregisteredUserServiceTest {
     void create_InvalidPin_ExceptionThrown() {
         UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
         Mockito.when(unregisteredUserRepositoryMock.findByPinCode("1111")).thenReturn(Optional.of(new UnregisteredUser()));
-        Assertions.assertThrows(UserExistsException.class, () -> {
-            unregisteredUserService.create(user);
-        });
+        Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.create(user));
     }
 
     @Test
     @DisplayName("When invalid user type is passed, exception should occur.")
     void create_InvalidUserType_ExceptionThrown() {
         UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.MANAGER, false, "1111");
-        Assertions.assertThrows(UserTypeNotValidException.class, () -> {
-            unregisteredUserService.create(user);
-        });
+        Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.create(user));
     }
 
     @Test
@@ -88,9 +89,7 @@ class UnregisteredUserServiceTest {
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(new UnregisteredUser()));
         UnregisteredUser un = new UnregisteredUser(); un.setId(2L);
         Mockito.when(unregisteredUserRepositoryMock.findByPinCode("1111")).thenReturn(Optional.of(un));
-        Assertions.assertThrows(UserExistsException.class, () -> {
-            unregisteredUserService.update(user, 1L);
-        });
+        Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.update(user, 1L));
     }
 
     @Test
@@ -98,13 +97,17 @@ class UnregisteredUserServiceTest {
     void update_InvalidUserType_ExceptionThrown() {
         UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.MANAGER, false, "1111");
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(new UnregisteredUser()));
-        Assertions.assertThrows(UserTypeNotValidException.class, () -> {
-            unregisteredUserService.update(user, 1L);
-        });
+        Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.update(user, 1L));
     }
 
     @Test
-    void delete() {
+    void delete_Valid_SavedObject() {
+        UnregisteredUser user = new UnregisteredUser();
+        user.setType(UserType.WAITER);
+        Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(user));
+        Mockito.when(orderServiceMock.isWaiterActive(user)).thenReturn(true);
+        unregisteredUserService.delete(1L);
+        Mockito.verify(unregisteredUserRepositoryMock, Mockito.times(1)).save(Mockito.any(UnregisteredUser.class));
     }
 
     @Test
