@@ -81,11 +81,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void create(Item item) {
-        ItemCategory itemCategory = itemCategoryService.getByName(item.getItemCategory().getName());
-        if (itemCategory != null)
-            item.setItemCategory(itemCategory);
-        else
-            throw new ItemCategoryNotFoundException("Item category with the name " + item.getItemCategory().getName() + " not found in the database.");
+        checkItemCategory(item);
         if (checkIfCodeAlreadyExist(item.getCode()))
             throw new ItemExistsException("Item with the code " + item.getCode() + " is already in the database.");
         priceService.save(item.getPrices().get(0));
@@ -94,11 +90,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void update(Item item, long id) {
-        ItemCategory itemCategory = itemCategoryService.getByName(item.getItemCategory().getName());
-        if (itemCategory != null)
-            item.setItemCategory(itemCategory);
-        else
-            throw new ItemCategoryNotFoundException("Item category with the code " + item.getCode() + " not found in the database.");
+        checkItemCategory(item);
 
         Optional<Item> itemOptional = itemRepository.findByIdAndOriginalIsTrueAndDeletedIsFalse(id);
         if (itemOptional.isEmpty())
@@ -148,9 +140,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public double getCurrentPriceOfItem(Long itemId) {
-        Item item = getOne(itemId);
+        Item item = getOneWithAll(itemId);
         int index = item.getPrices().size() - 1;
         return item.getPrices().get(index).getValue();
+    }
+
+    private void checkItemCategory(Item item) {
+        ItemCategory itemCategory = itemCategoryService.getByName(item.getItemCategory().getName());
+        if (itemCategory != null)
+            item.setItemCategory(itemCategory);
+        else
+            throw new ItemCategoryNotFoundException("Item category with the name " + item.getItemCategory().getName() + " not found in the database.");
     }
 
     private Item getOneWithAll(Long id) {

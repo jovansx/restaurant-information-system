@@ -126,7 +126,7 @@ class DrinkItemsServiceTest {
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
                 null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
-        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null,  new ArrayList<>(), true);
+        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         drinkItems.getDrinkItemList().add(new DrinkItem());
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));

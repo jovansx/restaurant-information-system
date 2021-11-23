@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
