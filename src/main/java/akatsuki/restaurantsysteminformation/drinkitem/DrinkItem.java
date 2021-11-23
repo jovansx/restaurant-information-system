@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.drinkitem;
 
 import akatsuki.restaurantsysteminformation.item.Item;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -2,7 +2,6 @@ package akatsuki.restaurantsysteminformation.user;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.salary.Salary;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

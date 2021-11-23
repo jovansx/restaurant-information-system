@@ -12,6 +12,7 @@ import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
+import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
@@ -104,6 +105,21 @@ class DrinkItemsServiceTest {
     }
 
     @Test
+    @DisplayName("When invalid item type dto is passed, exception should occur.")
+    public void create_InvalidItemTypeDto_ExceptionThrown() {
+        List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
+        DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
+        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
+        Item item = new Item("Coca Cola", "Nice",
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+
+        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
+
+        Assertions.assertThrows(ItemNotFoundException.class, () -> drinkItemsService.create(drinkItemsCreateDTO));
+    }
+
+    @Test
     @DisplayName("When valid dto and id are passed, required object is changed.")
     public void update_ValidDtoAndId_ChangedObject() {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
@@ -112,6 +128,7 @@ class DrinkItemsServiceTest {
                 null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
+        drinkItems.getDrinkItemList().add(new DrinkItem());
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
@@ -259,6 +276,14 @@ class DrinkItemsServiceTest {
     @Test
     @DisplayName("When invalid id is passed, exception should occur.")
     public void delete_InvalidId_ExceptionThrown() {
+        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
+        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
+        Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.delete(1L));
+    }
+
+    @Test
+    @DisplayName("When invalid id is passed, exception should occur.")
+    public void delete_InvalidState_ExceptionThrown() {
         Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.delete(1000L));
     }

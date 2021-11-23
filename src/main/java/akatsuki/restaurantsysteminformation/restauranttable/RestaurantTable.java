@@ -4,7 +4,6 @@ import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
