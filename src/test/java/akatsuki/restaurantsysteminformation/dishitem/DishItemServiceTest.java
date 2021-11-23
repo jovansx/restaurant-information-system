@@ -82,11 +82,8 @@ class DishItemServiceTest {
     @Test
     @DisplayName("When there are not objects in the database, exception should occur.")
     void findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered_DishItemsDontExist_ExceptionThrown() {
-        List<DishItem> list = Collections.singletonList(new DishItem());
-        Mockito.when(dishItemRepositoryMock.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered()).thenReturn(Optional.of(list));
-
-        List<DishItem> foundList = dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
-        Assertions.assertEquals(foundList, list);
+        Mockito.when(dishItemRepositoryMock.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered()).thenReturn(Optional.empty());
+        Assertions.assertThrows(DishItemNotFoundException.class, () -> dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered());
     }
 
     @Test
