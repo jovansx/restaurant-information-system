@@ -17,7 +17,6 @@ public class DrinkItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "amount", nullable = false)

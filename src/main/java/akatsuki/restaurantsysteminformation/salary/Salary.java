@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class Salary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "created_at", nullable = false)
