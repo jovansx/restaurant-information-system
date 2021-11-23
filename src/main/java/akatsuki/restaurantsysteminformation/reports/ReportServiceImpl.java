@@ -10,7 +10,10 @@ import akatsuki.restaurantsysteminformation.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +29,15 @@ public class ReportServiceImpl implements ReportService {
         List<ReportItemDTO> months = new ArrayList<>();
         List<User> users = userRepository.findAll();
 
-        LocalDateTime startDate = LocalDateTime.of(year, 1,1,0,0);
-        for(int i = 0; i < 12; i++) {
+        LocalDateTime startDate = LocalDateTime.of(year, 1, 1, 0, 0);
+        for (int i = 0; i < 12; i++) {
             LocalDateTime endDate = startDate.plusMonths(1);
             double totalMonthIncome = getOrderPricesForPeriod(startDate, endDate.minusSeconds(1));
             double totalMonthOutcome = getSalariesForPeriod(users, endDate.minusSeconds(1));
 
             ReportItemDTO month = new ReportItemDTO(startDate.getMonth().toString(), totalMonthIncome, totalMonthOutcome);
             months.add(month);
-            if(endDate.isAfter(today)) break;
+            if (endDate.isAfter(today)) break;
             startDate = startDate.plusMonths(1);
         }
         return new ReportDTO(months);
@@ -43,7 +46,7 @@ public class ReportServiceImpl implements ReportService {
     private double getOrderPricesForPeriod(LocalDateTime startDate, LocalDateTime endDate) {
         List<Order> orders = orderRepository.findAllByCreatedAtBetween(startDate, endDate);
         double totalMonthIncome = 0;
-        for(Order o: orders) {
+        for (Order o : orders) {
             totalMonthIncome += o.getTotalPrice();
         }
         return totalMonthIncome;
@@ -58,7 +61,7 @@ public class ReportServiceImpl implements ReportService {
                     salaries.add(s);
                 }
             }
-            if(salaries.size() > 0) {
+            if (salaries.size() > 0) {
                 salaries.sort((s1, s2) -> {
                     ZonedDateTime zdt = ZonedDateTime.of(s1.getCreatedAt(), ZoneId.systemDefault());
                     ZonedDateTime zdt2 = ZonedDateTime.of(s2.getCreatedAt(), ZoneId.systemDefault());
@@ -76,19 +79,19 @@ public class ReportServiceImpl implements ReportService {
         List<ReportItemDTO> quarters = new ArrayList<>();
         List<User> users = userRepository.findAll();
 
-        LocalDateTime startDate = LocalDateTime.of(year, 1,1,0,0);
-        for(int i = 0; i < 4; i++) {
+        LocalDateTime startDate = LocalDateTime.of(year, 1, 1, 0, 0);
+        for (int i = 0; i < 4; i++) {
             String monthName = startDate.getMonth().toString() + " - " + startDate.plusMonths(3).getMonth().toString();
             double totalQuarterIncome = 0;
             double totalQuarterOutcome = 0;
             boolean toEnd = false;
-            for(int j = 0; j < 3; j++) {
+            for (int j = 0; j < 3; j++) {
                 LocalDateTime endDate = startDate.plusMonths(1);
 
                 totalQuarterIncome += getOrderPricesForPeriod(startDate, endDate.minusSeconds(1));
                 totalQuarterOutcome += getSalariesForPeriod(users, endDate.minusSeconds(1));
 
-                if(endDate.isAfter(today)) {
+                if (endDate.isAfter(today)) {
                     toEnd = true;
                     break;
                 }
@@ -96,7 +99,7 @@ public class ReportServiceImpl implements ReportService {
             }
             ReportItemDTO quarter = new ReportItemDTO(monthName, totalQuarterIncome, totalQuarterOutcome);
             quarters.add(quarter);
-            if(toEnd) break;
+            if (toEnd) break;
         }
         return new ReportDTO(quarters);
     }
@@ -107,29 +110,29 @@ public class ReportServiceImpl implements ReportService {
         LocalDateTime today = LocalDateTime.now();
         List<ReportItemDTO> weeks = new ArrayList<>();
 
-        LocalDateTime startDate = LocalDateTime.of(year, month,1,0,0);
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0);
         YearMonth yearMonthObject = YearMonth.of(year, month);
         int daysInMonth = yearMonthObject.lengthOfMonth();
         int daysLeft = daysInMonth - 28;
         boolean isEnd = false;
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             LocalDateTime endDate = startDate.plusDays(7);
-            if(endDate.isAfter(today)) {
+            if (endDate.isAfter(today)) {
                 isEnd = true;
                 break;
             }
             double totalDayIncome = getOrderPricesForPeriod(startDate, endDate.minusSeconds(1));
 
-            ReportItemDTO day = new ReportItemDTO(i*7 + " - " + (i+1)*7, totalDayIncome, 0);
+            ReportItemDTO day = new ReportItemDTO(i * 7 + " - " + (i + 1) * 7, totalDayIncome, 0);
             weeks.add(day);
 
             startDate = endDate;
         }
 
         LocalDateTime endDate = startDate.plusDays(daysLeft);
-        if(!isEnd) {
+        if (!isEnd) {
             double totalDayIncome = getOrderPricesForPeriod(startDate, endDate.minusSeconds(1));
-            ReportItemDTO day = new ReportItemDTO("28 - " + String.valueOf(daysLeft + 28), totalDayIncome, 0);
+            ReportItemDTO day = new ReportItemDTO("28 - " + (daysLeft + 28), totalDayIncome, 0);
             weeks.add(day);
         }
 

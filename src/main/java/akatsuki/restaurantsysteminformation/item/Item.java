@@ -26,7 +26,6 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter(AccessLevel.NONE)
     @Column(name = "code", nullable = false)
     private String code;
 
