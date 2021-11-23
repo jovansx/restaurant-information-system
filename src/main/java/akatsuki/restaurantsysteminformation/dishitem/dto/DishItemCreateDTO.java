@@ -1,11 +1,13 @@
 package akatsuki.restaurantsysteminformation.dishitem.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Data
+@AllArgsConstructor
 public class DishItemCreateDTO {
 
     @NotNull(message = "It cannot be null.")

@@ -24,16 +24,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void checkEmailExistence(String email) {
         Optional<User> user = findByEmail(email);
-        if (user.isPresent()) {
+        if (user.isPresent())
             throw new UserExistsException("User with the email " + email + " already exists in the database.");
-        }
     }
 
     @Override
     public void checkPhoneNumberExistence(String phoneNumber) {
         Optional<User> user = findByPhoneNumber(phoneNumber);
-        if (user.isPresent()) {
+        if (user.isPresent())
             throw new UserExistsException("User with the phone number " + phoneNumber + " already exists in the database.");
-        }
     }
 }

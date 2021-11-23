@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 public class RoomController {
     private final RoomService roomService;
 
-    @GetMapping
-    public List<RoomWithTablesDTO> getAll() {
-        return roomService.getAll().stream().map(RoomWithTablesDTO::new).collect(Collectors.toList());
-    }
-
     @GetMapping("/{id}")
     public RoomWithTablesDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new RoomWithTablesDTO(roomService.getOne(id));
+    }
+
+    @GetMapping
+    public List<RoomWithTablesDTO> getAll() {
+        return roomService.getAll().stream().map(RoomWithTablesDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
@@ -41,7 +41,6 @@ public class RoomController {
                        @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
         roomService.updateByRoomDTO(updateRoomDTO, id);
     }
-
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {

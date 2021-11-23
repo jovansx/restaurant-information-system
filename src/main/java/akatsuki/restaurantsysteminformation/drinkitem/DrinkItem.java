@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.drinkitem;
 
 import akatsuki.restaurantsysteminformation.item.Item;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +16,6 @@ public class DrinkItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "amount", nullable = false)

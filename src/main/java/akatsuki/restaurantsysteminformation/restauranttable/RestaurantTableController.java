@@ -19,14 +19,15 @@ import java.util.stream.Collectors;
 public class RestaurantTableController {
     private final RestaurantTableService restaurantTableService;
 
+    @GetMapping("/{id}")
+    public RestaurantTableDTO getOne(@PathVariable("id") @Positive(message = "Id has to be a positive value.") long id) {
+        return new RestaurantTableDTO(restaurantTableService.getOne(id));
+    }
+
     @GetMapping
     public List<RestaurantTableDTO> getAll() {
         List<RestaurantTable> tables = restaurantTableService.getAll();
         return tables.stream().map(RestaurantTableDTO::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
-    public RestaurantTableDTO getOne(@PathVariable("id") @Positive(message = "Id has to be a positive value.") long id) {
-        return new RestaurantTableDTO(restaurantTableService.getOne(id));
-    }
 }

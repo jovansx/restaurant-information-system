@@ -7,21 +7,17 @@ import java.util.List;
 
 public interface DrinkItemsService {
 
-//    DrinkItems getOne(long id);
+    DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id);
 
-    List<DrinkItems> getAll();
-
-    DrinkItems getOneActive(long id);
-
-    List<DrinkItems> getAllActive();
-
-    DrinkItems changeStateOfDrinkItems(long itemId, long userId);
-
-    void delete(long id);
+    List<DrinkItems> findAllActiveAndFetchBartenderAndItems();
 
     void create(DrinkItemsCreateDTO drinkItemsDTO);
 
     void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
+
+    DrinkItems changeStateOfDrinkItems(long itemId, long userId);
+
+    void delete(long id);
 
     boolean isBartenderActive(UnregisteredUser user);
 

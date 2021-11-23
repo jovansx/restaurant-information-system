@@ -1,7 +1,10 @@
 package akatsuki.restaurantsysteminformation.orderitem;
 
 import akatsuki.restaurantsysteminformation.enums.ItemState;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -19,7 +22,6 @@ public abstract class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "notes")
@@ -45,4 +47,12 @@ public abstract class OrderItem {
         this.active = active;
     }
 
+    public OrderItem(Long id, String notes, LocalDateTime createdAt, boolean deleted, ItemState state, boolean active) {
+        this.id = id;
+        this.notes = notes;
+        this.createdAt = createdAt;
+        this.deleted = deleted;
+        this.state = state;
+        this.active = active;
+    }
 }

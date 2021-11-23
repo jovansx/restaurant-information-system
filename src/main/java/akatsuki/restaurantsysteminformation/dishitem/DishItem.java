@@ -34,4 +34,10 @@ public class DishItem extends OrderItem {
         this.item = item;
     }
 
+    public DishItem(Long id, String notes, LocalDateTime createdAt, boolean deleted, ItemState state, boolean active, int amount, UnregisteredUser chef, Item item) {
+        super(id, notes, createdAt, deleted, state, active);
+        this.amount = amount;
+        this.chef = chef;
+        this.item = item;
+    }
 }

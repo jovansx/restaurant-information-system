@@ -2,13 +2,13 @@ package akatsuki.restaurantsysteminformation.security;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
+import akatsuki.restaurantsysteminformation.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 public class JWTUserDetails implements UserDetails {
 
@@ -20,9 +20,8 @@ public class JWTUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("REGISTERED_USER"));
-        return authorities;
+        Role role = user.getRole();
+        return Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Override
