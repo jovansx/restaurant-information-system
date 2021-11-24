@@ -30,6 +30,13 @@ public class RegisteredUser extends User {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Role role;
 
+    public RegisteredUser(Long id, String firstName, String lastName, String emailAddress, String phoneNumber, List<Salary> salary, UserType type, boolean isDeleted, String username, String password, Role role) {
+        super(id, firstName, lastName, emailAddress, phoneNumber, salary, type, isDeleted);
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
     public RegisteredUser(String firstName, String lastName, String emailAddress, String phoneNumber,
                           List<Salary> salary, UserType type, boolean isDeleted, String username, String password, Role role) {
         super(firstName, lastName, emailAddress, phoneNumber, salary, type, isDeleted);

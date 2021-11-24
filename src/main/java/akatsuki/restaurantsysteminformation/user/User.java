@@ -35,7 +35,6 @@ public abstract class User {
     @Column(name = "phone_number", unique = true, nullable = false)
     private String phoneNumber;
 
-    // TODO aca ne zeli plate
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Salary> salary;
 
@@ -46,6 +45,17 @@ public abstract class User {
     private boolean isDeleted;
 
     public User(String firstName, String lastName, String emailAddress, String phoneNumber, List<Salary> salary, UserType type, boolean isDeleted) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
+        this.salary = salary;
+        this.type = type;
+        this.isDeleted = isDeleted;
+    }
+
+    public User(Long id, String firstName, String lastName, String emailAddress, String phoneNumber, List<Salary> salary, UserType type, boolean isDeleted) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
