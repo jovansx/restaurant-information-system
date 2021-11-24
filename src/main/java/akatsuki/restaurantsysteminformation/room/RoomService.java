@@ -18,6 +18,4 @@ public interface RoomService {
 
     void updateByRoomDTO(RoomUpdateDTO roomDTO, long id);
 
-    List<RestaurantTable> getRoomTables(long id);
-
 }
