@@ -1,4 +1,4 @@
-package akatsuki.restaurantsysteminformation.dishitem;
+package akatsuki.restaurantsysteminformation.drinkitem;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringIntegrationTest
 @WebAppConfiguration
-public class DishItemControllerTest {
-    private static final String URL_PREFIX = "/api/dish-item";
+public class DrinkItemsControllerTest {
+    private static final String URL_PREFIX = "/api/drink-items";
 
     private final MediaType mediaType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype());
@@ -42,35 +41,35 @@ public class DishItemControllerTest {
     }
 
     @Test
-    public void testGetAllActiveDishItems() throws Exception {
+    public void testGetAllActiveDrinkItems() throws Exception {
         mockMvc.perform(get(URL_PREFIX + "/active"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(mediaType))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(2)))
-                .andExpect(jsonPath("$.[*].initials").value(hasItem("E M")))
-                .andExpect(jsonPath("$.[*].name").value(hasItem("Chicken breast")))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(4)))
+                .andExpect(jsonPath("$.[*].initials").value(hasItem("S B")))
+                .andExpect(jsonPath("$.[*].name").value(hasItem("Apple juice,Orange juice")))
                 .andExpect(jsonPath("$.[*].state").value(hasItem("PREPARATION")));
     }
 
     @Test
     public void testGetOneActive() throws Exception {
-        mockMvc.perform(get(URL_PREFIX + "/2"))
+        mockMvc.perform(get(URL_PREFIX + "/active/5"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(mediaType))
-                .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.notes").value("Grill it a little bit longer!"))
-                .andExpect(jsonPath("$.state").value("PREPARATION"))
-                .andExpect(jsonPath("$.chef").value("Elon Musk"))
-                .andExpect(jsonPath("$.icon").value(""))
+                .andExpect(jsonPath("$.id").value(5))
+                .andExpect(jsonPath("$.notes").value(nullValue()))
+                .andExpect(jsonPath("$.state").value("ON_HOLD"))
+                .andExpect(jsonPath("$.bartender").value(""))
                 .andExpect(jsonPath("$.itemList", hasSize(1)))
-                .andExpect(jsonPath("$.itemList[0].itemName").value("Chicken breast"))
+                .andExpect(jsonPath("$.itemList[0].id").value(3))
+                .andExpect(jsonPath("$.itemList[0].itemName").value("Apple juice"))
                 .andExpect(jsonPath("$.itemList[0].amount").value(3));
     }
 
     @Test
     public void testGetOneActive_BadId() throws Exception {
-        mockMvc.perform(get(URL_PREFIX + "/-1"))
+        mockMvc.perform(get(URL_PREFIX + "/active/-1"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(mediaType));
     }
