@@ -24,6 +24,6 @@ public interface DishItemRepository extends JpaRepository<DishItem, Long> {
 
     @Query("select distinct d from DishItem d join fetch d.item i left join fetch d.chef b where d.active = true " +
             "and ( d.state = 1 or d.state = 2 or d.state = 3 )")
-    List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
+    Optional<List<DishItem>> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
 
 }

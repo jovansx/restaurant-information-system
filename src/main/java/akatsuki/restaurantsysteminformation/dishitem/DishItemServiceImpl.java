@@ -14,7 +14,7 @@ import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
+import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,9 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered() {
-        return dishItemRepository.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
+        return dishItemRepository.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered().orElseThrow(
+                () -> new DishItemNotFoundException("Dish items are not found in the database.")
+        );
     }
 
     @Override
@@ -91,15 +93,14 @@ public class DishItemServiceImpl implements DishItemService {
         else if (dishItem.getState().equals(ItemState.ON_HOLD) || dishItem.getState().equals(ItemState.PREPARATION))
             typeOfAllowedUser = UserType.CHEF;
         else
-            throw new DishItemNotFoundException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
+            throw new DishItemInvalidStateException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
 
         UnregisteredUser user = this.unregisteredUserService.getOne(userId);
         if (!user.getType().equals(typeOfAllowedUser))
-            throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
+            throw new UserTypeNotValidException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
 
-        if(dishItem.getState().equals(ItemState.NEW)) {
+        if (dishItem.getState().equals(ItemState.NEW)) {
             dishItem.setState(ItemState.ON_HOLD);
-
         } else if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
             dishItem.setChef(user);

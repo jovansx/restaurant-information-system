@@ -44,7 +44,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     @Override
     public void update(RegisteredUser registeredUser, long id) {
         RegisteredUser user = getOne(id);
-        validateUpdate(id, registeredUser);
+        validateUpdate(id, registeredUser, user.getType());
 
         user.setFirstName(registeredUser.getFirstName());
         user.setLastName(registeredUser.getLastName());
@@ -65,8 +65,11 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         registeredUserRepository.save(user);
     }
 
-    private void validateUpdate(long id, RegisteredUser registeredUser) {
+    private void validateUpdate(long id, RegisteredUser registeredUser, UserType oldType) {
         checkUserType(registeredUser.getType());
+        if (!oldType.equals(registeredUser.getType())) {
+            throw new UserTypeNotValidException("User type " + oldType.name().toLowerCase() + " cannot be changed to " + registeredUser.getType().name().toLowerCase() + ".");
+        }
         Optional<RegisteredUser> userByUsername = registeredUserRepository.findByUsername(registeredUser.getUsername());
         Optional<User> userByEmail = userService.findByEmail(registeredUser.getEmailAddress());
         Optional<User> userByPhoneNumber = userService.findByPhoneNumber(registeredUser.getPhoneNumber());

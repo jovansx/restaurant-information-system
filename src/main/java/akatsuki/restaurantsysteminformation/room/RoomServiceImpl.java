@@ -82,8 +82,7 @@ public class RoomServiceImpl implements RoomService {
         update(room, id);
     }
 
-    @Override
-    public List<RestaurantTable> getRoomTables(long id) {
+    private List<RestaurantTable> getRoomTables(long id) {
         return getOne(id).getRestaurantTables();
     }
 
