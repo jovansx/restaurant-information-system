@@ -11,11 +11,11 @@ public interface ItemService {
 
     List<Item> getAllActiveByCategory(String category);
 
-    void create(Item item);
+    Item create(Item item);
 
-    void update(Item item, long id);
+    Item update(Item item, long id);
 
-    void delete(long id);
+    Item delete(long id);
 
     void saveChanges();
 

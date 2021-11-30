@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(MockitoExtension.class)
-class ItemCategoryServiceIntTest {
+class ItemCategoryServiceIntegrationTest {
 
     @Autowired
     ItemCategoryServiceImpl itemCategoryService;
