@@ -11,13 +11,13 @@ public interface DishItemService {
 
     List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
 
-    void create(DishItemCreateDTO dishItem);
+    DishItem create(DishItemCreateDTO dishItem);
 
-    void update(DishItemCreateDTO dishItemCreateDTO, long id);
+    DishItem update(DishItemCreateDTO dishItemCreateDTO, long id);
 
     DishItem changeStateOfDishItems(long itemId, long userId);
 
-    void delete(long id);
+    DishItem delete(long id);
 
     boolean isChefActive(UnregisteredUser user);
 }

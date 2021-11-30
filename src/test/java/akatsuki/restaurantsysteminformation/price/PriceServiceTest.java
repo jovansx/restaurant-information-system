@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.price;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +16,6 @@ class PriceServiceTest {
     PriceRepository priceRepositoryMock;
 
     @Test
-    @DisplayName("Object is saved.")
     void save__ObjectIsSaved() {
         priceService.save(new Price());
         Mockito.verify(priceRepositoryMock, Mockito.times(1)).save(Mockito.any(Price.class));

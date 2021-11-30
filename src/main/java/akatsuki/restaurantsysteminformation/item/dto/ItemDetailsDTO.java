@@ -18,7 +18,7 @@ public class ItemDetailsDTO extends ItemDTO {
     private String code;
 
     public ItemDetailsDTO(Item item) {
-        super(item.getName(), item.getDescription(), new String(item.getIconBase64()), item.getType(), item.getComponents());
+        super(item.getName(), item.getDescription(), item.getIconBase64(), item.getType(), item.getComponents());
         this.itemCategory = new ItemCategoryDTO(item.getItemCategory());
         this.prices = item.getPrices().stream().map(PriceDTO::new).collect(Collectors.toList());
         this.code = item.getCode();
