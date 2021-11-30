@@ -235,13 +235,6 @@ class DishItemServiceTest {
     }
 
     @Test
-    void changeStateOfDishItems_InvalidItemState_ExceptionThrown() {
-        DishItem dishItem = new DishItem(1L, "Old note.", LocalDateTime.now(), false, ItemState.DELIVERED, true, 5, null, null);
-        Mockito.when(dishItemRepositoryMock.findOneActiveAndFetchItemAndChefAndStateIsNotDelivered(1L)).thenReturn(Optional.of(dishItem));
-        Assertions.assertThrows(DishItemInvalidStateException.class, () -> dishItemService.changeStateOfDishItems(1L, 1L));
-    }
-
-    @Test
     void changeStateOfDishItems_NotAllowedUserType_ExceptionThrown() {
         DishItem dishItem = new DishItem(1L, "Old note.", LocalDateTime.now(), false, ItemState.NEW, true, 5, null, null);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",

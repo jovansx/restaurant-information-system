@@ -123,7 +123,7 @@ class OrderServiceTest {
                 true, user, Collections.singletonList(dishItem), List.of(drinkItems));
 
         Mockito.when(itemServiceMock.getCurrentPriceOfItem(1L)).thenReturn(350.0);
-        Mockito.when(drinkItemsServiceMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(2L)).thenReturn(drinkItems);
+        Mockito.when(drinkItemsServiceMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(2L)).thenReturn(drinkItems);
         Mockito.when(itemServiceMock.getCurrentPriceOfItem(2L)).thenReturn(150.0);
 
         orderService.updateTotalPriceAndSave(order);

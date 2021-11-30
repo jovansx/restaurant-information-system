@@ -42,6 +42,13 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
+    public DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(long id) {
+        return drinkItemsRepository.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(id).orElseThrow(
+                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " are not found in the database.")
+        );
+    }
+
+    @Override
     public List<DrinkItems> findAllActiveAndFetchBartenderAndItems() {
         List<DrinkItems> drinkItemsList = drinkItemsRepository.findAllActiveAndFetchBartenderAndItemsAndStateIsPreparationOrReady();
         drinkItemsList.addAll(drinkItemsRepository.findAllActiveAndFetchItemsAndStateIsOnHold());
@@ -49,7 +56,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
-    public void create(DrinkItemsCreateDTO drinkItemsDTO) {
+    public DrinkItems create(DrinkItemsCreateDTO drinkItemsDTO) {
         Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
@@ -60,11 +67,12 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
         order.getDrinks().add(savedDrinkItems);
         orderService.updateTotalPriceAndSave(order);
+        return drinkItems;
     }
 
 
     @Override
-    public void update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
+    public DrinkItems update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
         Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
         List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
         checkDrinks(drinkItemsDTOList);
@@ -85,9 +93,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
             drinkItemService.delete(drinkItem);
         List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.setDrinkItemList(drinkItemsOfList);
+        drinkItems.setNotes(drinkItemsDTO.getNotes());
         drinkItemsRepository.save(drinkItems);
 
         orderService.updateTotalPriceAndSave(order);
+        return drinkItems;
     }
 
     @Override
@@ -96,10 +106,8 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         UserType typeOfAllowedUser;
         if (drinkItems.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
-        else if (drinkItems.getState().equals(ItemState.ON_HOLD) || drinkItems.getState().equals(ItemState.PREPARATION))
-            typeOfAllowedUser = UserType.BARTENDER;
         else
-            throw new DrinkItemsNotFoundException("Drink items with state of  " + drinkItems.getState().name() + " are not valid for changing states.");
+            typeOfAllowedUser = UserType.BARTENDER;
 
         UnregisteredUser bartender = this.unregisteredUserService.getOne(userId);
         if (!bartender.getType().equals(typeOfAllowedUser))
@@ -117,10 +125,10 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
-    public void delete(long id) {
+    public DrinkItems delete(long id) {
         DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id);
         if (!drinkItems.getState().equals(ItemState.ON_HOLD))
-            throw new DrinkItemsNotFoundException("Drink items with state of " + drinkItems.getState().name().toLowerCase() + " cannot be deleted.");
+            throw new DrinkItemsInvalidStateException("Drink items with state of " + drinkItems.getState().name().toLowerCase() + " cannot be deleted.");
         Order order = orderService.getOneByOrderItem(drinkItems);
         order.getDrinks().remove(drinkItems);
         orderService.updateTotalPriceAndSave(order);
@@ -128,6 +136,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         drinkItems.setDeleted(true);
         drinkItems.setActive(false);
         drinkItemsRepository.save(drinkItems);
+        return drinkItems;
     }
 
     @Override

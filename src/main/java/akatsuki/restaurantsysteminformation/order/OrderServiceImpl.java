@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
             totalPrice += dishItem.getAmount() * currentPrice;
         }
         for (DrinkItems drinkItems : order.getDrinks()) {
-            DrinkItems drinkItems1 = drinkItemsService.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(drinkItems.getId());
+            DrinkItems drinkItems1 = drinkItemsService.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(drinkItems.getId());
             for (DrinkItem drinkItem : drinkItems1.getDrinkItemList()) {
                 double currentPrice = itemService.getCurrentPriceOfItem(drinkItem.getItem().getId());
                 totalPrice += drinkItem.getAmount() * currentPrice;

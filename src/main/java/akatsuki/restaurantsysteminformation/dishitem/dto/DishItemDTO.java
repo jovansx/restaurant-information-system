@@ -28,7 +28,6 @@ public class DishItemDTO {
         this.notes = dishItem.getNotes();
         this.createdAt = Timestamp.valueOf(dishItem.getCreatedAt()).getTime() + "";
         this.state = dishItem.getState();
-        //TODO: Kad namestimo da za h2 bazu mogu ikone izbrisi ovaj if i ostavi samo prvi deo
         if (dishItem.getItem().getIconBase64() != null)
             this.icon = new String(dishItem.getItem().getIconBase64());
         else

@@ -222,13 +222,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    void changeStateOfDrinkItems_InvalidItemState_ExceptionThrown() {
-        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.DELIVERED, null, new ArrayList<>(), true);
-        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-        Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.changeStateOfDrinkItems(1L, 1L));
-    }
-
-    @Test
     void changeStateOfDrinkItems_NotAllowedUserType_ExceptionThrown() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -261,7 +254,7 @@ class DrinkItemsServiceTest {
     public void delete_InvalidId_ExceptionThrown() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-        Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.delete(1L));
+        Assertions.assertThrows(DrinkItemsInvalidStateException.class, () -> drinkItemsService.delete(1L));
     }
 
     @Test
