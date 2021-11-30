@@ -17,4 +17,9 @@ public class RestaurantTableDTO extends RestaurantTableCreateDTO {
         super(table.getName(), table.getState().toString(), table.getShape().toString());
         this.id = table.getId();
     }
+
+    public RestaurantTableDTO(String name, String state, String shape, long id) {
+        super(name, state, shape);
+        this.id = id;
+    }
 }
