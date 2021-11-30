@@ -14,7 +14,8 @@ public class DrinkItemServiceImpl implements DrinkItemService {
     }
 
     @Override
-    public void delete(DrinkItem drinkItem) {
+    public DrinkItem delete(DrinkItem drinkItem) {
         drinkItemRepository.delete(drinkItem);
+        return drinkItem;
     }
 }
