@@ -60,7 +60,7 @@ class ReportServiceTest {
     }
 
     @Test
-    void getQuarterlyReport() {
+    void getQuarterlyReport_Valid_ReturnedValidReportObject() {
         User user = new RegisteredUser();
         List<Salary> salaries = new ArrayList<>();
         salaries.add(new Salary(LocalDateTime.of(2020, 11, 1, 0, 0),800));
@@ -84,7 +84,7 @@ class ReportServiceTest {
     }
 
     @Test
-    void getWeeklyReport() {
+    void getWeeklyReport_Valid_ReturnedValidReportObject() {
         List<Order> orders = new ArrayList<>();
         Order order = new Order(); order.setTotalPrice(100);
         orders.add(order);
@@ -92,7 +92,7 @@ class ReportServiceTest {
 
         List<ReportItemDTO> weeks = new ArrayList<>();
 
-        ReportItemDTO day = new ReportItemDTO(0 + " - " + (0 + 1) * 7, 100, 0);
+        ReportItemDTO day = new ReportItemDTO("", 100, 0);
         weeks.add(day);
 
         ReportDTO foundReport = reportService.getWeeklyReport(1, 2021);
