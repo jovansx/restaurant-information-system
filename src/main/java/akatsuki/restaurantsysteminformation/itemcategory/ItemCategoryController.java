@@ -44,4 +44,5 @@ public class ItemCategoryController {
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemCategoryService.delete(id);
     }
+
 }
