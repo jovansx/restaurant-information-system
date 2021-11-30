@@ -26,7 +26,6 @@ public abstract class ItemDTO {
     @NotNull(message = "It cannot be null.")
     private List<String> components;
 
-    //TODO: Ovaj konstruktor mozemo ibrisati kad resimo da icon ne sme biti null pri popunjavanju baze
     public ItemDTO(String name, String description, byte[] icon, ItemType type, List<String> components) {
         this.name = name;
         this.description = description;
