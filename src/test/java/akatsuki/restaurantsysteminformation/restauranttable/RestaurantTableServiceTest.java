@@ -7,7 +7,6 @@ import akatsuki.restaurantsysteminformation.restauranttable.exception.Restaurant
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +26,6 @@ class RestaurantTableServiceTest {
     RestaurantTableRepository restaurantTableRepositoryMock;
 
     @Test
-    @DisplayName("When valid id is passed, object is returned")
     void getOne_ValidId_ObjectIsReturned() {
         RestaurantTable table = new RestaurantTable();
 
@@ -38,7 +36,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception occurs")
     void getOne_InvalidId_ExceptionThrown() {
         Mockito.when(restaurantTableRepositoryMock.findById(8000L)).thenReturn(Optional.empty());
 
@@ -46,7 +43,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, object is returned")
     void getOneWithOrder_ValidId_ObjectIsReturned() {
         RestaurantTable table = new RestaurantTable();
 
@@ -58,7 +54,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception occurs")
     void getOneWithOrder_InvalidId_ExceptionThrown() {
         Mockito.when(restaurantTableRepositoryMock.findByIdAndFetchOrder(8000L)).thenReturn(Optional.empty());
 
@@ -66,7 +61,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When there are objects in the database, they are returned as list.")
     void getAll_ObjectsExist_ReturnedAsList() {
         Mockito.when(restaurantTableRepositoryMock.findAll()).thenReturn(List.of(new RestaurantTable(), new RestaurantTable()));
 
@@ -76,7 +70,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When valid dto is passed, new object is created.")
     public void create_ValidObject_SavedObject() {
         RestaurantTable table = new RestaurantTable();
         table.setName("name1");
@@ -89,7 +82,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid name is passed, exception occurs.")
     public void create_InvalidName_ExceptionThrown() {
         RestaurantTable table = new RestaurantTable();
         table.setName("name1");
@@ -100,7 +92,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When valid dto is passed, new object is updated.")
     public void update_ValidObject_ObjectIsUpdated() {
         RestaurantTable table = new RestaurantTable();
         table.setName("name1");
@@ -119,7 +110,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid name is passed, exception occurs.")
     public void update_InvalidName_ExceptionThrown() {
         RestaurantTable table = new RestaurantTable();
         table.setId(2L);
@@ -132,7 +122,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, object is deleted.")
     public void delete_ValidId_ObjectRemoved() {
         RestaurantTable table = new RestaurantTable();
         table.setName("name1");
@@ -146,7 +135,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When table state is nov valid, exception occurs.")
     public void getActiveOrderIdByTableId_InvalidState_ExceptionThrown() {
         RestaurantTable table = new RestaurantTable();
         table.setState(TableState.FREE);
@@ -157,7 +145,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    @DisplayName("When valid table id is passed, order id is returned.")
     public void getActiveOrderIdByTableId_ValidId_IdReturned() {
         RestaurantTable table = new RestaurantTable();
         table.setState(TableState.TAKEN);

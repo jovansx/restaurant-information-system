@@ -20,7 +20,6 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,7 +58,6 @@ class OrderServiceTest {
     ItemService itemServiceMock;
 
     @Test
-    @DisplayName("When valid dto is passed, new object is created.")
     public void create_ValidDto_SavedObject() {
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -73,7 +71,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid user type is passed, exception should occur.")
     public void create_InvalidUserType_ExceptionThrown() {
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -85,7 +82,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is deleted.")
     public void delete_ValidId_SavedObject() {
         UnregisteredUser user = new UnregisteredUser();
         Order order = new Order(1L, 500, LocalDateTime.now(), false,
@@ -100,7 +96,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When order contains at least one item, exception should occur.")
     public void delete_OrderContainsItems_ExceptionThrown() {
         UnregisteredUser user = new UnregisteredUser();
         Order order = new Order(1L, 500, LocalDateTime.now(), false,
@@ -113,7 +108,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When valid entity is passed, required object is updated.")
     public void updateTotalPriceAndSave_ValidOrder_SavedObject() {
         Item sandwich = new Item(1L, "1111-2222-3333", "Chicken sandwich", "Very good chicken sandwich!", null, true, false, ItemType.DISH, null, new ItemCategory("Meat"), null);
         Item juice = new Item(2L, "2222-3333-4444", "Apple juice", "Very good apple juice!", null, true, false, ItemType.DRINK, null, new ItemCategory("Juice"), null);
@@ -139,7 +133,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is updated.")
     public void charge_ValidId_SavedObject() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -155,7 +148,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When order is discarded, exception should occur.")
     public void charge_OrderDiscarded_ExceptionThrown() {
         Order order = new Order(1L, 500, LocalDateTime.now(), true, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -166,7 +158,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When order is not active, exception should occur.")
     public void charge_OrderNotActive_ExceptionThrown() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -177,7 +168,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is updated.")
     public void discard_ValidId_SavedObject() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -194,7 +184,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When order is discarded, exception should occur.")
     public void discard_OrderDiscarded_ExceptionThrown() {
         Order order = new Order(1L, 500, LocalDateTime.now(), true, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -205,7 +194,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When order is not active, exception should occur.")
     public void discard_OrderNotActive_ExceptionThrown() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -216,7 +204,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When there is an order that contains the user, false is returned.")
     public void isWaiterActive_OrderContainsUser_ReturnedFalse() {
         UnregisteredUser user = new UnregisteredUser();
         List<Order> orders = List.of(new Order());
@@ -228,7 +215,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When there is no order that contains the user, true is returned.")
     public void isWaiterActive_OrderNotContainsUser_ReturnedTrue() {
         UnregisteredUser user = new UnregisteredUser();
         List<Order> orders = new ArrayList<>();
@@ -240,21 +226,18 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void getOneWithDishes_InvalidId_ExceptionThrown() {
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.empty());
         Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneWithDishes(1L));
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void getOneWithDrinks_InvalidId_ExceptionThrown() {
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.empty());
         Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneWithDrinks(1L));
     }
 
     @Test
-    @DisplayName("Returned list of existing orders with fetched collections of drinks and dishes.")
     public void getAllWithAll_FetchOrders_ReturnedList() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
         Order order2 = new Order(2L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
@@ -271,7 +254,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("Returned list of active existing orders with fetched collections of drinks and dishes.")
     public void getAllActive_FetchActiveOrders_ReturnedList() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
         Order order2 = new Order(2L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(new DrinkItems()));
@@ -288,7 +270,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is returned.")
     public void getOneByRestaurantTableId_ValidId_ReturnedObject() {
         Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
@@ -302,7 +283,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When dish item is passed, proper object is returned.")
     public void getOneByOrderItem_DishItem_ReturnedObject() {
         DishItem dishItem = new DishItem(1L, "Old note.", LocalDateTime.now(), false, ItemState.READY, true, 2, null, null);
         Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
@@ -320,7 +300,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When drink items is passed, proper object is returned.")
     public void getOneByOrderItem_DrinkItems_ReturnedObject() {
         DrinkItems drinkItems = new DrinkItems(2L, "He want good apple joice!", LocalDateTime.now().minusMinutes(5),
                 false, ItemState.PREPARATION, true, null, null);
@@ -339,7 +318,6 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("When there's no an order that contains passed order item, exception should occur.")
     public void getOneByOrderItem_DrinkItems_ExceptionThrown() {
         DrinkItems drinkItems = new DrinkItems(2L, "He want good apple joice!", LocalDateTime.now().minusMinutes(5),
                 false, ItemState.PREPARATION, true, null, null);

@@ -13,7 +13,6 @@ import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedExc
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +36,6 @@ class RoomServiceTest {
     RestaurantTableService restaurantTableServiceMock;
 
     @Test
-    @DisplayName("When valid id is passed, object is returned")
     void getOne_ValidId_ObjectIsReturned() {
         Room room = new Room();
 
@@ -48,7 +46,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception occurs")
     void getOne_InvalidId_ExceptionThrown() {
         Mockito.when(roomRepositoryMock.findById(8000L)).thenReturn(Optional.empty());
 
@@ -56,7 +53,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When there are objects in the database, they are returned as list.")
     void getAll_ObjectsExist_ReturnedAsList() {
         Mockito.when(roomRepositoryMock.findAll()).thenReturn(List.of(new Room(), new Room()));
 
@@ -66,7 +62,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When valid object is passed, new object is created.")
     public void create_ValidObject_SavedObject() {
         Room room = new Room();
         room.setName("name1");
@@ -79,7 +74,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid name is passed, exception occurs.")
     public void create_InvalidName_ExceptionThrown() {
         Room room = new Room();
         room.setName("name1");
@@ -90,7 +84,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When valid dto is passed, new object is updated.")
     public void update_ValidObject_ObjectIsUpdated() {
         Room room = new Room();
         room.setRestaurantTables(Collections.singletonList(new RestaurantTable()));
@@ -110,7 +103,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, object is deleted.")
     public void delete_ValidId_ObjectRemoved() {
         Room room = new Room();
         room.setName("name1");
@@ -130,7 +122,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When order exist, room cannot be deleted and exception occur.")
     public void delete_OrderExist_ExceptionThrown() {
         Room room = new Room();
         room.setName("name1");
@@ -147,7 +138,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When room name already exist, exception occur.")
     public void updateByRoomDTO_RoomNameExist_ExceptionThrown() {
         RoomUpdateDTO roomUpdateDTO = new RoomUpdateDTO(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), "name1");
 
@@ -160,7 +150,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When table is not in that room, exception occur.")
     public void updateByRoomDTO_TableNotInRoom_ExceptionThrown() {
         List<RestaurantTableCreateDTO> listCreate = new ArrayList<>();
         listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name()));
@@ -187,7 +176,6 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("When valid dto is passed, object is updated.")
     public void updateByRoomDTO_ValidDto_ObjectUpdated() {
         List<RestaurantTableCreateDTO> listCreate = new ArrayList<>();
         listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name()));

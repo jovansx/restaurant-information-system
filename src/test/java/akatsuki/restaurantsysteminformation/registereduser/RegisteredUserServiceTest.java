@@ -12,7 +12,6 @@ import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,7 +38,6 @@ class RegisteredUserServiceTest {
     UserService userServiceMock;
 
     @Test
-    @DisplayName("When valid id is passed, required object is returned.")
     public void getOne_ValidId_ReturnedObject() {
         RegisteredUser registeredUser = new RegisteredUser();
 
@@ -50,14 +48,12 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void getOne_InvalidId_ExceptionThrown() {
         Mockito.when(registeredUserRepositoryMock.findById(8000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(UserNotFoundException.class, () -> registeredUserService.getOne(8000L));
     }
 
     @Test
-    @DisplayName("When there are objects in the database, return list.")
     void getAll_RegisteredUsersExist_ReturnedList() {
         List<RegisteredUser> list = Collections.singletonList(new RegisteredUser());
         Mockito.when(registeredUserRepositoryMock.findAll()).thenReturn(list);
@@ -67,7 +63,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When there are not objects in the database, exception should occur.")
     void getAll_RegisteredUsersDontExist_ReturnedNull() {
         Mockito.when(registeredUserRepositoryMock.findAll()).thenReturn(null);
         List<RegisteredUser> foundList = registeredUserService.getAll();
@@ -75,7 +70,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When valid entity is passed, the object is saved.")
     void create_ValidEntity_SavedObject() {
         RegisteredUser user = new RegisteredUser(1L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael", "lock", new Role());
@@ -90,7 +84,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When username that already exist is passed, exception should occur.")
     void create_AlreadyExistUsername_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
@@ -103,7 +96,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid user type is passed, exception should occur.")
     void create_InvalidUserType_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.ADMIN, false, "michael123", "lock", new Role());
@@ -117,7 +109,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When valid entity and id are passed, required object is updated.")
     public void update_ValidEntityAndId_SavedObject() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
@@ -140,7 +131,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When user type is changed, exception should occur.")
     public void update_ChangedUserType_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
@@ -153,7 +143,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When username already exist, exception should occur.")
     public void update_UsernameAlreadyExist_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
@@ -171,7 +160,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When email already exist, exception should occur.")
     public void update_EmailAlreadyExist_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
@@ -189,7 +177,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When phone number already exist, exception should occur.")
     public void update_PhoneNumberAlreadyExist_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
@@ -207,7 +194,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is deleted.")
     public void delete_ValidId_SavedObject() {
         RegisteredUser user = new RegisteredUser(1L, "Micha", "Boo","michaboo@gmail.com",
                 "0645674444", null, UserType.MANAGER, false, "michael123", "boo", new Role());
@@ -219,7 +205,6 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("When user type is admin, exception should occur.")
     public void delete_InvalidType_ExceptionThrown() {
         RegisteredUser user = new RegisteredUser(1L, "Micha", "Boo","michaboo@gmail.com",
                 "0645674444", null, UserType.ADMIN, false, "michael123", "boo", new Role());

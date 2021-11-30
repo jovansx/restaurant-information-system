@@ -10,7 +10,6 @@ import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryN
 import akatsuki.restaurantsysteminformation.price.Price;
 import akatsuki.restaurantsysteminformation.price.PriceService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,14 +33,12 @@ class ItemServiceTest {
     PriceService priceServiceMock;
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     void getOne_InvalidId_ExceptionThrown() {
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(8000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOne(8000L));
     }
 
     @Test
-    @DisplayName("When valid id is passed, object is returned.")
     void getOne_ValidId_ReturnedObject() {
         Item item = new Item();
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
@@ -51,7 +48,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, object is returned.")
     void getOne_ValidIdWithComponents_ReturnedObjectWithComponents() {
         Item item = new Item();
         item.setComponents(Collections.singletonList("aca"));
@@ -63,7 +59,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When id of object which is not original is passed, exception should occur.")
     void getOneActive_NotOriginalItem_ExceptionThrown() {
         Item item = new Item();
         item.setOriginal(false);
@@ -72,7 +67,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, object is returned.")
     void getOneActive_ValidId_ReturnedObject() {
         Item item = new Item();
         item.setOriginal(true);
@@ -82,7 +76,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When there are active objects in the database, return list.")
     void getAllActive_ActiveItemsExist_ReturnedList() {
         List<Long> listOfIndexes = Arrays.asList(1L, 2L);
         Mockito.when(itemRepositoryMock.findAllActiveIndexes()).thenReturn(listOfIndexes);
@@ -97,7 +90,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When there are active objects with category whick is passed in the database, return list.")
     void getAllActiveByCategory_ActiveItemsWithEqualCategoryExist_ReturnedList() {
         Item item1 = new Item();
         Item item2 = new Item();
@@ -116,7 +108,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid category name is passed, exception should occur.")
     void getAllActiveByCategory_ActiveItemsWithEqualCategoryExist_ExceptionThrown() {
         Mockito.when(itemCategoryServiceMock.firstLetterUppercase("meat")).thenReturn("Meat");
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(null);
@@ -125,7 +116,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When there are copies in the database, requests will be fulfilled and copies will be deleted.")
     void saveChanges_Adding_NewAddedAndCopiesDeleted() {
         Item item1 = new Item();
         List<Item> itemList = List.of(item1);
@@ -139,7 +129,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When there are copies in the database, requests will be fulfilled and copies will be deleted.")
     void saveChanges_RemovingAndUpdating_SomeRemovedSomeUpdatedAndCopiesDeleted() {
         Item item1 = new Item();
         item1.setDeleted(false);
@@ -169,14 +158,12 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When there are copies in the database, copies will be deleted.")
     void discardChanges__CopiesDeleted() {
         itemService.discardChanges();
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).removeAllByOriginalIsFalse();
     }
 
     @Test
-    @DisplayName("When passed name of item category does not exist, exception will occur.")
     void create_CategoryNotExist_ExceptionThrown() {
         Item item = new Item();
         item.setItemCategory(new ItemCategory("Meat"));
@@ -187,7 +174,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When passed code of item already exist, exception will occur.")
     void create_CodeExist_ExceptionThrown() {
         Item item = new Item();
 
@@ -201,7 +187,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When valid item is passed, object will be created.")
     void create_ValidItem_ObjectIsCreated() {
         Item item = new Item();
         item.setPrices(Collections.singletonList(new Price(LocalDateTime.now(), 22)));
@@ -218,7 +203,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When passed invalid item id, exception will occur.")
     void update_InvalidItemId_ExceptionThrown() {
         Item item = new Item();
         item.setItemCategory(new ItemCategory("Meat"));
@@ -230,7 +214,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When passed invalid code of item, exception will occur.")
     void update_InvalidItemCode_ExceptionThrown() {
         ItemCategory itemCategory = new ItemCategory("Meat");
         Item item = new Item();
@@ -248,7 +231,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When passed invalid code of item, exception will occur.")
     void update_MoreCopiesThatOne_ExceptionThrown() {
         Item item = new Item();
         item.setCode("code1");
@@ -262,7 +244,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When first time passed valid item, object is updated.")
     void update_FirstTimeValidUpdate_ObjectUpdated() {
         Item item = new Item();
         item.setCode("code1");
@@ -284,7 +265,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When second time passed valid item, object is updated.")
     void update_SecondTimeValidUpdate_ObjectUpdated() {
         Item item = new Item();
         item.setCode("code1");
@@ -312,7 +292,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When they are more copies than 1, exception will occur.")
     void delete_AlreadyDeleted_ExceptionThrown() {
         Item item = new Item();
         item.setOriginal(true);
@@ -326,7 +305,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When item is deleted first time, item will be deleted.")
     void delete_FirstValidDelete_ItemIsDeleted() {
         Item item = new Item();
         item.setOriginal(true);
@@ -345,7 +323,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When they is 1 copy already deleted, exception will occur.")
     void delete_OneCopyAlreadyDeleted_ExceptionThrown() {
         Item item = new Item();
         item.setOriginal(true);
@@ -368,7 +345,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("When they is 1 valid copy, object is deleted.")
     void delete_OneValidCopy_ExceptionThrown() {
         Item item = new Item();
         item.setOriginal(true);
