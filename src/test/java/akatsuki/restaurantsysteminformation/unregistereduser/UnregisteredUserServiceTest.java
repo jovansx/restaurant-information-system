@@ -7,6 +7,7 @@ import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.salary.Salary;
 import akatsuki.restaurantsysteminformation.user.UserServiceImpl;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
+import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -43,15 +44,6 @@ class UnregisteredUserServiceTest {
     private DishItemService dishItemServiceMock;
 
     @Test
-    void getOne() {
-    }
-
-    @Test
-    void getAll() {
-    }
-
-    // in user service test invalid email, invalid phone
-    @Test
     @DisplayName("When valid entity is passed, object is created.")
     void create_Valid_SavedObject() {
         UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "9999");
@@ -75,14 +67,16 @@ class UnregisteredUserServiceTest {
     }
 
     @Test
+    @DisplayName("When valid object and id are passed, required object is changed.")
     void update_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "9999");
+        UnregisteredUser user = new UnregisteredUser("Milan", "Stankovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "9999");
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(new UnregisteredUser()));
         unregisteredUserService.update(user, 1L);
         Mockito.verify(unregisteredUserRepositoryMock, Mockito.times(1)).save(Mockito.any(UnregisteredUser.class));
     }
 
     @Test
+    @DisplayName("When invalid pin code is passed, exception should occur.")
     void update_InvalidPin_ExceptionThrown() {
         UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
         user.setId(1L);
@@ -101,8 +95,9 @@ class UnregisteredUserServiceTest {
     }
 
     @Test
+    @DisplayName("When valid id is passed, required object is deleted.")
     void delete_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser();
+        UnregisteredUser user = new UnregisteredUser("Milan", "Petrovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
         user.setType(UserType.WAITER);
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(user));
         Mockito.when(orderServiceMock.isWaiterActive(user)).thenReturn(true);
@@ -111,6 +106,25 @@ class UnregisteredUserServiceTest {
     }
 
     @Test
-    void checkPinCode() {
+    @DisplayName("When valid pin code is passed, required object is returned.")
+    void checkPinCode_Valid_ReturnedObject() {
+        UnregisteredUser user = new UnregisteredUser("Milan", "Petrovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
+        Mockito.when(unregisteredUserRepositoryMock.findByPinCode("1111")).thenReturn(Optional.of(user));
+        UnregisteredUser foundUser = unregisteredUserService.checkPinCode("1111", UserType.WAITER);
+        Assertions.assertEquals(foundUser, user);
+    }
+
+    @Test
+    @DisplayName("When invalid pin code is passed, exception should occur.")
+    void checkPinCode_InvalidPinCode_ExceptionThrown() {
+        Mockito.when(unregisteredUserRepositoryMock.findByPinCode("8989")).thenReturn(Optional.empty());
+        Assertions.assertThrows(UserNotFoundException.class, () -> unregisteredUserService.checkPinCode("8989", UserType.WAITER));
+    }
+
+    @Test
+    @DisplayName("When invalid user typ is passed, exception should occur.")
+    void checkPinCode_InvalidUserType_ExceptionThrown() {
+        Mockito.when(unregisteredUserRepositoryMock.findByPinCode("8989")).thenReturn(Optional.empty());
+        Assertions.assertThrows(UserNotFoundException.class, () -> unregisteredUserService.checkPinCode("8989", UserType.MANAGER));
     }
 }
