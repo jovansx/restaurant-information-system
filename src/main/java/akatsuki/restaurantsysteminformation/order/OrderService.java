@@ -22,15 +22,15 @@ public interface OrderService {
 
     List<Order> getAllActive();
 
-    void create(OrderCreateDTO order);
+    Order create(OrderCreateDTO order);
 
-    void delete(long id);
+    Order delete(long id);
 
-    void updateTotalPriceAndSave(Order order);
+    Order updateTotalPriceAndSave(Order order);
 
-    void charge(long id);
+    Order charge(long id);
 
-    void discard(long id);
+    Order discard(long id);
 
     boolean isWaiterActive(UnregisteredUser user);
 
