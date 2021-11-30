@@ -179,6 +179,8 @@ public class DbConfiguration {
             dishItemRepository.save(dishItem2);
             DishItem dishItem3 = new DishItem(null, LocalDateTime.now().minusMinutes(20), false, ItemState.READY, 1, chef1, chickenBreast, true);
             dishItemRepository.save(dishItem3);
+            DishItem dishItem4 = new DishItem(null, LocalDateTime.now().minusMinutes(20), false, ItemState.DELIVERED, 10, chef1, chickenBreast, true);
+            dishItemRepository.save(dishItem4);
 //          DrinkItem
             DrinkItem drinkItem1 = new DrinkItem(1, juice1);
             drinkItemRepository.save(drinkItem1);
@@ -200,7 +202,7 @@ public class DbConfiguration {
             DrinkItems drinkItems4 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.READY, bartender1, Collections.singletonList(drinkItem5), true);
             drinkItemsRepository.save(drinkItems4);
 //          Order
-            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
+            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3, dishItem4), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
             //dummy
             Order order2 = new Order(1100, LocalDateTime.of(2021, 1, 1, 0, 0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order3 = new Order(1000, LocalDateTime.of(2021, 2, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());

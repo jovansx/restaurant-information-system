@@ -69,16 +69,10 @@ class DishItemServiceTest {
     @Test
     void findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered_DishItemsExist_ReturnedList() {
         List<DishItem> list = Collections.singletonList(new DishItem());
-        Mockito.when(dishItemRepositoryMock.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered()).thenReturn(Optional.of(list));
+        Mockito.when(dishItemRepositoryMock.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered()).thenReturn(list);
 
         List<DishItem> foundList = dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
         Assertions.assertEquals(foundList, list);
-    }
-
-    @Test
-    void findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered_DishItemsDontExist_ExceptionThrown() {
-        Mockito.when(dishItemRepositoryMock.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered()).thenReturn(Optional.empty());
-        Assertions.assertThrows(DishItemNotFoundException.class, () -> dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered());
     }
 
     @Test

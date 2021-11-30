@@ -38,13 +38,11 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered() {
-        return dishItemRepository.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered().orElseThrow(
-                () -> new DishItemNotFoundException("Dish items are not found in the database.")
-        );
+        return dishItemRepository.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
     }
 
     @Override
-    public void create(DishItemCreateDTO itemCreateDTO) {
+    public DishItem create(DishItemCreateDTO itemCreateDTO) {
         Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
         Item item = itemService.getOne(itemCreateDTO.getItemId());
         if (!item.getType().equals(ItemType.DISH))
@@ -53,10 +51,11 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem = dishItemRepository.save(dishItem);
         order.getDishes().add(dishItem);
         orderService.updateTotalPriceAndSave(order);
+        return dishItem;
     }
 
     @Override
-    public void update(DishItemCreateDTO itemCreateDTO, long id) {
+    public DishItem update(DishItemCreateDTO itemCreateDTO, long id) {
         Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
         Item item = itemService.getOne(itemCreateDTO.getItemId());
         if (!item.getType().equals(ItemType.DISH))
@@ -80,6 +79,7 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setAmount(itemCreateDTO.getAmount());
         dishItem.setNotes(itemCreateDTO.getNotes());
         orderService.updateTotalPriceAndSave(order);
+        return dishItem;
     }
 
     @Override
@@ -90,10 +90,8 @@ public class DishItemServiceImpl implements DishItemService {
         UserType typeOfAllowedUser;
         if (dishItem.getState().equals(ItemState.NEW) || dishItem.getState().equals(ItemState.READY))
             typeOfAllowedUser = UserType.WAITER;
-        else if (dishItem.getState().equals(ItemState.ON_HOLD) || dishItem.getState().equals(ItemState.PREPARATION))
-            typeOfAllowedUser = UserType.CHEF;
         else
-            throw new DishItemInvalidStateException("Dish item with state of  " + dishItem.getState().name() + " is not valid for changing states.");
+            typeOfAllowedUser = UserType.CHEF;
 
         UnregisteredUser user = this.unregisteredUserService.getOne(userId);
         if (!user.getType().equals(typeOfAllowedUser))
@@ -113,7 +111,7 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
-    public void delete(long id) {
+    public DishItem delete(long id) {
         DishItem dishItem = getOneActive(id);
 
         Order order = orderService.getOneByOrderItem(dishItem);
@@ -123,6 +121,7 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setDeleted(true);
         dishItem.setActive(false);
         dishItemRepository.save(dishItem);
+        return dishItem;
     }
 
     @Override
