@@ -63,14 +63,17 @@ insert into item_category (name) values
 ('Juices'),
 ('Cocktails'),
 ('Sandwich'),
-('Meat');
+('Meat'),
+('Soup');
 
 insert into item (code, description, icon_base_64, name, original, type, item_category_id, deleted) values
 ('c6d7d3c8-2273-4343-a6dc-87efe43867fa', 'Very good apple juice!', null,'Apple juice', true, 1, 1, false),
 ('a324175f-742d-4211-93ea-0b5280412306', 'Very good orange juice!',  null, 'Orange juice', true, 1, 1, false),
 ('a8b9aab8-f7dc-4966-a3eb-09eecb7fa9d9', 'Very good cocktail!', null, 'Sex on the beach', true, 1, 2, false),
 ('7807ec36-1888-44a9-8fc5-ca11df02492f', 'Very good chicken sandwich!', null, 'Chicken sandwich', true, 0, 3, false),
-('9a191868-228d-4dbb-819f-ca615d29fefe', 'Very good chicken breast', null, 'Chicken breast', true, 0, 4, false);
+('9a191868-228d-4dbb-819f-ca615d29fefe', 'Very good chicken breast', null, 'Chicken breast', true, 0, 4, false),
+('9a191868-228d-4dbb-819f-ca615d29fefe', 'Solid chicken breast', null, 'Chicken breast', false, 0, 4, false),
+('7807ec36-1888-44a9-8fc5-ca11df02492f', 'Bad chicken sandwich!', null, 'Chicken sandwich', false, 0, 3, true);
 
 insert into item_components (item_id, components) values
 (1, 'Apple'),
@@ -84,7 +87,9 @@ insert into item_components (item_id, components) values
 (4, 'Tomato'),
 (4, 'Bread'),
 (5, 'Chicken'),
-(5, 'Potato');
+(5, 'Potato'),
+(6, 'Chicken'),
+(6, 'Potato');
 
 insert into price (created_at, value) values
 ('2021-11-03T00:00:00.000', 5),
@@ -93,7 +98,8 @@ insert into price (created_at, value) values
 ('2021-11-02T00:00:00.000', 10),
 ('2021-05-02T00:00:00.000', 150),
 ('2020-04-03T00:00:00.000', 100),
-('2019-04-03T00:00:00.000', 100);
+('2019-04-03T00:00:00.000', 100),
+('2019-04-04T00:00:00.000', 200);
 
 insert into item_prices (item_id, prices_id) values
 (1, 1),
@@ -102,7 +108,8 @@ insert into item_prices (item_id, prices_id) values
 (3, 4),
 (4, 5),
 (4, 6),
-(5, 7);
+(5, 7),
+(6, 8);
 
 insert into my_order_item (active, created_at, deleted, notes, state) values
 (true, '2021-11-30T10:05:00.000', false, null, 1),
@@ -148,8 +155,8 @@ insert into my_order (active, created_at, discarded, total_price, waiter_id) val
 (true, '2021-01-31T00:00:00.000', false, 8, 1),
 (true, '2021-01-01T02:00:00.000', false, 1100, 1),
 (true, '2021-02-01T02:02:00.000', false, 1000, 1),
-(true, '2021-03-01T02:02:00.000', false, 1200, 1),
-(true, '2021-03-10T02:00:00.000', false, 1200, 1),
+(false, '2021-03-01T02:02:00.000', true, 1200, 1),
+(false, '2021-03-10T02:00:00.000', false, 1200, 1),
 (true, '2021-03-31T02:00:00.000', false, 1200, 1),
 (true, '2021-05-01T02:00:00.000', false, 1200, 1),
 (true, '2021-05-20T02:00:00.000', false, 1200, 1),

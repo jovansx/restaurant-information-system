@@ -9,11 +9,11 @@ public interface ItemCategoryService {
 
     List<ItemCategory> getAll();
 
-    void create(ItemCategory category);
+    ItemCategory create(ItemCategory category);
 
-    void update(ItemCategory category, long id);
+    ItemCategory update(ItemCategory category, long id);
 
-    void delete(long id);
+    ItemCategory delete(long id);
 
     void save(ItemCategory itemCategory);
 

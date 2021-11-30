@@ -99,26 +99,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void create(OrderCreateDTO orderDTO) {
+    public Order create(OrderCreateDTO orderDTO) {
         UnregisteredUser waiter = unregisteredUserService.getOne(orderDTO.getWaiterId());
         if (waiter.getType() != UserType.WAITER)
             throw new UserTypeNotValidException("User has to be waiter!");
 
         Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
+        return order;
     }
 
     @Override
-    public void delete(long id) {
+    public Order delete(long id) {
         Order order = getOneWithAll(id);
         if (order.getDishes().isEmpty() && order.getDrinks().isEmpty())
             orderRepository.deleteById(id);
         else
             throw new OrderDeletionException("Order " + id + " contains order items, it can't be deleted!");
+        return order;
     }
 
     @Override
-    public void updateTotalPriceAndSave(Order order) {
+    public Order updateTotalPriceAndSave(Order order) {
         double totalPrice = 0;
         for (DishItem dishItem : order.getDishes()) {
             double currentPrice = itemService.getCurrentPriceOfItem(dishItem.getItem().getId());
@@ -133,10 +135,11 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
+        return order;
     }
 
     @Override
-    public void charge(long id) {
+    public Order charge(long id) {
         Order order = getOneWithAll(id);
         if (order.isDiscarded())
             throw new OrderDiscardException("Order with the id " + id + " is discarded, can't be charged.");
@@ -146,10 +149,11 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+        return order;
     }
 
     @Override
-    public void discard(long id) {
+    public Order discard(long id) {
         Order order = getOneWithAll(id);
         if (order.isDiscarded())
             throw new OrderDiscardException("Order with the id " + id + " is already discarded.");
@@ -160,6 +164,7 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+        return order;
     }
 
     @Override

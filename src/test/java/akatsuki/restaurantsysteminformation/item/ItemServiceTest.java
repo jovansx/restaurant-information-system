@@ -174,19 +174,6 @@ class ItemServiceTest {
     }
 
     @Test
-    void create_CodeExist_ExceptionThrown() {
-        Item item = new Item();
-
-        ItemCategory itemCategory = new ItemCategory("Meat");
-        item.setItemCategory(itemCategory);
-
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
-        Mockito.when(itemRepositoryMock.findAllByCode(Mockito.any())).thenReturn(Collections.singletonList(new Item()));
-
-        Assertions.assertThrows(ItemExistsException.class, () -> itemService.create(item));
-    }
-
-    @Test
     void create_ValidItem_ObjectIsCreated() {
         Item item = new Item();
         item.setPrices(Collections.singletonList(new Price(LocalDateTime.now(), 22)));
@@ -194,9 +181,9 @@ class ItemServiceTest {
         item.setItemCategory(itemCategory);
 
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
-        Mockito.when(itemRepositoryMock.findAllByCode(Mockito.any())).thenReturn(new ArrayList<>());
 
-        itemService.create(item);
+        Item createdItem = itemService.create(item);
+        Assertions.assertNotNull(createdItem);
 
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(item);
         Mockito.verify(priceServiceMock, Mockito.times(1)).save(item.getPrices().get(0));
@@ -228,19 +215,6 @@ class ItemServiceTest {
         Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item2));
 
         Assertions.assertThrows(ItemCodeNotValidException.class, () -> itemService.update(item, 1L));
-    }
-
-    @Test
-    void update_MoreCopiesThatOne_ExceptionThrown() {
-        Item item = new Item();
-        item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
-
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
-        Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(Arrays.asList(new Item(), new Item(), new Item()));
-
-        Assertions.assertThrows(ItemExistsException.class, () -> itemService.update(item, 1L));
     }
 
     @Test
@@ -289,19 +263,6 @@ class ItemServiceTest {
         itemService.update(item, 1L);
 
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(Mockito.any(Item.class));
-    }
-
-    @Test
-    void delete_AlreadyDeleted_ExceptionThrown() {
-        Item item = new Item();
-        item.setOriginal(true);
-        item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
-
-        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(Arrays.asList(new Item(), new Item(), new Item()));
-
-        Assertions.assertThrows(ItemAlreadyDeletedException.class, () -> itemService.delete(1L));
     }
 
     @Test
