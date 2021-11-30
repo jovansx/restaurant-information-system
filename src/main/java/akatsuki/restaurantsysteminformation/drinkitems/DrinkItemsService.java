@@ -9,15 +9,17 @@ public interface DrinkItemsService {
 
     DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id);
 
+    DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(long id);
+
     List<DrinkItems> findAllActiveAndFetchBartenderAndItems();
 
-    void create(DrinkItemsCreateDTO drinkItemsDTO);
+    DrinkItems create(DrinkItemsCreateDTO drinkItemsDTO);
 
-    void update(DrinkItemsCreateDTO drinkItemsDTO, long id);
+    DrinkItems update(DrinkItemsCreateDTO drinkItemsDTO, long id);
 
     DrinkItems changeStateOfDrinkItems(long itemId, long userId);
 
-    void delete(long id);
+    DrinkItems delete(long id);
 
     boolean isBartenderActive(UnregisteredUser user);
 

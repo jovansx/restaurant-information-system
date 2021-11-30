@@ -179,6 +179,7 @@ public class DbConfiguration {
             dishItemRepository.save(dishItem2);
             DishItem dishItem3 = new DishItem(null, LocalDateTime.now().minusMinutes(20), false, ItemState.READY, 1, chef1, chickenBreast, true);
             dishItemRepository.save(dishItem3);
+            //TODO: dodato
             DishItem dishItem4 = new DishItem(null, LocalDateTime.now().minusMinutes(20), false, ItemState.DELIVERED, 10, chef1, chickenBreast, true);
             dishItemRepository.save(dishItem4);
 //          DrinkItem
@@ -192,6 +193,9 @@ public class DbConfiguration {
             drinkItemRepository.save(drinkItem4);
             DrinkItem drinkItem5 = new DrinkItem(1, cocktail1);
             drinkItemRepository.save(drinkItem5);
+            //TODO: dodato
+            DrinkItem drinkItem6 = new DrinkItem(1, cocktail1);
+            drinkItemRepository.save(drinkItem6);
 //          DrinkItems
             DrinkItems drinkItems1 = new DrinkItems("He want good apple joice!", LocalDateTime.now().minusMinutes(5), false, ItemState.PREPARATION, bartender1, Arrays.asList(drinkItem1, drinkItem2), true);
             drinkItemsRepository.save(drinkItems1);
@@ -201,8 +205,12 @@ public class DbConfiguration {
             drinkItemsRepository.save(drinkItems3);
             DrinkItems drinkItems4 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.READY, bartender1, Collections.singletonList(drinkItem5), true);
             drinkItemsRepository.save(drinkItems4);
+            //TODO: dodato
+            DrinkItems drinkItems5 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.DELIVERED, null, Collections.singletonList(drinkItem6), true);
+            drinkItemsRepository.save(drinkItems5);
 //          Order
-            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3, dishItem4), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4));
+            //TODO: izmenjeno
+            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3, dishItem4), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4, drinkItems5));
             //dummy
             Order order2 = new Order(1100, LocalDateTime.of(2021, 1, 1, 0, 0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order3 = new Order(1000, LocalDateTime.of(2021, 2, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
