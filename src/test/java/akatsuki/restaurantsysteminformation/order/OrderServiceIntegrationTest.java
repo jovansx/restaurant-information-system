@@ -132,6 +132,8 @@ class OrderServiceIntegrationTest {
         assertTrue(isActive);
     }
 
+    //TODO fali test getOneWithAll
+
     @Test
     public void getOneWithDishes_InvalidId_ExceptionThrown() {
         Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneWithDishes(1000L));

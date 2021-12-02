@@ -2,7 +2,6 @@ package akatsuki.restaurantsysteminformation.user;
 
 import akatsuki.restaurantsysteminformation.registereduser.RegisteredUser;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,8 +11,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

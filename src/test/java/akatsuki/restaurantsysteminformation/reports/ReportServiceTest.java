@@ -39,14 +39,15 @@ class ReportServiceTest {
     void getMonthlyReport_Valid_ReturnedValidReportObject() {
         User user = new RegisteredUser();
         List<Salary> salaries = new ArrayList<>();
-        salaries.add(new Salary(LocalDateTime.of(2020, 11, 1, 0, 0),800));
+        salaries.add(new Salary(LocalDateTime.of(2020, 11, 1, 0, 0), 800));
         user.setSalary(salaries);
         List<User> list = Collections.singletonList(user);
         Mockito.when(userRepositoryMock.findAll()).thenReturn(list);
         List<Order> orders = new ArrayList<>();
-        Order order = new Order(); order.setTotalPrice(100);
+        Order order = new Order();
+        order.setTotalPrice(100);
         orders.add(order);
-        Mockito.when(orderRepositoryMock.findAllByCreatedAtBetween(Mockito.any(),Mockito.any())).thenReturn(orders);
+        Mockito.when(orderRepositoryMock.findAllByCreatedAtBetween(Mockito.any(), Mockito.any())).thenReturn(orders);
 
         List<ReportItemDTO> months = new ArrayList<>();
         ReportItemDTO month = new ReportItemDTO("", 100, 800);
@@ -63,15 +64,16 @@ class ReportServiceTest {
     void getQuarterlyReport_Valid_ReturnedValidReportObject() {
         User user = new RegisteredUser();
         List<Salary> salaries = new ArrayList<>();
-        salaries.add(new Salary(LocalDateTime.of(2020, 11, 1, 0, 0),800));
+        salaries.add(new Salary(LocalDateTime.of(2020, 11, 1, 0, 0), 800));
         user.setSalary(salaries);
         List<User> list = Collections.singletonList(user);
 
         Mockito.when(userRepositoryMock.findAll()).thenReturn(list);
         List<Order> orders = new ArrayList<>();
-        Order order = new Order(); order.setTotalPrice(100);
+        Order order = new Order();
+        order.setTotalPrice(100);
         orders.add(order);
-        Mockito.when(orderRepositoryMock.findAllByCreatedAtBetween(Mockito.any(),Mockito.any())).thenReturn(orders);
+        Mockito.when(orderRepositoryMock.findAllByCreatedAtBetween(Mockito.any(), Mockito.any())).thenReturn(orders);
 
         List<ReportItemDTO> quarters = new ArrayList<>();
         ReportItemDTO quarter = new ReportItemDTO("", 300, 2400);
@@ -86,9 +88,10 @@ class ReportServiceTest {
     @Test
     void getWeeklyReport_Valid_ReturnedValidReportObject() {
         List<Order> orders = new ArrayList<>();
-        Order order = new Order(); order.setTotalPrice(100);
+        Order order = new Order();
+        order.setTotalPrice(100);
         orders.add(order);
-        Mockito.when(orderRepositoryMock.findAllByCreatedAtBetween(Mockito.any(),Mockito.any())).thenReturn(orders);
+        Mockito.when(orderRepositoryMock.findAllByCreatedAtBetween(Mockito.any(), Mockito.any())).thenReturn(orders);
 
         List<ReportItemDTO> weeks = new ArrayList<>();
 
