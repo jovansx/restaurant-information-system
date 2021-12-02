@@ -46,7 +46,7 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When valid entity is passed, object is created.")
     void create_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "9999");
+        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "9999");
         unregisteredUserService.create(user);
         Mockito.verify(unregisteredUserRepositoryMock, Mockito.times(1)).save(Mockito.any(UnregisteredUser.class));
     }
@@ -54,7 +54,7 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When invalid pin is passed, exception should occur.")
     void create_InvalidPin_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
+        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1111");
         Mockito.when(unregisteredUserRepositoryMock.findByPinCode("1111")).thenReturn(Optional.of(new UnregisteredUser()));
         Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.create(user));
     }
@@ -62,14 +62,14 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When invalid user type is passed, exception should occur.")
     void create_InvalidUserType_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.MANAGER, false, "1111");
+        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.MANAGER, false, "1111");
         Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.create(user));
     }
 
     @Test
     @DisplayName("When valid object and id are passed, required object is changed.")
     void update_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser("Milan", "Stankovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "9999");
+        UnregisteredUser user = new UnregisteredUser("Milan", "Stankovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "9999");
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(new UnregisteredUser()));
         unregisteredUserService.update(user, 1L);
         Mockito.verify(unregisteredUserRepositoryMock, Mockito.times(1)).save(Mockito.any(UnregisteredUser.class));
@@ -78,10 +78,11 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When invalid pin code is passed, exception should occur.")
     void update_InvalidPin_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
+        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1111");
         user.setId(1L);
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(new UnregisteredUser()));
-        UnregisteredUser un = new UnregisteredUser(); un.setId(2L);
+        UnregisteredUser un = new UnregisteredUser();
+        un.setId(2L);
         Mockito.when(unregisteredUserRepositoryMock.findByPinCode("1111")).thenReturn(Optional.of(un));
         Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.update(user, 1L));
     }
@@ -89,7 +90,7 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When invalid user type is passed, exception should occur.")
     void update_InvalidUserType_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.MANAGER, false, "1111");
+        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.MANAGER, false, "1111");
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(new UnregisteredUser()));
         Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.update(user, 1L));
     }
@@ -97,7 +98,7 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When valid id is passed, required object is deleted.")
     void delete_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser("Milan", "Petrovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
+        UnregisteredUser user = new UnregisteredUser("Milan", "Petrovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1111");
         user.setType(UserType.WAITER);
         Mockito.when(unregisteredUserRepositoryMock.findById(1L)).thenReturn(Optional.of(user));
         Mockito.when(orderServiceMock.isWaiterActive(user)).thenReturn(true);
@@ -108,7 +109,7 @@ class UnregisteredUserServiceTest {
     @Test
     @DisplayName("When valid pin code is passed, required object is returned.")
     void checkPinCode_Valid_ReturnedObject() {
-        UnregisteredUser user = new UnregisteredUser("Milan", "Petrovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(),1000000)), UserType.WAITER, false, "1111");
+        UnregisteredUser user = new UnregisteredUser("Milan", "Petrovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1111");
         Mockito.when(unregisteredUserRepositoryMock.findByPinCode("1111")).thenReturn(Optional.of(user));
         UnregisteredUser foundUser = unregisteredUserService.checkPinCode("1111", UserType.WAITER);
         Assertions.assertEquals(foundUser, user);

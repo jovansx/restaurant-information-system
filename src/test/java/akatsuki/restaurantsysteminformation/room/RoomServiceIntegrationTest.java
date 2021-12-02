@@ -1,10 +1,5 @@
 package akatsuki.restaurantsysteminformation.room;
 
-import akatsuki.restaurantsysteminformation.enums.TableShape;
-import akatsuki.restaurantsysteminformation.enums.TableState;
-import akatsuki.restaurantsysteminformation.order.Order;
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
@@ -14,19 +9,12 @@ import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -63,7 +51,6 @@ class RoomServiceIntegrationTest {
 
     @Test
     public void update_ValidObject_ObjectIsUpdated() {
-
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
         newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE"));
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
