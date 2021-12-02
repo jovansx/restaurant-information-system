@@ -30,8 +30,8 @@ public class ItemCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid ItemCategoryDTO dto) {
-        itemCategoryService.create(new ItemCategory(dto.getName()));
+    public String create(@RequestBody @Valid ItemCategoryDTO dto) {
+        return itemCategoryService.create(new ItemCategory(dto.getName())).getId().toString();
     }
 
     @PutMapping("/{id}")
