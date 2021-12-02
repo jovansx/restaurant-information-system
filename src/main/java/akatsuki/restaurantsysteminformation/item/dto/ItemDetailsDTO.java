@@ -3,7 +3,9 @@ package akatsuki.restaurantsysteminformation.item.dto;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
 import akatsuki.restaurantsysteminformation.price.dto.PriceDTO;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemDetailsDTO extends ItemDTO {
 
     private ItemCategoryDTO itemCategory;

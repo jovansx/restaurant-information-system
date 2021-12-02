@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
+import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
 import lombok.*;
@@ -71,6 +72,19 @@ public class Item {
 
     public Item(ItemCreateDTO itemDTO) {
         this.code = UUID.randomUUID().toString();
+        this.name = itemDTO.getName();
+        this.description = itemDTO.getDescription();
+        this.iconBase64 = itemDTO.getIconBase64().getBytes();
+        this.original = false;
+        this.deleted = false;
+        this.type = itemDTO.getType();
+        this.components = new ArrayList<>(itemDTO.getComponents());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
+    }
+
+    public Item(ItemUpdateDTO itemDTO) {
+        this.code = itemDTO.getCode();
         this.name = itemDTO.getName();
         this.description = itemDTO.getDescription();
         this.iconBase64 = itemDTO.getIconBase64().getBytes();

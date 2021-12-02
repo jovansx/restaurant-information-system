@@ -32,6 +32,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Item getOneById(Long id) {
+        return itemRepository.findById(id).orElseThrow(
+                () -> new ItemNotFoundException("Item with the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
     public Item getOne(Long id) {
         return getOneWithAll(id);
     }
@@ -47,6 +54,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getAllActive() {
         return itemRepository.findAllActiveIndexes().stream().map(this::getOneActive).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Item> getAll() {
+        return itemRepository.findAll();
     }
 
     @Override
@@ -89,7 +101,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item update(Item item, long id) {
-        checkItemCategory(item);
+         checkItemCategory(item);
 
         Optional<Item> itemOptional = itemRepository.findByIdAndOriginalIsTrueAndDeletedIsFalse(id);
         if (itemOptional.isEmpty())
@@ -108,18 +120,20 @@ public class ItemServiceImpl implements ItemService {
             for (Item i : itemList) {
                 if (!i.isOriginal())
                     assignItemFields(item, i);
+                    item.setId(i.getId());
             }
         }
 
-        return  item;
+        return item;
     }
 
     @Override
     public Item delete(long id) {
         Item item = getOneActive(id);
         List<Item> itemList = itemRepository.findAllByCode(item.getCode());
+        Item copy = null;
         if (itemList.size() == 1) {
-            Item copy = new Item(item);
+            copy = new Item(item);
             priceService.save(copy.getPrices().get(0));
             copy.setOriginal(false);
             copy.setDeleted(true);
@@ -130,12 +144,18 @@ public class ItemServiceImpl implements ItemService {
                     if (!i.isDeleted()) {
                         i.setDeleted(true);
                         itemRepository.save(i);
+                        copy = i;
                     } else
                         throw new ItemAlreadyDeletedException("Item with the id " + id + " is already deleted in the database.");
                 }
             }
         }
-        return  item;
+        return copy;
+    }
+
+    @Override
+    public void deleteForTesting(long id) {
+        itemRepository.deleteById(id);
     }
 
     @Override
@@ -181,5 +201,10 @@ public class ItemServiceImpl implements ItemService {
             }
         }
         itemRepository.save(original);
+    }
+
+    @Override
+    public void save(Item item) {
+        itemRepository.save(item);
     }
 }
