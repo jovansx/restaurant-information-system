@@ -53,10 +53,10 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public void delete(long id) {
+    public RestaurantTable delete(long id) {
         RestaurantTable table = getOne(id);
         table.setDeleted(true);
-        restaurantTableRepository.save(table);
+        return restaurantTableRepository.save(table);
     }
 
     @Override
