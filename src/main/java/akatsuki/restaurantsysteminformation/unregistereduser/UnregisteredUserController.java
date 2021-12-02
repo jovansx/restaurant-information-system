@@ -41,8 +41,8 @@ public class UnregisteredUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid UnregisteredUserDTO unregisteredUserDTO) {
-        unregisteredUserService.create(new UnregisteredUser(unregisteredUserDTO));
+    public String create(@RequestBody @Valid UnregisteredUserDTO unregisteredUserDTO) {
+        return unregisteredUserService.create(new UnregisteredUser(unregisteredUserDTO)).getId().toString();
     }
 
     @PutMapping("/{id}")

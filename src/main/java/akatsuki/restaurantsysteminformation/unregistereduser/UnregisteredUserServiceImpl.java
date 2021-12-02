@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,10 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         userService.checkEmailExistence(unregisteredUser.getEmailAddress());
         checkUserType(unregisteredUser.getType());
         userService.checkPhoneNumberExistence(unregisteredUser.getPhoneNumber());
+
+        Salary salary = salaryService.create(unregisteredUser.getSalary().get(0));
+        unregisteredUser.setSalary(Collections.singletonList(salary));
+
         return unregisteredUserRepository.save(unregisteredUser);
     }
 
@@ -91,6 +96,11 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
             throw new UnregisteredUserActiveException("User with the id " + id + " is currently active and cannot be deleted now.");
         user.setDeleted(true);
         return unregisteredUserRepository.save(user);
+    }
+
+    @Override
+    public void save(UnregisteredUser unregisteredUser) {
+        unregisteredUserRepository.save(unregisteredUser);
     }
 
     @Override
