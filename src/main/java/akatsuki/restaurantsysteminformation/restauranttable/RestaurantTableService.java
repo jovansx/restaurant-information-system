@@ -13,7 +13,7 @@ public interface RestaurantTableService {
 
     RestaurantTable update(RestaurantTable table, long id);
 
-    void delete(long id);
+    RestaurantTable delete(long id);
 
     Long getActiveOrderIdByTableId(long id);
 }

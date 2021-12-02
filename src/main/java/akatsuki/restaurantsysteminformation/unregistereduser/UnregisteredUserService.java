@@ -10,11 +10,11 @@ public interface UnregisteredUserService {
 
     List<UnregisteredUser> getAll();
 
-    void create(UnregisteredUser unregisteredUser);
+    UnregisteredUser create(UnregisteredUser unregisteredUser);
 
-    void update(UnregisteredUser unregisteredUser, long id);
+    UnregisteredUser update(UnregisteredUser unregisteredUser, long id);
 
-    void delete(long id);
+    UnregisteredUser delete(long id);
 
     UnregisteredUser checkPinCode(String pinCode, UserType type);
 }

@@ -181,7 +181,8 @@ insert into restaurant_table (is_deleted, name, shape, state, order_id) values
 (false, 'T2', 0, 0, null);
 
 insert into room (is_deleted, name) values
-(false, 'Room 1');
+(false, 'Room 1'),
+(false, 'Room 2');
 
 insert into room_restaurant_tables (room_id, restaurant_tables_id) values
 (1, 1);

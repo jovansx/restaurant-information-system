@@ -2,6 +2,8 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
+import akatsuki.restaurantsysteminformation.salary.Salary;
+import akatsuki.restaurantsysteminformation.salary.SalaryService;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final RegisteredUserRepository registeredUserRepository;
     private final UserService userService;
+    private final SalaryService salaryService;
 
     @Override
     public RegisteredUser getOne(long id) {
@@ -33,16 +36,16 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     //TODO Dodaj rolu
     @Override
-    public void create(RegisteredUser registeredUser) {
+    public RegisteredUser create(RegisteredUser registeredUser) {
         checkUsernameExistence(registeredUser.getUsername());
         userService.checkEmailExistence(registeredUser.getEmailAddress());
         userService.checkPhoneNumberExistence(registeredUser.getPhoneNumber());
         checkUserType(registeredUser.getType());
-        registeredUserRepository.save(registeredUser);
+        return registeredUserRepository.save(registeredUser);
     }
 
     @Override
-    public void update(RegisteredUser registeredUser, long id) {
+    public RegisteredUser update(RegisteredUser registeredUser, long id) {
         RegisteredUser user = getOne(id);
         validateUpdate(id, registeredUser, user.getType());
 
@@ -50,19 +53,26 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         user.setLastName(registeredUser.getLastName());
         user.setEmailAddress(registeredUser.getEmailAddress());
         user.setPhoneNumber(registeredUser.getPhoneNumber());
-        user.setSalary(registeredUser.getSalary());
+
+        if(!registeredUser.getSalary().isEmpty()) {
+            Salary salary = salaryService.create(registeredUser.getSalary().get(0));
+            List<Salary> salaries = user.getSalary();
+            salaries.add(salary);
+            user.setSalary(salaries);
+        }
+
         user.setPassword(registeredUser.getPassword());
 
-        registeredUserRepository.save(user);
+        return registeredUserRepository.save(user);
     }
 
     @Override
-    public void delete(long id) {
+    public RegisteredUser delete(long id) {
         RegisteredUser user = getOne(id);
         if (user.getType().equals(UserType.ADMIN))
             throw new RegisteredUserDeleteException("User with the id " + id + " cannot be deleted.");
         user.setDeleted(true);
-        registeredUserRepository.save(user);
+        return registeredUserRepository.save(user);
     }
 
     private void validateUpdate(long id, RegisteredUser registeredUser, UserType oldType) {

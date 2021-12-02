@@ -10,12 +10,12 @@ public interface RoomService {
 
     List<Room> getAll();
 
-    void create(Room room);
+    Room create(Room room);
 
-    void update(Room room, long id);
+    Room update(Room room, long id);
 
-    void delete(long id);
+    Room delete(long id);
 
-    void updateByRoomDTO(RoomUpdateDTO roomDTO, long id);
+    Room updateByRoomDTO(RoomUpdateDTO roomDTO, long id);
 
 }
