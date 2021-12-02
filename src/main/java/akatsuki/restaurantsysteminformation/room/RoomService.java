@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.room;
 
+import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 
@@ -18,4 +19,5 @@ public interface RoomService {
 
     Room updateByRoomDTO(RoomUpdateDTO roomDTO, long id);
 
+    void save(Room room);
 }

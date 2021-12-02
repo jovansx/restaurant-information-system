@@ -36,7 +36,7 @@ class RegisteredUserServiceIntegrationTest {
 
     @Test
     void create_ValidEntity_SavedObject() {
-        RegisteredUser user = new RegisteredUser("Michael", "Lock","michaellock@gmail.com",
+        RegisteredUser user = new RegisteredUser("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael", "lock", new Role());
         RegisteredUser savedUser = registeredUserService.create(user);
         Assertions.assertNotNull(savedUser);
@@ -44,54 +44,54 @@ class RegisteredUserServiceIntegrationTest {
 
     @Test
     void create_AlreadyExistUsername_ExceptionThrown() {
-        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
+        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "bradpitt", "lock", new Role());
         Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.create(user));
     }
 
     @Test
     void create_InvalidUserType_ExceptionThrown() {
-        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
+        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", null, UserType.ADMIN, false, "michael123", "lock", new Role());
         Assertions.assertThrows(UserTypeNotValidException.class, () -> registeredUserService.create(user));
     }
 
     @Test
     public void update_ValidEntityAndId_SavedObject() {
-        RegisteredUser user = new RegisteredUser("Michael", "Lock","michaellock@gmail.com",
+        RegisteredUser user = new RegisteredUser("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", Collections.singletonList(new Salary(LocalDateTime.now(), 1000)), UserType.SYSTEM_ADMIN, false, "michael123", "lock", new Role());
-        RegisteredUser updatedUser = registeredUserService.update(user,11L);
+        RegisteredUser updatedUser = registeredUserService.update(user, 11L);
         Assertions.assertNotNull(updatedUser);
     }
 
     @Test
     public void update_ChangedUserType_ExceptionThrown() {
-        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
+        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", null, UserType.MANAGER, false, "michael123", "lock", new Role());
 
-        Assertions.assertThrows(UserTypeNotValidException.class, () -> registeredUserService.update(user,10L));
+        Assertions.assertThrows(UserTypeNotValidException.class, () -> registeredUserService.update(user, 10L));
     }
 
     @Test
     public void update_UsernameAlreadyExist_ExceptionThrown() {
-        RegisteredUser user = new RegisteredUser("Michael", "Lock","bradpitt@gmail.com",
+        RegisteredUser user = new RegisteredUser("Michael", "Lock", "bradpitt@gmail.com",
                 "0645678822", null, UserType.SYSTEM_ADMIN, false, "michael123", "lock", new Role());
 
-        Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user,11L));
+        Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
     }
 
     @Test
     public void update_EmailAlreadyExist_ExceptionThrown() {
-        RegisteredUser user = new RegisteredUser("Michael", "Lock","calikikoki@gmail.com",
+        RegisteredUser user = new RegisteredUser("Michael", "Lock", "calikikoki@gmail.com",
                 "0645678822", null, UserType.SYSTEM_ADMIN, false, "michael123", "lock", new Role());
-        Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user,11L));
+        Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
     }
 
     @Test
     public void update_PhoneNumberAlreadyExist_ExceptionThrown() {
-        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock","michaellock@gmail.com",
+        RegisteredUser user = new RegisteredUser(2L, "Michael", "Lock", "michaellock@gmail.com",
                 "0611111114", null, UserType.SYSTEM_ADMIN, false, "michael123", "lock", new Role());
-        Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user,11L));
+        Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
     }
 
     @Test
