@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
+import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItemService;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
@@ -33,6 +34,18 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private final OrderService orderService;
     private final ItemService itemService;
     private final DrinkItemService drinkItemService;
+
+    @Override
+    public DrinkItems getOne(long id) {
+        return drinkItemsRepository.findById(id).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
+    public List<DrinkItems> getAll() {
+        return drinkItemsRepository.findAll();
+    }
 
     @Override
     public DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id) {
@@ -140,6 +153,15 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     }
 
     @Override
+    public void deleteById(long id) {
+        DrinkItems drinkItems = getOne(id);
+        Order order = orderService.getOneByOrderItem(drinkItems);
+        order.getDrinks().remove(drinkItems);
+        orderService.updateTotalPriceAndSave(order);
+        drinkItemsRepository.delete(drinkItems);
+    }
+
+    @Override
     public boolean isBartenderActive(UnregisteredUser user) {
         return drinkItemsRepository.findAllByActiveIsTrueAndBartender(user).isEmpty();
     }
@@ -163,5 +185,10 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
             drinkItemsOfList.add(savedDrinkItem);
         }
         return drinkItemsOfList;
+    }
+
+    @Override
+    public void save(DrinkItems drinkItems) {
+        drinkItemsRepository.save(drinkItems);
     }
 }
