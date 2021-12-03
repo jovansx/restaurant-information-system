@@ -29,6 +29,12 @@ public class DishItemServiceImpl implements DishItemService {
     private final OrderService orderService;
     private final ItemService itemService;
 
+
+    @Override
+    public List<DishItem> getAll() {
+        return dishItemRepository.findAll();
+    }
+
     @Override
     public DishItem findOneActiveAndFetchItemAndChef(long id) {
         return dishItemRepository.findOneActiveAndFetchItemAndChef(id).orElseThrow(
@@ -122,6 +128,15 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setActive(false);
         dishItemRepository.save(dishItem);
         return dishItem;
+    }
+
+    @Override
+    public void deleteById(long id) {
+        DishItem dishItem = getOneActive(id);
+        Order order = orderService.getOneByOrderItem(dishItem);
+        order.getDishes().remove(dishItem);
+        orderService.updateTotalPriceAndSave(order);
+        dishItemRepository.delete(dishItem);
     }
 
     @Override

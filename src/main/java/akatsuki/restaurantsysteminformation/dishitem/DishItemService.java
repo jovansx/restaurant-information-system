@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface DishItemService {
 
+    List<DishItem> getAll();
+
     DishItem findOneActiveAndFetchItemAndChef(long id);
 
     List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
@@ -18,6 +20,8 @@ public interface DishItemService {
     DishItem changeStateOfDishItems(long itemId, long userId);
 
     DishItem delete(long id);
+
+    void deleteById(long id);
 
     boolean isChefActive(UnregisteredUser user);
 }

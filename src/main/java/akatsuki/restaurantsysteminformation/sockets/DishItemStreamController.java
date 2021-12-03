@@ -65,11 +65,4 @@ public class DishItemStreamController {
     public SocketResponseDTO handleException(RuntimeException exception) {
         return new SocketResponseDTO(false, exception.getLocalizedMessage());
     }
-
-    @MessageMapping("/dish-item/welcome")
-    @SendTo("/topic/dish-item")
-    public String greeting(String payload) {
-        System.out.println("Generating new greeting message for " + payload);
-        return "Hello, " + payload + "!";
-    }
 }
