@@ -93,6 +93,28 @@ public class OrderStreamControllerIntegrationTest {
     }
 
     @Test
+    public void create_UnregisteredUserIdDoesNotExist_ExceptionThrown() throws Exception {
+        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+
+        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
+        OrderCreateDTO dto = new OrderCreateDTO(55L);
+
+        session.send("/app/order/create", dto);
+        Thread.sleep(100);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+    }
+
+    @Test
     public void discard_Valid_DiscardObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L));
 
@@ -135,6 +157,27 @@ public class OrderStreamControllerIntegrationTest {
         session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
 
         session.send("/app/order/discard/4", null);
+        Thread.sleep(100);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+    }
+
+    @Test
+    public void discard_OrderNotFound_ExceptionThrown() throws Exception {
+        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+
+        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
+
+        session.send("/app/order/discard/44", null);
         Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
