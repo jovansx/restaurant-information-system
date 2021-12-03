@@ -2,13 +2,17 @@ package akatsuki.restaurantsysteminformation.dishitem.dto;
 
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DishItemDTO {
 
     private long id;
@@ -28,7 +32,10 @@ public class DishItemDTO {
         this.notes = dishItem.getNotes();
         this.createdAt = Timestamp.valueOf(dishItem.getCreatedAt()).getTime() + "";
         this.state = dishItem.getState();
-        this.icon = new String(dishItem.getItem().getIconBase64());
+        if (dishItem.getItem().getIconBase64() != null)
+            this.icon = new String(dishItem.getItem().getIconBase64());
+        else
+            this.icon = "";
         this.itemList = new ArrayList<>();
         itemList.add(new DishItemOrderedDTO(dishItem.getItem().getName(), dishItem.getAmount()));
     }

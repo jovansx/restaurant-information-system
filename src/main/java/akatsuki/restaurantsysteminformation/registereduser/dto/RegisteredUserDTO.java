@@ -1,13 +1,13 @@
 package akatsuki.restaurantsysteminformation.registereduser.dto;
 
+import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -22,4 +22,10 @@ public class RegisteredUserDTO extends UserDTO {
     @NotNull(message = "It cannot be null.")
     @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.")
     private String password;
+
+    public RegisteredUserDTO(@NotNull(message = "It cannot be null.") @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.") String firstName, @NotNull(message = "It cannot be null.") @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.") String lastName, @NotNull(message = "It cannot be null.") @Email(message = "Not valid email format.") String emailAddress, @NotNull(message = "It cannot be null.") @Pattern(regexp = "\\+[0-9]{12}|[0-9]{10}", message = "Phone number not match required format.") String phoneNumber, @NotNull(message = "It cannot be null.") @Positive(message = "It has to be a positive number.") double salary, @NotNull(message = "It cannot be null.") UserType type, String username, String password) {
+        super(firstName, lastName, emailAddress, phoneNumber, salary, type);
+        this.username = username;
+        this.password = password;
+    }
 }

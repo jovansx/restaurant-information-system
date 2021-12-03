@@ -7,9 +7,11 @@ public interface RegisteredUserService {
 
     List<RegisteredUser> getAll();
 
-    void create(RegisteredUser registeredUser);
+    RegisteredUser create(RegisteredUser registeredUser);
 
-    void update(RegisteredUser registeredUser, long id);
+    RegisteredUser update(RegisteredUser registeredUser, long id);
 
-    void delete(long id);
+    RegisteredUser delete(long id);
+
+    void save(RegisteredUser foundUser);
 }

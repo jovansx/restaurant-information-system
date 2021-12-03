@@ -22,11 +22,11 @@ public class DishItemController {
 
     @GetMapping("/{id}")
     public DishItemDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new DishItemDTO(this.dishItemService.findOneActiveAndFetchItemAndChef(id));
+        return new DishItemDTO(dishItemService.findOneActiveAndFetchItemAndChef(id));
     }
 
     @GetMapping("/active")
     public List<ItemsActiveDTO> findAllActiveAndStateIsNotNewOrDelivered() {
-        return this.dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
+        return dishItemService.findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered().stream().map(ItemsActiveDTO::new).collect(Collectors.toList());
     }
 }

@@ -30,4 +30,10 @@ public class DrinkItems extends OrderItem {
         this.bartender = bartender;
         this.drinkItemList = drinkItemList;
     }
+
+    public DrinkItems(Long id, String notes, LocalDateTime createdAt, boolean deleted, ItemState state, boolean active, UnregisteredUser bartender, List<DrinkItem> drinkItemList) {
+        super(id, notes, createdAt, deleted, state, active);
+        this.bartender = bartender;
+        this.drinkItemList = drinkItemList;
+    }
 }

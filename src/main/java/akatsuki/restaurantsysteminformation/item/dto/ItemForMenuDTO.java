@@ -16,6 +16,9 @@ public class ItemForMenuDTO {
     public ItemForMenuDTO(Item item) {
         this.id = item.getId();
         this.name = item.getName();
-        this.iconBase64 = new String(item.getIconBase64());
+        if (item.getIconBase64() == null)
+            this.iconBase64 = null;
+        else
+            this.iconBase64 = new String(item.getIconBase64());
     }
 }

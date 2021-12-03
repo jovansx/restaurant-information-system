@@ -4,6 +4,9 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.OrderService;
+import akatsuki.restaurantsysteminformation.salary.Salary;
+import akatsuki.restaurantsysteminformation.salary.SalaryRepository;
+import akatsuki.restaurantsysteminformation.salary.SalaryService;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +28,18 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private OrderService orderService;
     private DrinkItemsService drinkItemsService;
     private DishItemService dishItemService;
+    private SalaryService salaryService;
 
     @Autowired
     public void setUnregisteredUserRepository(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
-                                              OrderService orderService, DrinkItemsService drinkItemsService, @Lazy DishItemService dishItemService) {
+                                              OrderService orderService, DrinkItemsService drinkItemsService, @Lazy DishItemService dishItemService,
+                                              SalaryService salaryService) {
         this.unregisteredUserRepository = unregisteredUserRepository;
         this.userService = userService;
         this.drinkItemsService = drinkItemsService;
         this.dishItemService = dishItemService;
         this.orderService = orderService;
+        this.salaryService = salaryService;
     }
 
     @Override
@@ -48,16 +55,20 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
-    public void create(UnregisteredUser unregisteredUser) {
+    public UnregisteredUser create(UnregisteredUser unregisteredUser) {
         checkPinCodeExistence(unregisteredUser.getPinCode());
         userService.checkEmailExistence(unregisteredUser.getEmailAddress());
         checkUserType(unregisteredUser.getType());
         userService.checkPhoneNumberExistence(unregisteredUser.getPhoneNumber());
-        unregisteredUserRepository.save(unregisteredUser);
+
+        Salary salary = salaryService.create(unregisteredUser.getSalary().get(0));
+        unregisteredUser.setSalary(Collections.singletonList(salary));
+
+        return unregisteredUserRepository.save(unregisteredUser);
     }
 
     @Override
-    public void update(UnregisteredUser unregisteredUser, long id) {
+    public UnregisteredUser update(UnregisteredUser unregisteredUser, long id) {
         UnregisteredUser user = getOne(id);
         validateUpdate(id, unregisteredUser);
 
@@ -65,19 +76,31 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         user.setLastName(unregisteredUser.getLastName());
         user.setEmailAddress(unregisteredUser.getEmailAddress());
         user.setPhoneNumber(unregisteredUser.getPhoneNumber());
-        user.setSalary(unregisteredUser.getSalary());
+
+        if(!unregisteredUser.getSalary().isEmpty()) {
+            Salary salary = salaryService.create(unregisteredUser.getSalary().get(0));
+            List<Salary> salaries = user.getSalary();
+            salaries.add(salary);
+            user.setSalary(salaries);
+        }
+
         user.setPinCode(unregisteredUser.getPinCode());
 
-        unregisteredUserRepository.save(user);
+        return unregisteredUserRepository.save(user);
     }
 
     @Override
-    public void delete(long id) {
+    public UnregisteredUser delete(long id) {
         UnregisteredUser user = getOne(id);
         if (!userCanBeDeleted(user))
             throw new UnregisteredUserActiveException("User with the id " + id + " is currently active and cannot be deleted now.");
         user.setDeleted(true);
-        unregisteredUserRepository.save(user);
+        return unregisteredUserRepository.save(user);
+    }
+
+    @Override
+    public void save(UnregisteredUser unregisteredUser) {
+        unregisteredUserRepository.save(unregisteredUser);
     }
 
     @Override

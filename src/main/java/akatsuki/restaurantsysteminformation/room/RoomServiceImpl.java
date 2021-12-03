@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.room;
 
+import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
@@ -35,23 +36,23 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void create(Room room) {
+    public Room create(Room room) {
         checkNameExistence(room.getName(), -1);
-        roomRepository.save(room);
+        return roomRepository.save(room);
     }
 
     @Override
-    public void update(Room room, long id) {
+    public Room update(Room room, long id) {
         Room foundRoom = getOne(id);
 
         foundRoom.setName(room.getName());
         foundRoom.setRestaurantTables(room.getRestaurantTables());
 
-        roomRepository.save(foundRoom);
+        return roomRepository.save(foundRoom);
     }
 
     @Override
-    public void delete(long id) {
+    public Room delete(long id) {
         Room room = getOne(id);
         room.setDeleted(true);
         room.getRestaurantTables().forEach(table -> {
@@ -59,11 +60,11 @@ public class RoomServiceImpl implements RoomService {
                 throw new RoomDeletionFailedException("Room with the id " + id + " cannot be deleted because it has active order.");
             restaurantTableService.delete(table.getId());
         });
-        roomRepository.save(room);
+        return roomRepository.save(room);
     }
 
     @Override
-    public void updateByRoomDTO(RoomUpdateDTO roomDTO, long id) {
+    public Room updateByRoomDTO(RoomUpdateDTO roomDTO, long id) {
         checkNameExistence(roomDTO.getName(), id);
 
         List<RestaurantTable> newTables = createNewTables(roomDTO.getNewTables());
@@ -79,11 +80,15 @@ public class RoomServiceImpl implements RoomService {
         allTables.addAll(newTables);
 
         Room room = new Room(roomDTO.getName(), false, allTables);
-        update(room, id);
+        return update(room, id);
     }
 
     @Override
-    public List<RestaurantTable> getRoomTables(long id) {
+    public void save(Room room) {
+        roomRepository.save(room);
+    }
+
+    private List<RestaurantTable> getRoomTables(long id) {
         return getOne(id).getRestaurantTables();
     }
 

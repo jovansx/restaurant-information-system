@@ -32,8 +32,8 @@ public class RoomController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid RoomCreateDTO roomDTO) {
-        roomService.create(new Room(roomDTO));
+    public String create(@RequestBody @Valid RoomCreateDTO roomDTO) {
+        return roomService.create(new Room(roomDTO)).getId().toString();
     }
 
     @PutMapping("/{id}")
