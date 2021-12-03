@@ -161,7 +161,7 @@ class RegisteredUserControllerIntegrationTest {
 
     @Test
     public void delete_ValidId_SavedObject() {
-        RegisteredUser user = registeredUserService.create(new RegisteredUser("Marko", "Savic", "markos@gmail.com", "0611141111", Collections.singletonList(new Salary(LocalDateTime.now(), 1000)), UserType.SYSTEM_ADMIN, false, "username", "password", new Role()));
+        RegisteredUser user = registeredUserService.create(new RegisteredUserDTO("Marko", "Savic", "markos@gmail.com", "0611141111", 13, UserType.SYSTEM_ADMIN, "username", "password"));
         int size = registeredUserService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + user.getId(),

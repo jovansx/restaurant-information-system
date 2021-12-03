@@ -25,7 +25,7 @@ public class UnregisteredUserDTO extends UserDTO {
         this.pinCode = user.getPinCode();
     }
 
-    public UnregisteredUserDTO(@NotNull(message = "It cannot be null.") @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.") String firstName, @NotNull(message = "It cannot be null.") @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.") String lastName, @NotNull(message = "It cannot be null.") @Email(message = "Not valid email format.") String emailAddress, @NotNull(message = "It cannot be null.") @Pattern(regexp = "\\+[0-9]{12}|[0-9]{10}", message = "Phone number not match required format.") String phoneNumber, @NotNull(message = "It cannot be null.") @Positive(message = "It has to be a positive number.") double salary, @NotNull(message = "It cannot be null.") UserType type, String pinCode) {
+    public UnregisteredUserDTO(@NotNull(message = "It cannot be null.") @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.") String firstName, @NotNull(message = "It cannot be null.") @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.") String lastName, @NotNull(message = "It cannot be null.") @Email(message = "Not valid email format.") String emailAddress, @NotNull(message = "It cannot be null.") @Pattern(regexp = "\\+[0-9]{12}|[0-9]{10}", message = "Phone number not match required format.") String phoneNumber, double salary, @NotNull(message = "It cannot be null.") UserType type, String pinCode) {
         super(firstName, lastName, emailAddress, phoneNumber, salary, type);
         this.pinCode = pinCode;
     }
