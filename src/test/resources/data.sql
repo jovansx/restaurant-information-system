@@ -139,7 +139,7 @@ values (1, 1),
 
 insert into drink_items (id, bartender_id)
 values (5, 2),
-       (6, null),
+       (6, 2),
        (7, null),
        (8, 2),
        (9, null);

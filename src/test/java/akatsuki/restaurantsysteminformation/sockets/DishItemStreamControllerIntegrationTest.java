@@ -80,18 +80,13 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void create_InvalidOrderId_ExceptionThrown() throws Exception {
 
-        int size = dishItemService.getAll().size();
-
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 44L);
 
         session.send("/app/dish-item/create", dto);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<DishItem> dishItems = dishItemService.getAll();
-
         assertNotNull(returnDTO);
-        assertEquals(size, dishItems.size());
         assertEquals("Order with the id 44 is not found in the database.", returnDTO.getMessage());
         assertFalse(returnDTO.isSuccessfullyFinished());
     }
@@ -99,18 +94,13 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void create_InvalidItemId_ExceptionThrown() throws Exception {
 
-        int size = dishItemService.getAll().size();
-
         DishItemCreateDTO dto = new DishItemCreateDTO(1L, 2, null, 2L);
 
         session.send("/app/dish-item/create", dto);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<DishItem> dishItems = dishItemService.getAll();
-
         assertNotNull(returnDTO);
-        assertEquals(size, dishItems.size());
         assertEquals("Item type is not DISH.", returnDTO.getMessage());
         assertFalse(returnDTO.isSuccessfullyFinished());
     }
@@ -305,5 +295,17 @@ public class DishItemStreamControllerIntegrationTest {
         order.getDishes().add(dishItem);
         order.setTotalPrice(8);
         orderService.save(order);
+    }
+
+    @Test
+    public void delete_InvalidId_DeletedObject() throws Exception {
+
+        session.send("/app/dish-item/delete/5", null);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("Dish item with the id 5 is not found in the database.", returnDTO.getMessage());
     }
 }

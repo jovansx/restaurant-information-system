@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface DrinkItemsService {
 
+    DrinkItems getOne(long id);
+
+    List<DrinkItems> getAll();
+
     DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id);
 
     DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(long id);
@@ -21,6 +25,9 @@ public interface DrinkItemsService {
 
     DrinkItems delete(long id);
 
+    void deleteById(long id);
+
     boolean isBartenderActive(UnregisteredUser user);
 
+    void save(DrinkItems drinkItems);
 }
