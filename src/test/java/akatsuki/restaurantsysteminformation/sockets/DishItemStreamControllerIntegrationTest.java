@@ -8,8 +8,6 @@ import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,41 +34,37 @@ public class DishItemStreamControllerIntegrationTest {
     @LocalServerPort
     private Integer port;
 
-    private WebSocketStompClient webSocketStompClient;
-
     @Autowired
     private DishItemService dishItemService;
 
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private UnregisteredUserService unregisteredUserService;
+    private BlockingQueue<SocketResponseDTO> blockingQueue;
+    private StompSession session;
 
     @BeforeEach
-    public void setup() {
-        webSocketStompClient = new WebSocketStompClient(new SockJsClient(
+    public void setup() throws Exception {
+        WebSocketStompClient webSocketStompClient = new WebSocketStompClient(new SockJsClient(
                 List.of(new WebSocketTransport(new StandardWebSocketClient()))));
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        blockingQueue = new ArrayBlockingQueue<>(1);
+
+        session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
     }
 
     @Test
     public void create_Valid_SavedObject() throws Exception {
 
         int size = dishItemService.getAll().size();
-
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 2L);
 
         session.send("/app/dish-item/create", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -88,19 +82,9 @@ public class DishItemStreamControllerIntegrationTest {
 
         int size = dishItemService.getAll().size();
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 44L);
 
         session.send("/app/dish-item/create", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -117,19 +101,9 @@ public class DishItemStreamControllerIntegrationTest {
 
         int size = dishItemService.getAll().size();
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(1L, 2, null, 2L);
 
         session.send("/app/dish-item/create", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -144,19 +118,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void update_Valid_UpdatedObject() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
 
         session.send("/app/dish-item/update/1", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -175,19 +139,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void update_OrderNotContainingItem_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
 
         session.send("/app/dish-item/update/5", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -199,19 +153,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void update_InvalidType_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(2L, 5, null, 1L);
 
         session.send("/app/dish-item/update/1", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -223,19 +167,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void update_InvalidDishState_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
 
         session.send("/app/dish-item/update/2", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -247,19 +181,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void update_InvalidItemId_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(44L, 5, null, 1L);
 
         session.send("/app/dish-item/update/1", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -271,19 +195,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void update_InvalidOrderId_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 100L);
 
         session.send("/app/dish-item/update/1", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -295,19 +209,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void changeStateOfDishItem_OnHoldToPreparation_SavedObject() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemActionRequestDTO dto = new DishItemActionRequestDTO(3L, 1L);
 
         session.send("/app/dish-item/change-state", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -323,19 +227,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void changeStateOfDishItem_PreparationToReady_SavedObject() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemActionRequestDTO dto = new DishItemActionRequestDTO(3L, 2L);
 
         session.send("/app/dish-item/change-state", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -350,19 +244,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void changeStateOfDishItem_ReadyToDelivered_SavedObject() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemActionRequestDTO dto = new DishItemActionRequestDTO(1L, 3L);
 
         session.send("/app/dish-item/change-state", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -377,19 +261,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void changeStateOfDishItem_DrinkItemsId_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemActionRequestDTO dto = new DishItemActionRequestDTO(1L, 6L);
 
         session.send("/app/dish-item/change-state", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -401,19 +275,9 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void changeStateOfDishItem_WrongUserType_ExceptionThrown() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItemActionRequestDTO dto = new DishItemActionRequestDTO(3L, 3L);
 
         session.send("/app/dish-item/change-state", dto);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
@@ -425,18 +289,8 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void delete_Valid_DeletedObject() throws Exception {
 
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
         DishItem dishItem = dishItemService.getOne(1L);
         session.send("/app/dish-item/delete/1", null);
-        Thread.sleep(100);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
