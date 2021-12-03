@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.room;
 
+import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
@@ -80,6 +81,11 @@ public class RoomServiceImpl implements RoomService {
 
         Room room = new Room(roomDTO.getName(), false, allTables);
         return update(room, id);
+    }
+
+    @Override
+    public void save(Room room) {
+        roomRepository.save(room);
     }
 
     private List<RestaurantTable> getRoomTables(long id) {

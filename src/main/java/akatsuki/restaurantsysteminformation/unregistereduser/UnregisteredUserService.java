@@ -16,5 +16,7 @@ public interface UnregisteredUserService {
 
     UnregisteredUser delete(long id);
 
+    void save(UnregisteredUser unregisteredUser);
+
     UnregisteredUser checkPinCode(String pinCode, UserType type);
 }

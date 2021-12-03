@@ -29,8 +29,8 @@ public class RegisteredUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid RegisteredUserDTO registeredUserDTO) {
-        registeredUserService.create(new RegisteredUser(registeredUserDTO));
+    public String create(@RequestBody @Valid RegisteredUserDTO registeredUserDTO) {
+        return registeredUserService.create(new RegisteredUser(registeredUserDTO)).getId().toString();
     }
 
     @PutMapping("/{id}")
