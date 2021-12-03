@@ -24,4 +24,6 @@ public interface DishItemService {
     void deleteById(long id);
 
     boolean isChefActive(UnregisteredUser user);
+
+    void save(DishItem dishItem);
 }

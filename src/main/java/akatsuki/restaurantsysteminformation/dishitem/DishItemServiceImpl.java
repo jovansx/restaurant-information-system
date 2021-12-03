@@ -149,4 +149,9 @@ public class DishItemServiceImpl implements DishItemService {
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
     }
+
+    @Override
+    public void save(DishItem dishItem) {
+        dishItemRepository.save(dishItem);
+    }
 }
