@@ -2,13 +2,17 @@ package akatsuki.restaurantsysteminformation.dishitem.dto;
 
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DishItemDTO {
 
     private long id;

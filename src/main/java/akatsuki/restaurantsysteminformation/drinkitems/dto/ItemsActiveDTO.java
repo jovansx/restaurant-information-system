@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ItemsActiveDTO {
     private Long id;
     private String initials;

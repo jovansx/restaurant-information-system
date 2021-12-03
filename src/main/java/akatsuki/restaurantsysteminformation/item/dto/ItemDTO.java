@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public abstract class ItemDTO {
 
     @NotEmpty(message = "It cannot be null or empty.")

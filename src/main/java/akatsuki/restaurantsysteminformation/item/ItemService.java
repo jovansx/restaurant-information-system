@@ -5,9 +5,13 @@ import java.util.List;
 public interface ItemService {
     Item getOne(Long id);
 
+    Item getOneById(Long id);
+
     Item getOneActive(Long id);
 
     List<Item> getAllActive();
+
+    List<Item> getAll();
 
     List<Item> getAllActiveByCategory(String category);
 
@@ -17,7 +21,11 @@ public interface ItemService {
 
     Item delete(long id);
 
+    void deleteForTesting(long id);
+
     void saveChanges();
+
+    void save(Item item);
 
     void discardChanges();
 
