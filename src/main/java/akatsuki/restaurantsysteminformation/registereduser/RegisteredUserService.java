@@ -12,4 +12,6 @@ public interface RegisteredUserService {
     RegisteredUser update(RegisteredUser registeredUser, long id);
 
     RegisteredUser delete(long id);
+
+    void save(RegisteredUser foundUser);
 }

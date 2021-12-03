@@ -19,7 +19,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 public class RestaurantTable {
 
     @Id

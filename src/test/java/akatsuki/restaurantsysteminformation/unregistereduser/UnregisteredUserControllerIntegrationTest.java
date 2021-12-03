@@ -44,7 +44,6 @@ class UnregisteredUserControllerIntegrationTest {
     @Test
     public void getOne_InvalidId_ExceptionThrown() {
         ResponseEntity<UnregisteredUserDTO> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/8000", UnregisteredUserDTO.class);
-
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 

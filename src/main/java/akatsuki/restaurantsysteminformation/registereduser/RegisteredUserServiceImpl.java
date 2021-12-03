@@ -2,6 +2,8 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
+import akatsuki.restaurantsysteminformation.role.Role;
+import akatsuki.restaurantsysteminformation.role.RoleRepository;
 import akatsuki.restaurantsysteminformation.salary.Salary;
 import akatsuki.restaurantsysteminformation.salary.SalaryService;
 import akatsuki.restaurantsysteminformation.user.User;
@@ -12,6 +14,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidExcep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final RegisteredUserRepository registeredUserRepository;
     private final UserService userService;
     private final SalaryService salaryService;
+    private final RoleRepository roleRepository;
 
     @Override
     public RegisteredUser getOne(long id) {
@@ -41,6 +45,13 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         userService.checkEmailExistence(registeredUser.getEmailAddress());
         userService.checkPhoneNumberExistence(registeredUser.getPhoneNumber());
         checkUserType(registeredUser.getType());
+
+        Salary salary = salaryService.create(registeredUser.getSalary().get(0));
+        registeredUser.setSalary(Collections.singletonList(salary));
+
+        Role role = roleRepository.findByName(registeredUser.getType().toString()).get();
+        registeredUser.setRole(role);
+
         return registeredUserRepository.save(registeredUser);
     }
 
@@ -73,6 +84,11 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             throw new RegisteredUserDeleteException("User with the id " + id + " cannot be deleted.");
         user.setDeleted(true);
         return registeredUserRepository.save(user);
+    }
+
+    @Override
+    public void save(RegisteredUser foundUser) {
+        registeredUserRepository.save(foundUser);
     }
 
     private void validateUpdate(long id, RegisteredUser registeredUser, UserType oldType) {
