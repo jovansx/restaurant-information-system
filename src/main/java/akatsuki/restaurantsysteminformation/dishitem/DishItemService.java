@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface DishItemService {
 
+    DishItem getOne(long id);
+
     List<DishItem> getAll();
 
     DishItem findOneActiveAndFetchItemAndChef(long id);

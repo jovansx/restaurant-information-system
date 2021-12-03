@@ -29,6 +29,12 @@ public class DishItemServiceImpl implements DishItemService {
     private final OrderService orderService;
     private final ItemService itemService;
 
+    @Override
+    public DishItem getOne(long id) {
+        return dishItemRepository.findById(id).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+        );
+    }
 
     @Override
     public List<DishItem> getAll() {

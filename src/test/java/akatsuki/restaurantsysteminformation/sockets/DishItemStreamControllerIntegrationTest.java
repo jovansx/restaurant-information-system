@@ -346,4 +346,110 @@ public class DishItemStreamControllerIntegrationTest {
         dishItem.setState(ItemState.PREPARATION);
         dishItemService.save(dishItem);
     }
+
+    @Test
+    public void changeStateOfDishItem_ReadyToDelivered_SavedObject() throws Exception {
+
+        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+
+        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
+        DishItemActionRequestDTO dto = new DishItemActionRequestDTO(1L, 3L);
+
+        session.send("/app/dish-item/change-state", dto);
+        Thread.sleep(100);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertTrue(returnDTO.isSuccessfullyFinished());
+
+        DishItem dishItem = dishItemService.findOneActiveAndFetchItemAndChef(3L);
+        dishItem.setState(ItemState.READY);
+        dishItemService.save(dishItem);
+    }
+
+    @Test
+    public void changeStateOfDishItem_DrinkItemsId_ExceptionThrown() throws Exception {
+
+        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+
+        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
+        DishItemActionRequestDTO dto = new DishItemActionRequestDTO(1L, 6L);
+
+        session.send("/app/dish-item/change-state", dto);
+        Thread.sleep(100);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("Dish item with the id 6 is not found in the database.", returnDTO.getMessage());
+    }
+
+    @Test
+    public void changeStateOfDishItem_WrongUserType_ExceptionThrown() throws Exception {
+
+        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+
+        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
+        DishItemActionRequestDTO dto = new DishItemActionRequestDTO(3L, 3L);
+
+        session.send("/app/dish-item/change-state", dto);
+        Thread.sleep(100);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("User with the id 3 is not a waiter.", returnDTO.getMessage());
+    }
+
+    @Test
+    public void delete_Valid_DeletedObject() throws Exception {
+
+        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
+        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession session = webSocketStompClient
+                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
+                })
+                .get(1, SECONDS);
+
+        session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
+        DishItem dishItem = dishItemService.getOne(1L);
+        session.send("/app/dish-item/delete/1", null);
+        Thread.sleep(100);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertTrue(returnDTO.isSuccessfullyFinished());
+        assertEquals("Dish item state is successfully deleted!", returnDTO.getMessage());
+
+        Order order = orderService.getOneWithAll(1L);
+        dishItem.setActive(true);
+        dishItem.setDeleted(false);
+        dishItemService.save(dishItem);
+        order.getDishes().add(dishItem);
+        order.setTotalPrice(8);
+        orderService.save(order);
+    }
 }
