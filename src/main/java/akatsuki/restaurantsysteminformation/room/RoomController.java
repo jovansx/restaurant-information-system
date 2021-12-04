@@ -30,6 +30,11 @@ public class RoomController {
         return roomService.getAll().stream().map(RoomWithTablesDTO::new).collect(Collectors.toList());
     }
 
+    @GetMapping("/active")
+    public List<RoomWithTablesDTO> getAllActive() {
+        return roomService.getAllActive().stream().map(RoomWithTablesDTO::new).collect(Collectors.toList());
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody @Valid RoomCreateDTO roomDTO) {
