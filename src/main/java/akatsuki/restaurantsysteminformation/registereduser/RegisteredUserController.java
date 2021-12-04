@@ -17,9 +17,10 @@ import java.util.List;
 public class RegisteredUserController {
     private final RegisteredUserService registeredUserService;
 
+    //TODO: verovatno pada test jer sam promenio tip povratne vrednosti
     @GetMapping("/{id}")
-    public RegisteredUser getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return registeredUserService.getOne(id);
+    public RegisteredUserDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new RegisteredUserDTO(registeredUserService.getOne(id));
     }
 
     @GetMapping
