@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -65,7 +64,6 @@ class RegisteredUserServiceIntegrationTest {
 
     @Test
     public void update_ValidEntityAndId_SavedObject() {
-        List<User> list = userRepository.findAll();
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", 1300, UserType.SYSTEM_ADMIN, "michael123", "lock");
         RegisteredUser updatedUser = registeredUserService.update(user, 11L);
