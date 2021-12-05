@@ -4,12 +4,15 @@ import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface RoomService {
     Room getOne(long id);
 
     List<Room> getAll();
+
+    List<Room> getAllActive();
 
     Room create(Room room);
 
@@ -20,4 +23,5 @@ public interface RoomService {
     Room updateByRoomDTO(RoomUpdateDTO roomDTO, long id);
 
     void save(Room room);
+
 }

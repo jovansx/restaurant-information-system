@@ -11,17 +11,21 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class RoomWithTablesDTO extends RoomCreateDTO {
+    private @Getter @Setter Long id;
+
     private @Getter
     @Setter
     List<RestaurantTableDTO> tables;
 
-    public RoomWithTablesDTO(String name, List<RestaurantTableDTO> tables) {
+    public RoomWithTablesDTO(Long id, String name, List<RestaurantTableDTO> tables) {
         super(name);
+        this.id = id;
         this.tables = tables;
     }
 
     public RoomWithTablesDTO(Room room) {
         super(room.getName());
+        this.id = room.getId();
         this.tables = room.getRestaurantTables().stream().map(RestaurantTableDTO::new).collect(Collectors.toList());
     }
 }
