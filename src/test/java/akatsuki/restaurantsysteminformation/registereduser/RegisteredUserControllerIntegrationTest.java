@@ -2,14 +2,6 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
-import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
-import akatsuki.restaurantsysteminformation.role.Role;
-import akatsuki.restaurantsysteminformation.salary.Salary;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
-import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

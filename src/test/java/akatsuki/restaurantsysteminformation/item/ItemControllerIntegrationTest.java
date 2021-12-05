@@ -106,6 +106,13 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
+    public void create_InvalidName_ErrorNotFount() {
+        ItemCreateDTO createDTO = new ItemCreateDTO("Chocolate", 400, null, "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, createDTO, String.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    }
+
+    @Test
     public void update_ValidEntityAndIdFirst_SavedObject() {
         int size = itemService.getAll().size();
 

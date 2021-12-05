@@ -4,7 +4,7 @@ import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserEssentialsDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserRepresentationDTO;
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserTableDTO;
+import akatsuki.restaurantsysteminformation.user.dto.UserTableDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -39,8 +39,8 @@ public class UnregisteredUserController {
     }
 
     @GetMapping("/table")
-    public List<UnregisteredUserTableDTO> getAllForRowInTable() {
-        return unregisteredUserService.getAll().stream().map(UnregisteredUserTableDTO::new).collect(Collectors.toList());
+    public List<UserTableDTO> getAllForRowInTable() {
+        return unregisteredUserService.getAll().stream().map(UserTableDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
