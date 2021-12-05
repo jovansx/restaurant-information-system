@@ -28,6 +28,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final SalaryService salaryService;
     private final RoleRepository roleRepository;
 
+
     @Override
     public RegisteredUser getOne(long id) {
         return registeredUserRepository.findById(id).orElseThrow(
