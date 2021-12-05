@@ -34,4 +34,5 @@ public interface OrderService {
 
     boolean isWaiterActive(UnregisteredUser user);
 
+    void save(Order order);
 }
