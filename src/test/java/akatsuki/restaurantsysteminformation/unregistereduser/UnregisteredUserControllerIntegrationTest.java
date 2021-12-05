@@ -63,7 +63,7 @@ class UnregisteredUserControllerIntegrationTest {
         Assertions.assertEquals(size + 1, users.size());
         Assertions.assertEquals("sekica@gmail.com", users.get(users.size() - 1).getEmailAddress());
 
-        unregisteredUserService.delete(Long.parseLong(res.getBody()));
+        unregisteredUserService.deleteById(Long.parseLong(res.getBody()));
     }
 
     @Test

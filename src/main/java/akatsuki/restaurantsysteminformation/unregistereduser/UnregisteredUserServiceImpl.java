@@ -108,6 +108,11 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
+    public void deleteById(long id) {
+        unregisteredUserRepository.deleteById(id);
+    }
+
+    @Override
     public void save(UnregisteredUser unregisteredUser) {
         unregisteredUserRepository.save(unregisteredUser);
     }

@@ -93,6 +93,11 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
+    public void deleteById(long id) {
+        registeredUserRepository.deleteById(id);
+    }
+
+    @Override
     public void save(RegisteredUser foundUser) {
         registeredUserRepository.save(foundUser);
     }

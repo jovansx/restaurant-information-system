@@ -132,7 +132,11 @@ class OrderServiceIntegrationTest {
         assertTrue(isActive);
     }
 
-    //TODO fali test getOneWithAll
+    @Test
+    public void getOneWithAll_ValidId_ReturnedList() {
+        Order foundOrder = orderService.getOneWithAll(1L);
+        Assertions.assertNotNull(foundOrder);
+    }
 
     @Test
     public void getOneWithDishes_InvalidId_ExceptionThrown() {

@@ -75,7 +75,8 @@ class RegisteredUserControllerIntegrationTest {
         Assertions.assertEquals(size + 1, users.size());
         Assertions.assertEquals("michaellock@gmail.com", users.get(users.size() - 1).getEmailAddress());
 
-        registeredUserService.delete(Long.parseLong(res.getBody()));
+        registeredUserService.deleteById(Long.parseLong(res.getBody()));
+        Assertions.assertEquals(size, registeredUserService.getAll().size());
     }
 
     @Test
@@ -83,6 +84,7 @@ class RegisteredUserControllerIntegrationTest {
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", 12, UserType.MANAGER, "bradpitt", "lock");
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
+        List<RegisteredUser> list = registeredUserService.getAll();
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 
@@ -91,6 +93,7 @@ class RegisteredUserControllerIntegrationTest {
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", 12, UserType.ADMIN, "michael123", "lock");
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
+        List<RegisteredUser> list = registeredUserService.getAll();
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 
@@ -110,6 +113,7 @@ class RegisteredUserControllerIntegrationTest {
         RegisteredUser foundUser = registeredUserService.getOne(11L);
         Assertions.assertEquals("Liamy", foundUser.getFirstName());
 
+        List<RegisteredUser> list = registeredUserService.getAll();
         foundUser = original;
         registeredUserService.save(foundUser);
     }
@@ -122,6 +126,7 @@ class RegisteredUserControllerIntegrationTest {
                 restTemplate.exchange(URL_PREFIX + "/10", HttpMethod.PUT,
                         new HttpEntity<>(user),
                         Void.class);
+        List<RegisteredUser> list = registeredUserService.getAll();
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
@@ -134,6 +139,7 @@ class RegisteredUserControllerIntegrationTest {
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
                         new HttpEntity<>(user),
                         Void.class);
+        List<RegisteredUser> list = registeredUserService.getAll();
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
@@ -145,6 +151,7 @@ class RegisteredUserControllerIntegrationTest {
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
                         new HttpEntity<>(user),
                         Void.class);
+        List<RegisteredUser> list = registeredUserService.getAll();
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
@@ -156,6 +163,7 @@ class RegisteredUserControllerIntegrationTest {
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
                         new HttpEntity<>(user),
                         Void.class);
+        List<RegisteredUser> list = registeredUserService.getAll();
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 

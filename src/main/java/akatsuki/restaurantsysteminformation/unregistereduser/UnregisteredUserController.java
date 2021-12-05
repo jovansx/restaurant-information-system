@@ -30,7 +30,6 @@ public class UnregisteredUserController {
         return new UnregisteredUserRepresentationDTO(unregisteredUserService.getOne(id));
     }
 
-    //TODO Ovde nema DTO-a
     @GetMapping
     public List<UnregisteredUserRepresentationDTO> getAll() {
         List<UnregisteredUserRepresentationDTO> usersDTO = new ArrayList<>();
