@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.room;
 
-import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
@@ -38,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<Room> getAllActive() {
-        return roomRepository.findAll().stream().filter(r -> !r.isDeleted()).collect(Collectors.toList());
+        return roomRepository.findAll().stream().filter(r->!r.isDeleted()).collect(Collectors.toList());
     }
 
     @Override
