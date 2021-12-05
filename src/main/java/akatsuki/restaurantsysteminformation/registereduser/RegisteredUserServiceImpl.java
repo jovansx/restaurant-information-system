@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
 import akatsuki.restaurantsysteminformation.role.Role;
 import akatsuki.restaurantsysteminformation.role.RoleRepository;
@@ -14,6 +15,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidExcep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,39 +41,44 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public RegisteredUser create(RegisteredUser registeredUser) {
-        checkUsernameExistence(registeredUser.getUsername());
-        userService.checkEmailExistence(registeredUser.getEmailAddress());
-        userService.checkPhoneNumberExistence(registeredUser.getPhoneNumber());
-        checkUserType(registeredUser.getType());
+    public RegisteredUser create(RegisteredUserDTO registeredUserDTO) {
+        checkUsernameExistence(registeredUserDTO.getUsername());
+        userService.checkEmailExistence(registeredUserDTO.getEmailAddress());
+        userService.checkPhoneNumberExistence(registeredUserDTO.getPhoneNumber());
+        checkUserType(registeredUserDTO.getType());
 
-        Salary salary = salaryService.create(registeredUser.getSalary().get(0));
-        registeredUser.setSalary(Collections.singletonList(salary));
+        Salary salary = salaryService.create(new Salary(LocalDateTime.now(), registeredUserDTO.getSalary()));
+        Role role = roleRepository.findByName(registeredUserDTO.getType().toString()).get();
 
-        Role role = roleRepository.findByName(registeredUser.getType().toString()).get();
-        registeredUser.setRole(role);
+        RegisteredUser user = new RegisteredUser(registeredUserDTO.getFirstName(),
+                registeredUserDTO.getLastName(), registeredUserDTO.getEmailAddress(),
+                registeredUserDTO.getPhoneNumber(),
+                Collections.singletonList(salary),
+                registeredUserDTO.getType(), false,
+                registeredUserDTO.getUsername(),
+                registeredUserDTO.getPassword(), role);
 
-        return registeredUserRepository.save(registeredUser);
+        return registeredUserRepository.save(user);
     }
 
     @Override
-    public RegisteredUser update(RegisteredUser registeredUser, long id) {
+    public RegisteredUser update(RegisteredUserDTO registeredUserDTO, long id) {
         RegisteredUser user = getOne(id);
-        validateUpdate(id, registeredUser, user.getType());
+        validateUpdate(id, registeredUserDTO, user.getType());
 
-        user.setFirstName(registeredUser.getFirstName());
-        user.setLastName(registeredUser.getLastName());
-        user.setEmailAddress(registeredUser.getEmailAddress());
-        user.setPhoneNumber(registeredUser.getPhoneNumber());
+        user.setFirstName(registeredUserDTO.getFirstName());
+        user.setLastName(registeredUserDTO.getLastName());
+        user.setEmailAddress(registeredUserDTO.getEmailAddress());
+        user.setPhoneNumber(registeredUserDTO.getPhoneNumber());
 
-        if(!registeredUser.getSalary().isEmpty()) {
-            Salary salary = salaryService.create(registeredUser.getSalary().get(0));
+        if(registeredUserDTO.getSalary() != 0) {
+            Salary salary = salaryService.create(new Salary(LocalDateTime.now(), registeredUserDTO.getSalary()));
             List<Salary> salaries = user.getSalary();
             salaries.add(salary);
             user.setSalary(salaries);
         }
 
-        user.setPassword(registeredUser.getPassword());
+        user.setPassword(registeredUserDTO.getPassword());
 
         return registeredUserRepository.save(user);
     }
@@ -86,11 +93,16 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
+    public void deleteById(long id) {
+        registeredUserRepository.deleteById(id);
+    }
+
+    @Override
     public void save(RegisteredUser foundUser) {
         registeredUserRepository.save(foundUser);
     }
 
-    private void validateUpdate(long id, RegisteredUser registeredUser, UserType oldType) {
+    private void validateUpdate(long id, RegisteredUserDTO registeredUser, UserType oldType) {
         checkUserType(registeredUser.getType());
         if (!oldType.equals(registeredUser.getType())) {
             throw new UserTypeNotValidException("User type " + oldType.name().toLowerCase() + " cannot be changed to " + registeredUser.getType().name().toLowerCase() + ".");

@@ -2,14 +2,6 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
-import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
-import akatsuki.restaurantsysteminformation.role.Role;
-import akatsuki.restaurantsysteminformation.salary.Salary;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
-import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
-import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
-import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,7 +64,8 @@ class RegisteredUserControllerIntegrationTest {
         Assertions.assertEquals(size + 1, users.size());
         Assertions.assertEquals("michaellock@gmail.com", users.get(users.size() - 1).getEmailAddress());
 
-        registeredUserService.delete(Long.parseLong(res.getBody()));
+        registeredUserService.deleteById(Long.parseLong(res.getBody()));
+        Assertions.assertEquals(size, registeredUserService.getAll().size());
     }
 
     @Test
@@ -84,6 +74,14 @@ class RegisteredUserControllerIntegrationTest {
                 "0645678822", 12, UserType.MANAGER, "bradpitt", "lock");
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void create_InvalidPhoneNumber_ExceptionThrown() {
+        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
+                "064567882", 12, UserType.MANAGER, "bradpitt", "lock");
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
@@ -161,7 +159,7 @@ class RegisteredUserControllerIntegrationTest {
 
     @Test
     public void delete_ValidId_SavedObject() {
-        RegisteredUser user = registeredUserService.create(new RegisteredUser("Marko", "Savic", "markos@gmail.com", "0611141111", Collections.singletonList(new Salary(LocalDateTime.now(), 1000)), UserType.SYSTEM_ADMIN, false, "username", "password", new Role()));
+        RegisteredUser user = registeredUserService.create(new RegisteredUserDTO("Marko", "Savic", "markos@gmail.com", "0611141111", 13, UserType.SYSTEM_ADMIN, "username", "password"));
         int size = registeredUserService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + user.getId(),
