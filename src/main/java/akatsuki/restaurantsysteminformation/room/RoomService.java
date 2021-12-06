@@ -18,6 +18,8 @@ public interface RoomService {
 
     Room update(Room room, long id);
 
+    void updateName(String newName, long id);
+
     Room delete(long id);
 
     Room updateByRoomDTO(RoomUpdateDTO roomDTO, long id);

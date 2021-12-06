@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,12 @@ public class RoomController {
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody @Valid RoomCreateDTO roomDTO) {
         return roomService.create(new Room(roomDTO)).getId().toString();
+    }
+
+    @PutMapping("/{id}/name")
+    public void updateRoomName(@RequestBody @NotBlank String newName,
+                       @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
+        roomService.updateName(newName, id);
     }
 
     @PutMapping("/{id}")

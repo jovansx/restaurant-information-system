@@ -89,6 +89,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public void updateName(String newName, long id) {
+        checkNameExistence(newName, id);
+        Room foundRoom = getOne(id);
+        foundRoom.setName(newName);
+        roomRepository.save(foundRoom);
+    }
+
+    @Override
     public void save(Room room) {
         roomRepository.save(room);
     }
