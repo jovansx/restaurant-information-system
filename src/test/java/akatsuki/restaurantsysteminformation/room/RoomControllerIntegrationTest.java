@@ -77,7 +77,7 @@ class RoomControllerIntegrationTest {
     public void update_ValidObject_ObjectIsUpdated() {
 
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
-        newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE"));
+        newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE", 0, 0));
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
         List<Long> deleteTables = new ArrayList<>();
 

@@ -14,12 +14,12 @@ public class RestaurantTableDTO extends RestaurantTableCreateDTO {
     private long id;
 
     public RestaurantTableDTO(RestaurantTable table) {
-        super(table.getName(), table.getState().toString(), table.getShape().toString());
+        super(table.getName(), table.getState().toString(), table.getShape().toString(), table.getRow(), table.getColumn());
         this.id = table.getId();
     }
 
-    public RestaurantTableDTO(String name, String state, String shape, long id) {
-        super(name, state, shape);
+    public RestaurantTableDTO(String name, String state, String shape, long id, int row, int column) {
+        super(name, state, shape, row, column);
         this.id = id;
     }
 }

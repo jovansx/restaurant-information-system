@@ -9,6 +9,7 @@ import akatsuki.restaurantsysteminformation.room.dto.RoomLayoutDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
+import akatsuki.restaurantsysteminformation.room.exception.RoomLayoutUpdateException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,19 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void updateLayout(RoomLayoutDTO layoutDTO, long id) {
         Room foundRoom = getOne(id);
+
+        boolean tableNotContainedInNewLayout = false;
+        for (RestaurantTable table : foundRoom.getRestaurantTables()) {
+            if (table.getRow() + 1 > layoutDTO.getRows()) {
+                tableNotContainedInNewLayout = true;
+            }
+            if (table.getColumn() + 1 > layoutDTO.getColumns()) {
+                tableNotContainedInNewLayout = true;
+            }
+        }
+        if (tableNotContainedInNewLayout)
+            throw new RoomLayoutUpdateException("Room cannot be updated because existing tables are not contained in a new grid.");
+
         foundRoom.setRows(layoutDTO.getRows());
         foundRoom.setColumns(layoutDTO.getColumns());
         roomRepository.save(foundRoom);

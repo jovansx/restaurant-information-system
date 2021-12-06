@@ -52,7 +52,7 @@ class RoomServiceIntegrationTest {
     @Test
     public void update_ValidObject_ObjectIsUpdated() {
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
-        newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE"));
+        newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE", 0, 0));
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
         List<Long> deleteTables = new ArrayList<>();
 
@@ -83,7 +83,7 @@ class RoomServiceIntegrationTest {
     public void updateByRoomDTO_TableNotInRoom_ExceptionThrown() {
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
-        updateTables.add(new RestaurantTableDTO("T5", "FREE", "SQUARE", 1L));
+        updateTables.add(new RestaurantTableDTO("T5", "FREE", "SQUARE", 1L, 0, 0));
         List<Long> deleteTables = new ArrayList<>();
 
         RoomUpdateDTO roomUpdateDTO = new RoomUpdateDTO(newTables, updateTables, deleteTables, "Room number 2");

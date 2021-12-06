@@ -28,6 +28,12 @@ public class RestaurantTable {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "rows", nullable = false)
+    private int row;
+
+    @Column(name = "columns", nullable = false)
+    private int column;
+
     @Column(name = "state", nullable = false)
     private TableState state;
 
@@ -41,12 +47,14 @@ public class RestaurantTable {
     @JoinColumn(name = "order_id")
     private Order activeOrder;
 
-    public RestaurantTable(String name, TableState state, TableShape shape, boolean isDeleted, Order activeOrder) {
+    public RestaurantTable(String name, TableState state, TableShape shape, boolean isDeleted, Order activeOrder, int row, int column) {
         this.name = name;
         this.state = state;
         this.shape = shape;
         this.isDeleted = isDeleted;
         this.activeOrder = activeOrder;
+        this.column = column;
+        this.row = row;
     }
 
     public RestaurantTable(RestaurantTableCreateDTO tableDTO) {
@@ -55,5 +63,7 @@ public class RestaurantTable {
         this.shape = TableShape.valueOf(tableDTO.getShape());
         this.isDeleted = false;
         this.activeOrder = null;
+        this.row = tableDTO.getRow();
+        this.column = tableDTO.getColumn();
     }
 }

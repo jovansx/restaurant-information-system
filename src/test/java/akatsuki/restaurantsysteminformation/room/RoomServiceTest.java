@@ -152,10 +152,10 @@ class RoomServiceTest {
     @Test
     public void updateByRoomDTO_TableNotInRoom_ExceptionThrown() {
         List<RestaurantTableCreateDTO> listCreate = new ArrayList<>();
-        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name()));
+        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name(), 0, 0));
 
         List<RestaurantTableDTO> listUpdate = new ArrayList<>();
-        RestaurantTable table = new RestaurantTable("table2", TableState.FREE, TableShape.SQUARE, false, null);
+        RestaurantTable table = new RestaurantTable("table2", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
         table.setId(2L);
         listUpdate.add(new RestaurantTableDTO(table));
 
@@ -178,10 +178,10 @@ class RoomServiceTest {
     @Test
     public void updateByRoomDTO_ValidDto_ObjectUpdated() {
         List<RestaurantTableCreateDTO> listCreate = new ArrayList<>();
-        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name()));
+        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name(), 0, 0));
 
         List<RestaurantTableDTO> listUpdate = new ArrayList<>();
-        RestaurantTable table = new RestaurantTable("table2", TableState.FREE, TableShape.SQUARE, false, null);
+        RestaurantTable table = new RestaurantTable("table2", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
         table.setId(2L);
         listUpdate.add(new RestaurantTableDTO(table));
 
