@@ -5,6 +5,7 @@ import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableServi
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
+import akatsuki.restaurantsysteminformation.room.dto.RoomLayoutDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
@@ -88,6 +89,14 @@ public class RoomServiceImpl implements RoomService {
         checkNameExistence(newName, id);
         Room foundRoom = getOne(id);
         foundRoom.setName(newName);
+        roomRepository.save(foundRoom);
+    }
+
+    @Override
+    public void updateLayout(RoomLayoutDTO layoutDTO, long id) {
+        Room foundRoom = getOne(id);
+        foundRoom.setRows(layoutDTO.getRows());
+        foundRoom.setColumns(layoutDTO.getColumns());
         roomRepository.save(foundRoom);
     }
 

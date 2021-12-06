@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomLayoutDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomWithTablesDTO;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,12 @@ public class RoomController {
     public void updateRoomName(@RequestBody @NotBlank String newName,
                        @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
         roomService.updateName(newName, id);
+    }
+
+    @PutMapping("/{id}/layout")
+    public void updateRoomLayout(@RequestBody @Valid RoomLayoutDTO layoutDTO,
+                               @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
+        roomService.updateLayout(layoutDTO, id);
     }
 
     @PutMapping("/{id}")
