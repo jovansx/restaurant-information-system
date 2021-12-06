@@ -1,6 +1,8 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -19,8 +21,8 @@ public class RegisteredUserController {
 
     //TODO: verovatno pada test jer sam promenio tip povratne vrednosti
     @GetMapping("/{id}")
-    public RegisteredUserDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new RegisteredUserDTO(registeredUserService.getOne(id));
+    public RegisteredUserDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new RegisteredUserDetailsDTO(registeredUserService.getOne(id));
     }
 
     @GetMapping
@@ -35,9 +37,16 @@ public class RegisteredUserController {
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody @Valid RegisteredUserDTO registeredUserDTO,
+    public void update(@RequestBody @Valid RegisteredUserDetailsDTO registeredUserDTO,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.update(new RegisteredUser(registeredUserDTO), id);
+    }
+
+    //TODO: naknadno dodato
+    @PutMapping("/change-password/{id}")
+    public void changePassword(@RequestBody @Valid RegisteredUserChangePasswordDTO registeredUserDTO,
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        registeredUserService.changePassword(registeredUserDTO, id);
     }
 
     @DeleteMapping("/{id}")

@@ -1,7 +1,9 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
+import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserPasswordException;
 import akatsuki.restaurantsysteminformation.role.Role;
 import akatsuki.restaurantsysteminformation.role.RoleRepository;
 import akatsuki.restaurantsysteminformation.salary.Salary;
@@ -12,6 +14,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,6 +28,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final UserService userService;
     private final SalaryService salaryService;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisteredUser getOne(long id) {
@@ -71,8 +75,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             user.setSalary(salaries);
         }
 
-        user.setPassword(registeredUser.getPassword());
-
         return registeredUserRepository.save(user);
     }
 
@@ -83,6 +85,19 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             throw new RegisteredUserDeleteException("User with the id " + id + " cannot be deleted.");
         user.setDeleted(true);
         return registeredUserRepository.save(user);
+    }
+
+    @Override
+    public RegisteredUser changePassword(RegisteredUserChangePasswordDTO dto, long id) {
+        RegisteredUser foundUser = getOne(id);
+
+        String newPasswordHash = passwordEncoder.encode(dto.getNewPassword());
+        if (!passwordEncoder.matches(dto.getOldPassword(), foundUser.getPassword())) {
+            throw new RegisteredUserPasswordException("Old password " + dto.getOldPassword() + " not matches with recorded user password!");
+        }
+        foundUser.setPassword(newPasswordHash);
+        registeredUserRepository.save(foundUser);
+        return foundUser;
     }
 
     @Override
