@@ -55,6 +55,9 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         Role role = roleRepository.findByName(registeredUser.getType().toString()).get();
         registeredUser.setRole(role);
 
+        String passwordHash = passwordEncoder.encode(registeredUser.getPassword());
+        registeredUser.setPassword(passwordHash);
+
         return registeredUserRepository.save(registeredUser);
     }
 
