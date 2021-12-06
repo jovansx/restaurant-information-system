@@ -12,8 +12,6 @@ public interface RoomService {
 
     List<Room> getAll();
 
-    List<Room> getAllActive();
-
     Room create(Room room);
 
     Room update(Room room, long id);

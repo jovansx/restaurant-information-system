@@ -124,7 +124,7 @@ class RoomControllerIntegrationTest {
 
     @Test
     public void delete_ValidId_ObjectRemoved() {
-        Room room = roomService.create(new Room("room 4", false, null));
+        Room room = roomService.create(new Room("room 4", false, null, 0, 0));
         int size = roomService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + room.getId(),

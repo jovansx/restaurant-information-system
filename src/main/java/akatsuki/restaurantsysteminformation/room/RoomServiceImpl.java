@@ -36,11 +36,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> getAllActive() {
-        return roomRepository.findAll().stream().filter(r->!r.isDeleted()).collect(Collectors.toList());
-    }
-
-    @Override
     public Room create(Room room) {
         checkNameExistence(room.getName(), -1);
         return roomRepository.save(room);
@@ -84,7 +79,7 @@ public class RoomServiceImpl implements RoomService {
         });
         allTables.addAll(newTables);
 
-        Room room = new Room(roomDTO.getName(), false, allTables);
+        Room room = new Room(roomDTO.getName(), false, allTables, 0, 0);
         return update(room, id);
     }
 

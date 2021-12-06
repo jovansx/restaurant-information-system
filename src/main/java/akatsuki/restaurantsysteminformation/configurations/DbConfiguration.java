@@ -235,7 +235,7 @@ public class DbConfiguration {
             RestaurantTable restaurantTable2 = new RestaurantTable("T2", TableState.FREE, TableShape.CIRCLE, false, null);
             restaurantTableRepository.save(restaurantTable2);
 //          Room
-            Room room1 = new Room("Room number 1", false, Collections.singletonList(restaurantTable1));
+            Room room1 = new Room("Room number 1", false, Collections.singletonList(restaurantTable1), 5, 5);
             roomRepository.save(room1);
 
             log.info("Database is populated");
