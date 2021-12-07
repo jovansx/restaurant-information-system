@@ -1,5 +1,7 @@
 package akatsuki.restaurantsysteminformation.room;
 
+import akatsuki.restaurantsysteminformation.enums.TableShape;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
@@ -52,7 +54,7 @@ class RoomServiceIntegrationTest {
     @Test
     public void update_ValidObject_ObjectIsUpdated() {
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
-        newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE", 0, 0));
+        newTables.add(new RestaurantTableCreateDTO("T3", TableState.FREE, TableShape.SQUARE, 0, 0));
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
         List<Long> deleteTables = new ArrayList<>();
 
@@ -83,7 +85,7 @@ class RoomServiceIntegrationTest {
     public void updateByRoomDTO_TableNotInRoom_ExceptionThrown() {
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
-        updateTables.add(new RestaurantTableDTO("T5", "FREE", "SQUARE", 1L, 0, 0));
+        updateTables.add(new RestaurantTableDTO("T5", TableState.FREE, TableShape.SQUARE, 1L, 0, 0));
         List<Long> deleteTables = new ArrayList<>();
 
         RoomUpdateDTO roomUpdateDTO = new RoomUpdateDTO(newTables, updateTables, deleteTables, "Room number 2");

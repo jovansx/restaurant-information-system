@@ -1,5 +1,7 @@
 package akatsuki.restaurantsysteminformation.room;
 
+import akatsuki.restaurantsysteminformation.enums.TableShape;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
@@ -77,7 +79,7 @@ class RoomControllerIntegrationTest {
     public void update_ValidObject_ObjectIsUpdated() {
 
         List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
-        newTables.add(new RestaurantTableCreateDTO("T3", "FREE", "SQUARE", 0, 0));
+        newTables.add(new RestaurantTableCreateDTO("T3", TableState.FREE, TableShape.SQUARE, 0, 0));
         List<RestaurantTableDTO> updateTables = new ArrayList<>();
         List<Long> deleteTables = new ArrayList<>();
 

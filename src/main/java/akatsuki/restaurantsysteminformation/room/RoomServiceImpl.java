@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -134,7 +133,7 @@ public class RoomServiceImpl implements RoomService {
     private List<RestaurantTable> createNewTables(List<RestaurantTableCreateDTO> newTablesDTO) {
         List<RestaurantTable> tables = new ArrayList<>();
         newTablesDTO.forEach(tableDTO -> {
-            RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO));
+            RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO), 1L);
             tables.add(table);
         });
         return tables;
@@ -145,7 +144,7 @@ public class RoomServiceImpl implements RoomService {
         updateTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = new RestaurantTable(tableDTO);
             checkTableInRoom(tableDTO.getId(), id);
-            tables.add(restaurantTableService.update(table, tableDTO.getId()));
+            tables.add(restaurantTableService.update(table, tableDTO.getId(), 1L));
         });
         return tables;
     }

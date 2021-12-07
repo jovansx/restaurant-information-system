@@ -52,20 +52,20 @@ class RestaurantTableServiceIntegrationTest {
     @Test
     public void create_ValidObject_SavedObject() {
         RestaurantTable table = new RestaurantTable("T3", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
-        RestaurantTable createdTable = restaurantTableService.create(table);
+        RestaurantTable createdTable = restaurantTableService.create(table, 1L);
         Assertions.assertNotNull(createdTable);
     }
 
     @Test
     public void create_InvalidName_ExceptionThrown() {
         RestaurantTable table = new RestaurantTable("T1", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
-        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.create(table));
+        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.create(table, 1L));
     }
 
     @Test
     public void update_ValidObject_ObjectIsUpdated() {
         RestaurantTable table = new RestaurantTable("T2", TableState.FREE, TableShape.CIRCLE, false, null, 0, 0);
-        RestaurantTable restaurantTable = restaurantTableService.update(table, 2L);
+        RestaurantTable restaurantTable = restaurantTableService.update(table, 2L, 1L);
         Assertions.assertNotNull(restaurantTable);
         Assertions.assertEquals(restaurantTable.getShape(), TableShape.CIRCLE);
     }
@@ -73,7 +73,7 @@ class RestaurantTableServiceIntegrationTest {
     @Test
     public void update_InvalidName_ExceptionThrown() {
         RestaurantTable table = new RestaurantTable("T2", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
-        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.update(table, 1L));
+        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.update(table, 1L, 1L));
     }
 
     @Test

@@ -152,7 +152,7 @@ class RoomServiceTest {
     @Test
     public void updateByRoomDTO_TableNotInRoom_ExceptionThrown() {
         List<RestaurantTableCreateDTO> listCreate = new ArrayList<>();
-        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name(), 0, 0));
+        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE, TableShape.SQUARE, 0, 0));
 
         List<RestaurantTableDTO> listUpdate = new ArrayList<>();
         RestaurantTable table = new RestaurantTable("table2", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
@@ -178,7 +178,7 @@ class RoomServiceTest {
     @Test
     public void updateByRoomDTO_ValidDto_ObjectUpdated() {
         List<RestaurantTableCreateDTO> listCreate = new ArrayList<>();
-        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE.name(), TableShape.SQUARE.name(), 0, 0));
+        listCreate.add(new RestaurantTableCreateDTO("table1", TableState.FREE, TableShape.SQUARE, 0, 0));
 
         List<RestaurantTableDTO> listUpdate = new ArrayList<>();
         RestaurantTable table = new RestaurantTable("table2", TableState.FREE, TableShape.SQUARE, false, null, 0, 0);
@@ -201,8 +201,8 @@ class RoomServiceTest {
 
         roomService.updateByRoomDTO(roomUpdateDTO, 1L);
 
-        Mockito.verify(restaurantTableServiceMock, Mockito.times(1)).create(Mockito.any(RestaurantTable.class));
-        Mockito.verify(restaurantTableServiceMock, Mockito.times(1)).update(Mockito.any(RestaurantTable.class), Mockito.any(long.class));
+        Mockito.verify(restaurantTableServiceMock, Mockito.times(1)).create(Mockito.any(RestaurantTable.class), Mockito.any(Long.class));
+        Mockito.verify(restaurantTableServiceMock, Mockito.times(1)).update(Mockito.any(RestaurantTable.class), Mockito.any(long.class), Mockito.any(Long.class));
         Mockito.verify(restaurantTableServiceMock, Mockito.times(1)).delete(Mockito.any(Long.class));
         Mockito.verify(roomRepositoryMock, Mockito.times(1)).save(Mockito.any(Room.class));
     }

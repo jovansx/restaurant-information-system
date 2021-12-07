@@ -59,8 +59,8 @@ public class RestaurantTable {
 
     public RestaurantTable(RestaurantTableCreateDTO tableDTO) {
         this.name = tableDTO.getName();
-        this.state = TableState.valueOf(tableDTO.getState());
-        this.shape = TableShape.valueOf(tableDTO.getShape());
+        this.state = tableDTO.getState();
+        this.shape = tableDTO.getShape();
         this.isDeleted = false;
         this.activeOrder = null;
         this.row = tableDTO.getRow();
