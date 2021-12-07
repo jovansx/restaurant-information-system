@@ -11,10 +11,16 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class RoomWithTablesDTO extends RoomCreateDTO {
-    private @Getter @Setter Long id;
+    private @Getter
+    @Setter
+    Long id;
 
-    private @Getter @Setter int rows;
-    private @Getter @Setter int columns;
+    private @Getter
+    @Setter
+    int rows;
+    private @Getter
+    @Setter
+    int columns;
 
     private @Getter
     @Setter

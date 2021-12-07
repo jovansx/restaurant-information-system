@@ -64,7 +64,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         user.setEmailAddress(registeredUser.getEmailAddress());
         user.setPhoneNumber(registeredUser.getPhoneNumber());
 
-        if(!registeredUser.getSalary().isEmpty()) {
+        if (!registeredUser.getSalary().isEmpty()) {
             Salary salary = salaryService.create(registeredUser.getSalary().get(0));
             List<Salary> salaries = user.getSalary();
             salaries.add(salary);

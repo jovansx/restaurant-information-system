@@ -2,11 +2,10 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
 import akatsuki.restaurantsysteminformation.room.dto.RoomLayoutDTO;
-import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomTablesUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomLayoutUpdateException;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -65,23 +65,40 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room updateByRoomDTO(RoomUpdateDTO roomDTO, long id) {
-        checkNameExistence(roomDTO.getName(), id);
+    public Room updateByRoomDTO(RoomTablesUpdateDTO roomDTO, long id) {
+        Room room = getOne(id);
 
-        List<RestaurantTable> newTables = createNewTables(roomDTO.getNewTables());
-        List<RestaurantTable> updatedTables = updateTables(roomDTO.getUpdateTables(), id);
-        deleteTables(roomDTO.getDeleteTables(), id);
+        List<RestaurantTableDTO> adding = new ArrayList<>();
+        List<RestaurantTableDTO> editing = new ArrayList<>();
+        List<RestaurantTable> deleting = room.getRestaurantTables();
 
-        List<RestaurantTable> allTables = new ArrayList<>(updatedTables);
-        List<RestaurantTable> roomTables = getRoomTables(id);
-        roomTables.forEach(table -> {
-            if (!allTables.contains(table))
-                allTables.add(table);
-        });
-        allTables.addAll(newTables);
+        for (RestaurantTableDTO t : roomDTO.getTables()) {
+            if (t.getId() != 0) {
+                editing.add(t);
+                deleting = deleting.stream().filter(tb -> !tb.getId().equals(t.getId())).collect(Collectors.toList());
+                continue;
+            }
+            List<RestaurantTable> filteredList = room.getRestaurantTables().stream()
+                    .filter(tb -> tb.getName().equals(t.getName())).collect(Collectors.toList());
+            if (filteredList.isEmpty())
+                adding.add(t);
+            else {
+                t.setId(filteredList.get(0).getId());
+                editing.add(t);
+            }
+            deleting = deleting.stream().filter(tb -> !tb.getName().equals(t.getName())).collect(Collectors.toList());
+        }
 
-        Room room = new Room(roomDTO.getName(), false, allTables, 0, 0);
-        return update(room, id);
+        List<RestaurantTable> tables = createNewTables(adding);
+        List<RestaurantTable> updatedTables = updateTables(editing, id);
+        tables.addAll(updatedTables);
+
+        for (RestaurantTable r : deleting) {
+            restaurantTableService.delete(r.getId());
+        }
+
+        room.setRestaurantTables(tables);
+        return roomRepository.save(room);
     }
 
     @Override
@@ -118,10 +135,6 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(room);
     }
 
-    private List<RestaurantTable> getRoomTables(long id) {
-        return getOne(id).getRestaurantTables();
-    }
-
     private void checkTableInRoom(long tableId, long id) {
         Room room = getOne(id);
         RestaurantTable table = restaurantTableService.getOne(tableId);
@@ -130,7 +143,7 @@ public class RoomServiceImpl implements RoomService {
             throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
     }
 
-    private List<RestaurantTable> createNewTables(List<RestaurantTableCreateDTO> newTablesDTO) {
+    private List<RestaurantTable> createNewTables(List<RestaurantTableDTO> newTablesDTO) {
         List<RestaurantTable> tables = new ArrayList<>();
         newTablesDTO.forEach(tableDTO -> {
             RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO), 1L);
@@ -148,14 +161,6 @@ public class RoomServiceImpl implements RoomService {
         });
         return tables;
     }
-
-    private void deleteTables(List<Long> deleteTableIds, long id) {
-        deleteTableIds.forEach(tableId -> {
-            checkTableInRoom(tableId, id);
-            restaurantTableService.delete(tableId);
-        });
-    }
-
 
     private void checkNameExistence(String name, long id) {
         Optional<Room> room = roomRepository.findByName(name);

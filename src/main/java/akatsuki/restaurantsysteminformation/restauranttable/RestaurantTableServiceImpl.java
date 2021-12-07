@@ -1,15 +1,11 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.TableState;
-import akatsuki.restaurantsysteminformation.item.ItemService;
-import akatsuki.restaurantsysteminformation.order.OrderRepository;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomService;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,15 +75,19 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         return table.getActiveOrder().getId();
     }
 
-
-    private void checkNameExistence(String name, long id, long roomId) {
+    private RestaurantTable getTableByNameIfHeIsContainedInRoom(String name, long roomId) {
         Room foundRoom = roomService.getOne(roomId);
         RestaurantTable table = null;
         for (RestaurantTable restaurantTable : foundRoom.getRestaurantTables()) {
-            if(restaurantTable.getId().equals(id)) {
+            if (restaurantTable.getName().equals(name)) {
                 table = restaurantTable;
             }
         }
+        return table;
+    }
+
+    private void checkNameExistence(String name, long id, long roomId) {
+        RestaurantTable table = getTableByNameIfHeIsContainedInRoom(name, roomId);
         if (id == -1 && table != null)
             throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
 

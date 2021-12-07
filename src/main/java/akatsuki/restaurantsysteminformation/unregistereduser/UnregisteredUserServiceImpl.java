@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.salary.Salary;
-import akatsuki.restaurantsysteminformation.salary.SalaryRepository;
 import akatsuki.restaurantsysteminformation.salary.SalaryService;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
@@ -77,7 +76,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         user.setEmailAddress(unregisteredUser.getEmailAddress());
         user.setPhoneNumber(unregisteredUser.getPhoneNumber());
 
-        if(!unregisteredUser.getSalary().isEmpty()) {
+        if (!unregisteredUser.getSalary().isEmpty()) {
             Salary salary = salaryService.create(unregisteredUser.getSalary().get(0));
             List<Salary> salaries = user.getSalary();
             salaries.add(salary);

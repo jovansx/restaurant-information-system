@@ -14,7 +14,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "restaurant_table")
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Where(clause = "is_deleted = false")
 @Getter
 @Setter
@@ -22,6 +22,7 @@ import javax.persistence.*;
 public class RestaurantTable {
 
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

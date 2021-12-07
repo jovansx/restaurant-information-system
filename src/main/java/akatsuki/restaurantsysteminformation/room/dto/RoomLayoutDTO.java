@@ -9,12 +9,14 @@ import javax.validation.constraints.Min;
 
 @NoArgsConstructor
 public class RoomLayoutDTO {
-    @Min(1) @Max(10)
+    @Min(1)
+    @Max(10)
     private
     @Getter
     @Setter
     int rows;
-    @Min(1) @Max(10)
+    @Min(1)
+    @Max(10)
     private
     @Getter
     @Setter
