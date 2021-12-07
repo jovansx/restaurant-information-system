@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.item.dto;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

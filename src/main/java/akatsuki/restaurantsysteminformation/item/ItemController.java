@@ -46,7 +46,7 @@ public class ItemController {
 
     @PutMapping("/{id}")
     public String update(@RequestBody @Valid ItemUpdateDTO itemDTO,
-                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+                         @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return itemService.update(new Item(itemDTO), id).getId().toString();
     }
 
