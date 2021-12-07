@@ -1,9 +1,6 @@
 package akatsuki.restaurantsysteminformation.item;
 
-import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
+import akatsuki.restaurantsysteminformation.item.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +27,11 @@ public class ItemController {
     @GetMapping
     public List<ItemDetailsDTO> getAllActive() {
         return itemService.getAllActive().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/menu")
+    public List<ItemBasicInfoDTO> getAllForMenuInsight() {
+        return itemService.getAllForMenuInsight().stream().map(ItemBasicInfoDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/category/{category}")

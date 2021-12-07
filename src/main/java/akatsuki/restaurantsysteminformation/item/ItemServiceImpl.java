@@ -57,6 +57,31 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<Item> getAllForMenuInsight() {
+        List<Item> chosenItems = new ArrayList<>();
+        List<Item> items = itemRepository.findAll();
+
+        for (Item i: items) {
+            List<Item> items2 = items.stream().filter(item -> item.getCode().equals(i.getCode())).collect(Collectors.toList());
+            if (items2.size() > 2) {
+                throw new ItemExistsException("Not possible!");
+            }
+            if (items2.size() == 1) {
+                chosenItems.add(i);
+                continue;
+            }
+            for (Item filteredItem: items2) {
+                if (filteredItem.isOriginal()) continue;
+                if (filteredItem.isDeleted()) continue;
+                if (!chosenItems.contains(filteredItem))
+                    chosenItems.add(filteredItem);
+            }
+        }
+
+        return chosenItems;
+    }
+
+    @Override
     public List<Item> getAll() {
         return itemRepository.findAll();
     }
