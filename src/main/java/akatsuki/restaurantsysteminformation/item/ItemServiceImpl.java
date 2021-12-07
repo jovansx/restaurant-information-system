@@ -154,7 +154,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item delete(long id) {
-        Item item = getOneActive(id);
+        Item item = getOne(id);
         List<Item> itemList = itemRepository.findAllByCode(item.getCode());
         Item copy = null;
         if (itemList.size() == 1) {

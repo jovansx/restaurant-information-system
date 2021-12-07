@@ -12,9 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ItemBasicInfoDTO extends ItemForMenuDTO {
     private String itemType;
+    private String description;
 
     public ItemBasicInfoDTO(Item item) {
         super(item);
         this.itemType = item.getType().toString().toLowerCase();
+        this.description = item.getDescription();
     }
 }
