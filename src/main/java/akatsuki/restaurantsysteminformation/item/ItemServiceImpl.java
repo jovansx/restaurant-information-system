@@ -67,7 +67,8 @@ public class ItemServiceImpl implements ItemService {
                 throw new ItemExistsException("Not possible!");
             }
             if (items2.size() == 1) {
-                chosenItems.add(i);
+                if (!i.isDeleted())
+                    chosenItems.add(i);
                 continue;
             }
             for (Item filteredItem: items2) {
