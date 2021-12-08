@@ -7,10 +7,8 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiveException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
+import akatsuki.restaurantsysteminformation.order.exception.*;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,6 +71,11 @@ public class OrderServiceImpl implements OrderService {
         Order order1 = getOneWithDrinks(orderId);
         Order order2 = getOneWithDishes(orderId);
         order1.setDishes(order2.getDishes());
+        List<DrinkItems> items = new ArrayList<>();
+        for(DrinkItems di : order1.getDrinks()) {
+            items.add(drinkItemsService.findOneWithItems(di.getId()));
+        }
+        order1.setDrinks(items);
         return order1;
     }
 
@@ -175,5 +179,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void save(Order order) {
         orderRepository.save(order);
+    }
+
+    @Override
+    public OrderDTO getOrderByRestaurantTableNameIfWaiterValid(String name, String pinCode) {
+        Long orderId = restaurantTableService.getOrderByTableName(name);
+        Order order;
+        OrderDTO orderDTO = new OrderDTO();
+        if(orderId != null) {
+            order = getOneWithAll(orderId);
+            UnregisteredUser waiter = order.getWaiter();
+            if(!waiter.getPinCode().equals(pinCode)) {
+                throw new OrderWaiterNotValidException("Order with the id " + order.getId() + " does not belong to the waiter " + waiter.getFirstName() + " " + waiter.getLastName());
+            }
+            orderDTO = new OrderDTO(order);
+        }
+
+        return orderDTO;
     }
 }

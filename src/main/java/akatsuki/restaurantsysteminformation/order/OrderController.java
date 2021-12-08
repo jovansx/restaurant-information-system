@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.order.dto.OrderBasicInfoDTO;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,11 @@ public class OrderController {
     @GetMapping("/table/{id}")
     public OrderBasicInfoDTO getOneByRestaurantTable(@PathVariable long id) {
         return new OrderBasicInfoDTO(orderService.getOneByRestaurantTableId(id));
+    }
+
+    @GetMapping("/{name}/{pinCode}")
+    public OrderDTO getOrderByRestaurantTable(@PathVariable String name, @PathVariable String pinCode) {
+        return orderService.getOrderByRestaurantTableNameIfWaiterValid(name, pinCode);
     }
 
     @GetMapping

@@ -4,10 +4,13 @@ import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DrinkItemsService {
 
     DrinkItems getOne(long id);
+
+    DrinkItems findOneWithItems(long id);
 
     List<DrinkItems> getAll();
 

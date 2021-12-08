@@ -82,7 +82,7 @@ public class Item {
         this.deleted = false;
         this.type = itemDTO.getType();
         this.components = new ArrayList<>(itemDTO.getComponents());
-        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory().getName(), itemDTO.getItemCategory().getType());
         this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
     }
 
@@ -95,7 +95,7 @@ public class Item {
         this.deleted = false;
         this.type = itemDTO.getType();
         this.components = new ArrayList<>(itemDTO.getComponents());
-        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory().getName(), itemDTO.getItemCategory().getType());
         this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
     }
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,13 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     public RestaurantTable getOneWithOrder(long id) {
         return restaurantTableRepository.findByIdAndFetchOrder(id).orElseThrow(
                 () -> new RestaurantTableNotFoundException("Restaurant table the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
+    public RestaurantTable getOneByNameWithOrder(String name) {
+        return restaurantTableRepository.findByNameAndFetchOrder(name).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table the name " + name + " is not found in the database.")
         );
     }
 
@@ -75,6 +83,11 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         return table.getActiveOrder().getId();
     }
 
+    @Override
+    public Long getOrderByTableName(String name) {
+        RestaurantTable table = getOneByNameWithOrder(name);
+        return table.getActiveOrder() == null ? null : table.getActiveOrder().getId();
+    }
     private RestaurantTable getTableByNameIfHeIsContainedInRoom(String name, long roomId) {
         Room foundRoom = roomService.getOne(roomId);
         RestaurantTable table = null;

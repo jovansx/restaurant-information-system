@@ -65,4 +65,5 @@ public class UnregisteredUserController {
                                                       @RequestParam("usertype") @NotEmpty(message = "It cannot be empty.") String userType) {
         return new UnregisteredUserEssentialsDTO(unregisteredUserService.checkPinCode(pinCode, UserType.valueOf(userType.toUpperCase())));
     }
+
 }

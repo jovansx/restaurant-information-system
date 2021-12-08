@@ -12,4 +12,7 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
 
     @Query("select t from RestaurantTable t left join fetch t.activeOrder o where t.id = (:id)")
     Optional<RestaurantTable> findByIdAndFetchOrder(long id);
+
+    @Query("select t from RestaurantTable t left join fetch t.activeOrder o where t.name = (:name)")
+    Optional<RestaurantTable> findByNameAndFetchOrder(String name);
 }

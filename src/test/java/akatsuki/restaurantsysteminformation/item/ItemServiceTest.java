@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.item;
 import akatsuki.restaurantsysteminformation.item.exception.ItemAlreadyDeletedException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemCodeNotValidException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
+import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryService;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
@@ -94,7 +95,7 @@ class ItemServiceTest {
         Item item2 = new Item();
         List<Item> itemList = Arrays.asList(item1, item2);
 
-        ItemCategory itemCategory = new ItemCategory("Meat");
+        ItemCategory itemCategory = new ItemCategory("Meat", CategoryType.DISH);
         Mockito.when(itemCategoryServiceMock.firstLetterUppercase("meat")).thenReturn("Meat");
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(itemCategory);
 
@@ -165,7 +166,7 @@ class ItemServiceTest {
     @Test
     void create_CategoryNotExist_ExceptionThrown() {
         Item item = new Item();
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
 
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(null);
 
@@ -176,10 +177,10 @@ class ItemServiceTest {
     void create_ValidItem_ObjectIsCreated() {
         Item item = new Item();
         item.setPrices(Collections.singletonList(new Price(LocalDateTime.now(), 22)));
-        ItemCategory itemCategory = new ItemCategory("Meat");
+        ItemCategory itemCategory = new ItemCategory("Meat", CategoryType.DISH);
         item.setItemCategory(itemCategory);
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", CategoryType.DISH));
 
         Item createdItem = itemService.create(item);
         Assertions.assertNotNull(createdItem);
@@ -191,9 +192,9 @@ class ItemServiceTest {
     @Test
     void update_InvalidItemId_ExceptionThrown() {
         Item item = new Item();
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", CategoryType.DISH));
         Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.update(item, 1L));
@@ -201,7 +202,7 @@ class ItemServiceTest {
 
     @Test
     void update_InvalidItemCode_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Meat");
+        ItemCategory itemCategory = new ItemCategory("Meat", CategoryType.DISH);
         Item item = new Item();
         item.setCode("code1");
         item.setItemCategory(itemCategory);
@@ -210,7 +211,7 @@ class ItemServiceTest {
         item2.setItemCategory(itemCategory);
 
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", CategoryType.DISH));
         Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item2));
 
         Assertions.assertThrows(ItemCodeNotValidException.class, () -> itemService.update(item, 1L));
@@ -220,14 +221,14 @@ class ItemServiceTest {
     void update_FirstTimeValidUpdate_ObjectUpdated() {
         Item item = new Item();
         item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
         item.setPrices(new ArrayList<>());
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
 
         Item item2 = new Item();
         item2.setOriginal(true);
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", CategoryType.DISH));
         Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
         Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(item2));
 
@@ -241,7 +242,7 @@ class ItemServiceTest {
     void update_SecondTimeValidUpdate_ObjectUpdated() {
         Item item = new Item();
         item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
         item.setPrices(new ArrayList<>());
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
         item.setComponents(new ArrayList<>());
@@ -254,7 +255,7 @@ class ItemServiceTest {
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
 
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat"));
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", CategoryType.DISH));
         Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
         Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(item2, item3));
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(Mockito.any())).thenReturn(Optional.of(item));
@@ -269,7 +270,7 @@ class ItemServiceTest {
         Item item = new Item();
         item.setOriginal(true);
         item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
         item.setPrices(new ArrayList<>());
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
 
@@ -287,7 +288,7 @@ class ItemServiceTest {
         Item item = new Item();
         item.setOriginal(true);
         item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
         item.setPrices(new ArrayList<>());
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
 
@@ -309,7 +310,7 @@ class ItemServiceTest {
         Item item = new Item();
         item.setOriginal(true);
         item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat"));
+        item.setItemCategory(new ItemCategory("Meat", CategoryType.DISH));
         item.setPrices(new ArrayList<>());
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
 
