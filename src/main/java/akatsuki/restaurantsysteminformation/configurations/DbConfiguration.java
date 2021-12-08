@@ -242,7 +242,6 @@ public class DbConfiguration {
             Order order9 = new Order(1200, LocalDateTime.of(2021, 5, 15, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order10 = new Order(1200, LocalDateTime.of(2020, 12, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
 
-
             orderRepository.save(order1);
             orderRepository.save(order2);
             orderRepository.save(order3);
@@ -259,8 +258,10 @@ public class DbConfiguration {
             RestaurantTable restaurantTable2 = new RestaurantTable("T2", TableState.FREE, TableShape.SQUARE, false, null, 1, 0);
             restaurantTableRepository.save(restaurantTable2);
 //          Room
-            Room room1 = new Room("Room number 1", false, Arrays.asList(restaurantTable1, restaurantTable2), 2, 2);
+            Room room1 = new Room("Room 1", false, Arrays.asList(restaurantTable1, restaurantTable2), 2, 2);
             roomRepository.save(room1);
+            Room room2 = new Room("Room 2", false, new ArrayList<>(), 2, 2);
+            roomRepository.save(room2);
 
             log.info("Database is populated");
         };

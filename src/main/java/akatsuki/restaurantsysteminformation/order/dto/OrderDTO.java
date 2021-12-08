@@ -1,15 +1,10 @@
 package akatsuki.restaurantsysteminformation.order.dto;
 
-import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemOrderRepresentationDTO;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsOrderRepresentationDTO;
 import akatsuki.restaurantsysteminformation.order.Order;
-import akatsuki.restaurantsysteminformation.orderitem.dto.OrderItemIdDTO;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +30,8 @@ public class OrderDTO {
         this.drinkItemsList = order.getDrinks().stream().map((drinks) -> new DrinkItemsOrderRepresentationDTO(drinks)).collect(Collectors.toList());
     }
 
-    public OrderDTO() {}
+    public OrderDTO() {
+    }
 
     public long getWaiterId() {
         return waiterId;

@@ -1,5 +1,7 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
+import akatsuki.restaurantsysteminformation.order.Order;
+
 import java.util.List;
 
 public interface RestaurantTableService {
@@ -13,9 +15,13 @@ public interface RestaurantTableService {
 
     RestaurantTable update(RestaurantTable table, long id, long roomId);
 
+    void changeStateOfTableWithOrder(Order order);
+
     RestaurantTable delete(long id);
 
     Long getActiveOrderIdByTableId(long id);
+
     Long getOrderByTableName(String name);
+
     RestaurantTable getOneByNameWithOrder(String name);
 }

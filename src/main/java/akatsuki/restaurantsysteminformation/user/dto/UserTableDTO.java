@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.user.dto;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

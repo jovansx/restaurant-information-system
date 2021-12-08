@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         Order order2 = getOneWithDishes(orderId);
         order1.setDishes(order2.getDishes());
         List<DrinkItems> items = new ArrayList<>();
-        for(DrinkItems di : order1.getDrinks()) {
+        for (DrinkItems di : order1.getDrinks()) {
             items.add(drinkItemsService.findOneWithItems(di.getId()));
         }
         order1.setDrinks(items);
@@ -186,10 +185,10 @@ public class OrderServiceImpl implements OrderService {
         Long orderId = restaurantTableService.getOrderByTableName(name);
         Order order;
         OrderDTO orderDTO = new OrderDTO();
-        if(orderId != null) {
+        if (orderId != null) {
             order = getOneWithAll(orderId);
             UnregisteredUser waiter = order.getWaiter();
-            if(!waiter.getPinCode().equals(pinCode)) {
+            if (!waiter.getPinCode().equals(pinCode)) {
                 throw new OrderWaiterNotValidException("Order with the id " + order.getId() + " does not belong to the waiter " + waiter.getFirstName() + " " + waiter.getLastName());
             }
             orderDTO = new OrderDTO(order);

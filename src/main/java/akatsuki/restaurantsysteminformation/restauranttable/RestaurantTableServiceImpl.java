@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
 import akatsuki.restaurantsysteminformation.enums.TableState;
+import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +69,14 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
+    public void changeStateOfTableWithOrder(Order order) {
+        RestaurantTable table = restaurantTableRepository.findByActiveOrder(order).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table with order id " + order.getId() + " is not found in the database."));
+        table.setState(TableState.CHANGED);
+        restaurantTableRepository.save(table);
+    }
+
+    @Override
     public RestaurantTable delete(long id) {
         RestaurantTable table = getOne(id);
         table.setDeleted(true);
@@ -88,6 +96,7 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         RestaurantTable table = getOneByNameWithOrder(name);
         return table.getActiveOrder() == null ? null : table.getActiveOrder().getId();
     }
+
     private RestaurantTable getTableByNameIfHeIsContainedInRoom(String name, long roomId) {
         Room foundRoom = roomService.getOne(roomId);
         RestaurantTable table = null;

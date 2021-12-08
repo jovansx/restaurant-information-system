@@ -17,6 +17,6 @@ public class UnregisteredUserRepresentationDTO extends UnregisteredUserDTO {
     }
 
     public UnregisteredUserRepresentationDTO(UnregisteredUser user) {
-        super(user.getFirstName(), user.getLastName(), user.getEmailAddress(), user.getPhoneNumber(), user.getSalary().get(user.getSalary().size()-1).getValue(), user.getType(), user.getPinCode());
+        super(user.getFirstName(), user.getLastName(), user.getEmailAddress(), user.getPhoneNumber(), user.getSalary().get(user.getSalary().size() - 1).getValue(), user.getType(), user.getPinCode());
     }
 }
