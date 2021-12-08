@@ -227,7 +227,7 @@ public class DbConfiguration {
             drinkItemsRepository.save(drinkItems4);
             DrinkItems drinkItems5 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.DELIVERED, null, Collections.singletonList(drinkItem6), true);
             drinkItemsRepository.save(drinkItems5);
-            DrinkItems drinkItems6 = new DrinkItems("To be hot xD", LocalDateTime.now().minusMinutes(5), false, ItemState.ON_HOLD, bartender1, Arrays.asList(drinkItem7, drinkItem8, drinkItem9), true);
+            DrinkItems drinkItems6 = new DrinkItems("To be hot xD", LocalDateTime.now().minusMinutes(5), false, ItemState.ON_HOLD, null, Arrays.asList(drinkItem7, drinkItem8, drinkItem9), true);
             drinkItemsRepository.save(drinkItems6);
 
 //          Order
