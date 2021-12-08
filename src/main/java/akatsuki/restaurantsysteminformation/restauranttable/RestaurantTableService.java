@@ -16,4 +16,6 @@ public interface RestaurantTableService {
     RestaurantTable delete(long id);
 
     Long getActiveOrderIdByTableId(long id);
+    Long getOrderByTableName(String name);
+    RestaurantTable getOneByNameWithOrder(String name);
 }

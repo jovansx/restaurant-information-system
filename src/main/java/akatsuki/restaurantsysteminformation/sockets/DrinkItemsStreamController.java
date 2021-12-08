@@ -48,9 +48,7 @@ public class DrinkItemsStreamController {
     public SocketResponseDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
         DrinkItems drinkItems = drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
         SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items state is successfully changed!");
-        if (drinkItems.getState().equals(ItemState.READY)) {
-            this.template.convertAndSend("/topic/order", socketResponseDTO);
-        }
+        this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
 

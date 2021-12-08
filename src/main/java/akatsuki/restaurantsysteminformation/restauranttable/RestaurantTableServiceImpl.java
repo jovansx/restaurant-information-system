@@ -30,6 +30,13 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
+    public RestaurantTable getOneByNameWithOrder(String name) {
+        return restaurantTableRepository.findByNameAndFetchOrder(name).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table the name " + name + " is not found in the database.")
+        );
+    }
+
+    @Override
     public List<RestaurantTable> getAll() {
         return restaurantTableRepository.findAll();
     }
@@ -37,6 +44,7 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     @Override
     public RestaurantTable create(RestaurantTable restaurantTable) {
         checkNameExistence(restaurantTable.getName(), -1);
+        // TODO ne sme razmak
         return restaurantTableRepository.save(restaurantTable);
     }
 
@@ -67,6 +75,11 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         return table.getActiveOrder().getId();
     }
 
+    @Override
+    public Long getOrderByTableName(String name) {
+        RestaurantTable table = getOneByNameWithOrder(name);
+        return table.getActiveOrder() == null ? null : table.getActiveOrder().getId();
+    }
 
     private void checkNameExistence(String name, long id) {
         Optional<RestaurantTable> table = restaurantTableRepository.findByName(name);

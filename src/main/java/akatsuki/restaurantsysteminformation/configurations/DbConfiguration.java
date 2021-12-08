@@ -9,6 +9,7 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsRepository;
 import akatsuki.restaurantsysteminformation.enums.*;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemRepository;
+import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryRepository;
 import akatsuki.restaurantsysteminformation.order.Order;
@@ -140,6 +141,9 @@ public class DbConfiguration {
             Price p5 = new Price(LocalDateTime.of(2021, 5, 2, 0, 0, 0), 150);
             Price p6 = new Price(LocalDateTime.of(2020, 4, 3, 1, 10, 30), 100);
             Price p7 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
+            Price p8 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
+            Price p9 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
+
             priceRepository.save(p1);
             priceRepository.save(p2);
             priceRepository.save(p3);
@@ -147,11 +151,13 @@ public class DbConfiguration {
             priceRepository.save(p5);
             priceRepository.save(p6);
             priceRepository.save(p7);
+            priceRepository.save(p8);
+            priceRepository.save(p9);
 //            ItemCategory
-            ItemCategory ic1 = new ItemCategory("Juices");
-            ItemCategory ic2 = new ItemCategory("Cocktails");
-            ItemCategory ic3 = new ItemCategory("Sandwich");
-            ItemCategory ic4 = new ItemCategory("Meat");
+            ItemCategory ic1 = new ItemCategory("Juices", CategoryType.DRINK);
+            ItemCategory ic2 = new ItemCategory("Cocktails", CategoryType.DRINK);
+            ItemCategory ic3 = new ItemCategory("Sandwich", CategoryType.DISH);
+            ItemCategory ic4 = new ItemCategory("Meat", CategoryType.DISH);
             itemCategoryRepository.save(ic1);
             itemCategoryRepository.save(ic2);
             itemCategoryRepository.save(ic3);
@@ -169,6 +175,11 @@ public class DbConfiguration {
             itemRepository.save(juice2);
             Item cocktail1 = new Item("Sex on the beach", "Very good cocktail!", sexOnTheBeachImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Potato", "Sugar", "Vodka"), ic2, Collections.singletonList(p4));
             itemRepository.save(cocktail1);
+            Item juice3 = new Item("Strawberry juice", "Very good strawberry juice!", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Strawberry", "Sugar"), ic1, Collections.singletonList(p8));
+            itemRepository.save(juice3);
+            Item coffee1 = new Item("Coffee", "Black coffee", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Coffee", "Sugar", "Milk"), ic1, Collections.singletonList(p9));
+            itemRepository.save(coffee1);
+
             Item sandwich1 = new Item("Chicken sandwich", "Very good chicken sandwich!", chickenSandwichImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Tomato", "Bread"), ic3, Arrays.asList(p5, p6));
             itemRepository.save(sandwich1);
             Item chickenBreast = new Item("Chicken breast", "Very good chicken breast!", chickenBreastImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Potato"), ic4, Collections.singletonList(p7));
@@ -182,6 +193,9 @@ public class DbConfiguration {
             dishItemRepository.save(dishItem3);
             DishItem dishItem4 = new DishItem(null, LocalDateTime.now().minusMinutes(20), false, ItemState.DELIVERED, 10, chef1, chickenBreast, true);
             dishItemRepository.save(dishItem4);
+            DishItem dishItem5 = new DishItem("", LocalDateTime.now().minusMinutes(15), false, ItemState.NEW, 2, chef1, chickenBreast, true);
+            dishItemRepository.save(dishItem5);
+
 //          DrinkItem
             DrinkItem drinkItem1 = new DrinkItem(1, juice1);
             drinkItemRepository.save(drinkItem1);
@@ -195,6 +209,13 @@ public class DbConfiguration {
             drinkItemRepository.save(drinkItem5);
             DrinkItem drinkItem6 = new DrinkItem(1, cocktail1);
             drinkItemRepository.save(drinkItem6);
+            DrinkItem drinkItem7 = new DrinkItem(1, juice3);
+            drinkItemRepository.save(drinkItem7);
+            DrinkItem drinkItem8 = new DrinkItem(2, coffee1);
+            drinkItemRepository.save(drinkItem8);
+            DrinkItem drinkItem9 = new DrinkItem(5, cocktail1);
+            drinkItemRepository.save(drinkItem9);
+
 //          DrinkItems
             DrinkItems drinkItems1 = new DrinkItems("He want good apple joice!", LocalDateTime.now().minusMinutes(5), false, ItemState.PREPARATION, bartender1, Arrays.asList(drinkItem1, drinkItem2), true);
             drinkItemsRepository.save(drinkItems1);
@@ -206,8 +227,11 @@ public class DbConfiguration {
             drinkItemsRepository.save(drinkItems4);
             DrinkItems drinkItems5 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.DELIVERED, null, Collections.singletonList(drinkItem6), true);
             drinkItemsRepository.save(drinkItems5);
+            DrinkItems drinkItems6 = new DrinkItems("To be hot xD", LocalDateTime.now().minusMinutes(5), false, ItemState.ON_HOLD, bartender1, Arrays.asList(drinkItem7, drinkItem8, drinkItem9), true);
+            drinkItemsRepository.save(drinkItems6);
+
 //          Order
-            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3, dishItem4), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4, drinkItems5));
+            Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3, dishItem4, dishItem5), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4, drinkItems5, drinkItems6));
             Order order2 = new Order(1100, LocalDateTime.of(2021, 1, 1, 0, 0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order3 = new Order(1000, LocalDateTime.of(2021, 2, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order4 = new Order(1200, LocalDateTime.of(2021, 3, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());

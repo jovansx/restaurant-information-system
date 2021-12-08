@@ -39,4 +39,5 @@ public class DishItemDTO {
         this.itemList = new ArrayList<>();
         itemList.add(new DishItemOrderedDTO(dishItem.getItem().getName(), dishItem.getAmount()));
     }
+
 }

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,13 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     @Override
     public DrinkItems getOne(long id) {
         return drinkItemsRepository.findById(id).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
+    public DrinkItems findOneWithItems(long id) {
+        return drinkItemsRepository.findOneWithItems(id).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
     }

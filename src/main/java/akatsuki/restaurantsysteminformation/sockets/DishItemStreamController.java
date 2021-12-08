@@ -47,9 +47,9 @@ public class DishItemStreamController {
     public SocketResponseDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
         DishItem dishItem = dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId());
         SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully changed!");
-        if (dishItem.getState().equals(ItemState.READY)) {
+//        if (dishItem.getState().equals(ItemState.READY)) {
             this.template.convertAndSend("/topic/order", socketResponseDTO);
-        }
+//        }
         return socketResponseDTO;
     }
 

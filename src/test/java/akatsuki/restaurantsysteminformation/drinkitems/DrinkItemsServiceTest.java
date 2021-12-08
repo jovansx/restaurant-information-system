@@ -13,6 +13,7 @@ import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
+import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
@@ -85,7 +86,7 @@ class DrinkItemsServiceTest {
         DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -105,7 +106,7 @@ class DrinkItemsServiceTest {
         DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -118,7 +119,7 @@ class DrinkItemsServiceTest {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         drinkItems.getDrinkItemList().add(new DrinkItem());
@@ -141,7 +142,7 @@ class DrinkItemsServiceTest {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));
@@ -158,7 +159,7 @@ class DrinkItemsServiceTest {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
