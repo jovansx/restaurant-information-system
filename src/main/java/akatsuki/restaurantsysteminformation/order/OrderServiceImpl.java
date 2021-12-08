@@ -4,13 +4,12 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiveException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
+import akatsuki.restaurantsysteminformation.order.exception.*;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
@@ -72,6 +71,11 @@ public class OrderServiceImpl implements OrderService {
         Order order1 = getOneWithDrinks(orderId);
         Order order2 = getOneWithDishes(orderId);
         order1.setDishes(order2.getDishes());
+        List<DrinkItems> items = new ArrayList<>();
+        for (DrinkItems di : order1.getDrinks()) {
+            items.add(drinkItemsService.findOneWithItems(di.getId()));
+        }
+        order1.setDrinks(items);
         return order1;
     }
 
@@ -99,33 +103,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void create(OrderCreateDTO orderDTO) {
+    public Order create(OrderCreateDTO orderDTO) {
         UnregisteredUser waiter = unregisteredUserService.getOne(orderDTO.getWaiterId());
         if (waiter.getType() != UserType.WAITER)
             throw new UserTypeNotValidException("User has to be waiter!");
 
         Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
+
+        restaurantTableService.setOrderToTable(orderDTO.getTableId(), order);
+
+        return order;
     }
 
     @Override
-    public void delete(long id) {
+    public Order delete(long id) {
         Order order = getOneWithAll(id);
         if (order.getDishes().isEmpty() && order.getDrinks().isEmpty())
             orderRepository.deleteById(id);
         else
             throw new OrderDeletionException("Order " + id + " contains order items, it can't be deleted!");
+        return order;
     }
 
     @Override
-    public void updateTotalPriceAndSave(Order order) {
+    public Order updateTotalPriceAndSave(Order order) {
         double totalPrice = 0;
         for (DishItem dishItem : order.getDishes()) {
             double currentPrice = itemService.getCurrentPriceOfItem(dishItem.getItem().getId());
             totalPrice += dishItem.getAmount() * currentPrice;
         }
         for (DrinkItems drinkItems : order.getDrinks()) {
-            DrinkItems drinkItems1 = drinkItemsService.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(drinkItems.getId());
+            DrinkItems drinkItems1 = drinkItemsService.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(drinkItems.getId());
             for (DrinkItem drinkItem : drinkItems1.getDrinkItemList()) {
                 double currentPrice = itemService.getCurrentPriceOfItem(drinkItem.getItem().getId());
                 totalPrice += drinkItem.getAmount() * currentPrice;
@@ -133,10 +142,11 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
+        return order;
     }
 
     @Override
-    public void charge(long id) {
+    public Order charge(long id) {
         Order order = getOneWithAll(id);
         if (order.isDiscarded())
             throw new OrderDiscardException("Order with the id " + id + " is discarded, can't be charged.");
@@ -146,10 +156,14 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
+        return order;
     }
 
     @Override
-    public void discard(long id) {
+    public Order discard(long id) {
         Order order = getOneWithAll(id);
         if (order.isDiscarded())
             throw new OrderDiscardException("Order with the id " + id + " is already discarded.");
@@ -160,10 +174,37 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
+        return order;
     }
 
     @Override
     public boolean isWaiterActive(UnregisteredUser user) {
         return orderRepository.findAllByActiveIsTrueAndWaiter(user).isEmpty();
+    }
+
+    @Override
+    public void save(Order order) {
+        orderRepository.save(order);
+    }
+
+    @Override
+    public OrderDTO getOrderByRestaurantTableNameIfWaiterValid(String name, String pinCode) {
+        Long orderId = restaurantTableService.getOrderByTableName(name);
+        Order order = null;
+        OrderDTO orderDTO = new OrderDTO();
+        if (orderId != null) {
+            order = getOneWithAll(orderId);
+            UnregisteredUser waiter = order.getWaiter();
+            if (!waiter.getPinCode().equals(pinCode)) {
+                throw new OrderWaiterNotValidException("Order with the id " + order.getId() + " does not belong to the waiter " + waiter.getFirstName() + " " + waiter.getLastName());
+            }
+            orderDTO = new OrderDTO(order);
+        }
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
+        return orderDTO;
     }
 }

@@ -4,6 +4,9 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.OrderService;
+import akatsuki.restaurantsysteminformation.salary.Salary;
+import akatsuki.restaurantsysteminformation.salary.SalaryService;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
@@ -14,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +29,18 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     private OrderService orderService;
     private DrinkItemsService drinkItemsService;
     private DishItemService dishItemService;
+    private SalaryService salaryService;
 
     @Autowired
     public void setUnregisteredUserRepository(UnregisteredUserRepository unregisteredUserRepository, UserService userService,
-                                              OrderService orderService, DrinkItemsService drinkItemsService, @Lazy DishItemService dishItemService) {
+                                              OrderService orderService, DrinkItemsService drinkItemsService, @Lazy DishItemService dishItemService,
+                                              @Lazy SalaryService salaryService) {
         this.unregisteredUserRepository = unregisteredUserRepository;
         this.userService = userService;
         this.drinkItemsService = drinkItemsService;
         this.dishItemService = dishItemService;
         this.orderService = orderService;
+        this.salaryService = salaryService;
     }
 
     @Override
@@ -48,36 +56,62 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
     }
 
     @Override
-    public void create(UnregisteredUser unregisteredUser) {
-        checkPinCodeExistence(unregisteredUser.getPinCode());
-        userService.checkEmailExistence(unregisteredUser.getEmailAddress());
-        checkUserType(unregisteredUser.getType());
-        userService.checkPhoneNumberExistence(unregisteredUser.getPhoneNumber());
-        unregisteredUserRepository.save(unregisteredUser);
+    public UnregisteredUser create(UnregisteredUserDTO unregisteredUserDTO) {
+        checkPinCodeExistence(unregisteredUserDTO.getPinCode());
+        userService.checkEmailExistence(unregisteredUserDTO.getEmailAddress());
+        checkUserType(unregisteredUserDTO.getType());
+        userService.checkPhoneNumberExistence(unregisteredUserDTO.getPhoneNumber());
+
+        Salary salary = salaryService.create(new Salary(LocalDateTime.now(), unregisteredUserDTO.getSalary()));
+        List<Salary> salaries = new ArrayList<>();
+        salaries.add(salary);
+        UnregisteredUser unregisteredUser = new UnregisteredUser(unregisteredUserDTO.getFirstName(),
+                unregisteredUserDTO.getLastName(), unregisteredUserDTO.getEmailAddress(),
+                unregisteredUserDTO.getPhoneNumber(), salaries,
+                unregisteredUserDTO.getType(), false, unregisteredUserDTO.getPinCode());
+
+        return unregisteredUserRepository.save(unregisteredUser);
     }
 
     @Override
-    public void update(UnregisteredUser unregisteredUser, long id) {
+    public UnregisteredUser update(UnregisteredUserDTO unregisteredUserDTO, long id) {
         UnregisteredUser user = getOne(id);
-        validateUpdate(id, unregisteredUser);
+        validateUpdate(id, unregisteredUserDTO);
 
-        user.setFirstName(unregisteredUser.getFirstName());
-        user.setLastName(unregisteredUser.getLastName());
-        user.setEmailAddress(unregisteredUser.getEmailAddress());
-        user.setPhoneNumber(unregisteredUser.getPhoneNumber());
-        user.setSalary(unregisteredUser.getSalary());
-        user.setPinCode(unregisteredUser.getPinCode());
+        user.setFirstName(unregisteredUserDTO.getFirstName());
+        user.setLastName(unregisteredUserDTO.getLastName());
+        user.setEmailAddress(unregisteredUserDTO.getEmailAddress());
+        user.setPhoneNumber(unregisteredUserDTO.getPhoneNumber());
 
-        unregisteredUserRepository.save(user);
+        if (unregisteredUserDTO.getSalary() != 0) {
+            Salary salary = salaryService.create(new Salary(LocalDateTime.now(), unregisteredUserDTO.getSalary()));
+            List<Salary> salaries = user.getSalary();
+            salaries.add(salary);
+            user.setSalary(salaries);
+        }
+
+        user.setPinCode(unregisteredUserDTO.getPinCode());
+
+        return unregisteredUserRepository.save(user);
     }
 
     @Override
-    public void delete(long id) {
+    public UnregisteredUser delete(long id) {
         UnregisteredUser user = getOne(id);
         if (!userCanBeDeleted(user))
             throw new UnregisteredUserActiveException("User with the id " + id + " is currently active and cannot be deleted now.");
         user.setDeleted(true);
-        unregisteredUserRepository.save(user);
+        return unregisteredUserRepository.save(user);
+    }
+
+    @Override
+    public void deleteById(long id) {
+        unregisteredUserRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(UnregisteredUser unregisteredUser) {
+        unregisteredUserRepository.save(unregisteredUser);
     }
 
     @Override
@@ -89,20 +123,20 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         return user;
     }
 
-    private void validateUpdate(long id, UnregisteredUser unregisteredUser) {
-        checkUserType(unregisteredUser.getType());
-        Optional<UnregisteredUser> userByPinCode = unregisteredUserRepository.findByPinCode(unregisteredUser.getPinCode());
-        Optional<User> userByEmail = userService.findByEmail(unregisteredUser.getEmailAddress());
-        Optional<User> userByPhoneNumber = userService.findByPhoneNumber(unregisteredUser.getPhoneNumber());
+    private void validateUpdate(long id, UnregisteredUserDTO unregisteredUserDTO) {
+        checkUserType(unregisteredUserDTO.getType());
+        Optional<UnregisteredUser> userByPinCode = unregisteredUserRepository.findByPinCode(unregisteredUserDTO.getPinCode());
+        Optional<User> userByEmail = userService.findByEmail(unregisteredUserDTO.getEmailAddress());
+        Optional<User> userByPhoneNumber = userService.findByPhoneNumber(unregisteredUserDTO.getPhoneNumber());
 
         if (userByPinCode.isPresent() && id != userByPinCode.get().getId())
-            throw new UserExistsException("User with the pin code " + unregisteredUser.getPinCode() + " already exists in the database.");
+            throw new UserExistsException("User with the pin code " + unregisteredUserDTO.getPinCode() + " already exists in the database.");
 
         if (userByEmail.isPresent() && id != userByEmail.get().getId())
-            throw new UserExistsException("User with the email " + unregisteredUser.getEmailAddress() + " already exists in the database.");
+            throw new UserExistsException("User with the email " + unregisteredUserDTO.getEmailAddress() + " already exists in the database.");
 
         if (userByPhoneNumber.isPresent() && id != userByPhoneNumber.get().getId())
-            throw new UserExistsException("User with the phone number " + unregisteredUser.getPhoneNumber() + " already exists in the database.");
+            throw new UserExistsException("User with the phone number " + unregisteredUserDTO.getPhoneNumber() + " already exists in the database.");
     }
 
     private void checkPinCodeExistence(String pinCode) {

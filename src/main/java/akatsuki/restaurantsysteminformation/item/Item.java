@@ -2,8 +2,10 @@ package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
+import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.price.Price;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +23,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Item {
 
     @Id
@@ -79,7 +82,20 @@ public class Item {
         this.deleted = false;
         this.type = itemDTO.getType();
         this.components = new ArrayList<>(itemDTO.getComponents());
-        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory().getName(), itemDTO.getItemCategory().getType());
+        this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
+    }
+
+    public Item(ItemUpdateDTO itemDTO) {
+        this.code = itemDTO.getCode();
+        this.name = itemDTO.getName();
+        this.description = itemDTO.getDescription();
+        this.iconBase64 = itemDTO.getIconBase64().getBytes();
+        this.original = false;
+        this.deleted = false;
+        this.type = itemDTO.getType();
+        this.components = new ArrayList<>(itemDTO.getComponents());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory().getName(), itemDTO.getItemCategory().getType());
         this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
     }
 

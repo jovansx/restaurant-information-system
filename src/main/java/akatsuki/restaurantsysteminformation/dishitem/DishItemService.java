@@ -7,17 +7,25 @@ import java.util.List;
 
 public interface DishItemService {
 
+    DishItem getOne(long id);
+
+    List<DishItem> getAll();
+
     DishItem findOneActiveAndFetchItemAndChef(long id);
 
     List<DishItem> findAllActiveAndFetchItemAndChefAndStateIsNotNewOrDelivered();
 
-    void create(DishItemCreateDTO dishItem);
+    DishItem create(DishItemCreateDTO dishItem);
 
-    void update(DishItemCreateDTO dishItemCreateDTO, long id);
+    DishItem update(DishItemCreateDTO dishItemCreateDTO, long id);
 
     DishItem changeStateOfDishItems(long itemId, long userId);
 
-    void delete(long id);
+    DishItem delete(long id);
+
+    void deleteById(long id);
 
     boolean isChefActive(UnregisteredUser user);
+
+    void save(DishItem dishItem);
 }

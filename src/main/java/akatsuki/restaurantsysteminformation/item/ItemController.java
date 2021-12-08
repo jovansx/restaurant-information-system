@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.item;
 import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
+import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -39,19 +40,19 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid ItemCreateDTO itemDTO) {
-        itemService.create(new Item(itemDTO));
+    public String create(@RequestBody @Valid ItemCreateDTO itemDTO) {
+        return itemService.create(new Item(itemDTO)).getId().toString();
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody @Valid ItemCreateDTO itemDTO,
-                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        itemService.update(new Item(itemDTO), id);
+    public String update(@RequestBody @Valid ItemUpdateDTO itemDTO,
+                         @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return itemService.update(new Item(itemDTO), id).getId().toString();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        itemService.delete(id);
+    public String delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return itemService.delete(id).getId().toString();
     }
 
     @PostMapping("/save-changes")

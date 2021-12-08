@@ -13,6 +13,7 @@ import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
+import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
@@ -20,7 +21,6 @@ import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,14 +51,12 @@ class DrinkItemsServiceTest {
     DrinkItemService drinkItemServiceMock;
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered_NegativeId_ExceptionThrown() {
         Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(8000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(8000L));
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is returned.")
     public void findOneActiveAndFetchItemAndChef_ValidId_ReturnedObject() {
         DrinkItems drinkItems = new DrinkItems();
 
@@ -69,7 +67,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When there are objects in the database, return list.")
     void findAllActiveAndFetchBartenderAndItems_DrinkItemsExist_ReturnedList() {
         List<DrinkItems> list = new ArrayList<>();
         list.add(new DrinkItems());
@@ -84,13 +81,12 @@ class DrinkItemsServiceTest {
 
 
     @Test
-    @DisplayName("When valid dto is passed, new object is created.")
     public void create_ValidDto_SavedObject() {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -105,13 +101,12 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid item type dto is passed, exception should occur.")
     public void create_InvalidItemTypeDto_ExceptionThrown() {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -120,12 +115,11 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When valid dto and id are passed, required object is changed.")
     public void update_ValidDtoAndId_ChangedObject() {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         drinkItems.getDrinkItemList().add(new DrinkItem());
@@ -144,12 +138,11 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid state is passed, exception should occur.")
     public void update_InvalidItemType_ExceptionThrown() {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));
@@ -162,12 +155,11 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid state is passed, exception should occur.")
     public void update_InvalidOrderId_ExceptionThrown() {
         List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
         DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
         Item item = new Item("Coca Cola", "Nice",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         drinkItems.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
@@ -180,7 +172,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When valid ids are passed, the state is changed from on hold to preparation.")
     void changeStateOfDrinkItems_ValidIds_FromOnHoldToPreparation() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -196,7 +187,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When valid ids are passed, the state is changed from preparation to ready.")
     void changeStateOfDrinkItems_ValidIds_FromPreparationToReady() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.PREPARATION, null, new ArrayList<>(), true);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -212,7 +202,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When valid ids are passed, the state is changed from ready to delivered.")
     void changeStateOfDrinkItems_ValidIds_FromReadyToDelivered() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -228,22 +217,12 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid item id is passed, exception should occur.")
     void changeStateOfDrinkItems_InvalidItemId_ExceptionThrown() {
         Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.changeStateOfDrinkItems(1000L, 1L));
     }
 
     @Test
-    @DisplayName("When invalid item state is passed, exception should occur.")
-    void changeStateOfDrinkItems_InvalidItemState_ExceptionThrown() {
-        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.DELIVERED, null, new ArrayList<>(), true);
-        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-        Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.changeStateOfDrinkItems(1L, 1L));
-    }
-
-    @Test
-    @DisplayName("When not allowed user change state, exception should occur.")
     void changeStateOfDrinkItems_NotAllowedUserType_ExceptionThrown() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -256,7 +235,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is deleted.")
     public void delete_ValidId_SavedObject() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
@@ -274,22 +252,19 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void delete_InvalidId_ExceptionThrown() {
         DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
         Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-        Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.delete(1L));
+        Assertions.assertThrows(DrinkItemsInvalidStateException.class, () -> drinkItemsService.delete(1L));
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void delete_InvalidState_ExceptionThrown() {
         Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(DrinkItemsNotFoundException.class, () -> drinkItemsService.delete(1000L));
     }
 
     @Test
-    @DisplayName("When valid unregistered user is passed, return false.")
     void isBartenderActive_ContainsUser_False() {
         UnregisteredUser user = new UnregisteredUser();
         List<DrinkItems> drinkItemsList = Collections.singletonList(new DrinkItems());
@@ -301,7 +276,6 @@ class DrinkItemsServiceTest {
     }
 
     @Test
-    @DisplayName("When valid unregistered user is passed, return true.")
     void isBartenderActive_ContainsUser_True() {
         UnregisteredUser user = new UnregisteredUser();
         Mockito.when(drinkItemsRepositoryMock.findAllByActiveIsTrueAndBartender(user)).thenReturn(new ArrayList<>());

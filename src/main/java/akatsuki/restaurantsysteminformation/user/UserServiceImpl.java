@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,5 +34,10 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = findByPhoneNumber(phoneNumber);
         if (user.isPresent())
             throw new UserExistsException("User with the phone number " + phoneNumber + " already exists in the database.");
+    }
+
+    @Override
+    public List<User> getAllManagersAndUnregistered() {
+        return userRepository.findAllManagersAndUnregistered();
     }
 }

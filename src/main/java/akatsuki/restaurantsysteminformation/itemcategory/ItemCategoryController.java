@@ -30,18 +30,19 @@ public class ItemCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid ItemCategoryDTO dto) {
-        itemCategoryService.create(new ItemCategory(dto.getName()));
+    public String create(@RequestBody @Valid ItemCategoryDTO dto) {
+        return itemCategoryService.create(new ItemCategory(dto.getName(), dto.getType())).getId().toString();
     }
 
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid ItemCategoryDTO dto,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        itemCategoryService.update(new ItemCategory(dto.getName()), id);
+        itemCategoryService.update(new ItemCategory(dto.getName(), dto.getType()), id);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         itemCategoryService.delete(id);
     }
+
 }

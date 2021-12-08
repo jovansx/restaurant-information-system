@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
@@ -22,16 +23,19 @@ public interface OrderService {
 
     List<Order> getAllActive();
 
-    void create(OrderCreateDTO order);
+    Order create(OrderCreateDTO order);
 
-    void delete(long id);
+    Order delete(long id);
 
-    void updateTotalPriceAndSave(Order order);
+    Order updateTotalPriceAndSave(Order order);
 
-    void charge(long id);
+    Order charge(long id);
 
-    void discard(long id);
+    Order discard(long id);
 
     boolean isWaiterActive(UnregisteredUser user);
 
+    void save(Order order);
+
+    OrderDTO getOrderByRestaurantTableNameIfWaiterValid(String name, String pinCode);
 }

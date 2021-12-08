@@ -1,7 +1,8 @@
 package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
-import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomLayoutDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomTablesUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.dto.RoomWithTablesDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,12 +34,24 @@ public class RoomController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid RoomCreateDTO roomDTO) {
-        roomService.create(new Room(roomDTO));
+    public String create(@RequestBody @Valid RoomCreateDTO roomDTO) {
+        return roomService.create(new Room(roomDTO)).getId().toString();
+    }
+
+    @PutMapping("/{id}/name")
+    public void updateRoomName(@RequestBody @NotBlank String newName,
+                               @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
+        roomService.updateName(newName, id);
+    }
+
+    @PutMapping("/{id}/layout")
+    public void updateRoomLayout(@RequestBody @Valid RoomLayoutDTO layoutDTO,
+                                 @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
+        roomService.updateLayout(layoutDTO, id);
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody @Valid RoomUpdateDTO updateRoomDTO,
+    public void update(@RequestBody @Valid RoomTablesUpdateDTO updateRoomDTO,
                        @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
         roomService.updateByRoomDTO(updateRoomDTO, id);
     }

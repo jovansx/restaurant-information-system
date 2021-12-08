@@ -29,14 +29,14 @@ public class RegisteredUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid RegisteredUserDTO registeredUserDTO) {
-        registeredUserService.create(new RegisteredUser(registeredUserDTO));
+    public String create(@RequestBody @Valid RegisteredUserDTO registeredUserDTO) {
+        return registeredUserService.create(registeredUserDTO).getId().toString();
     }
 
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid RegisteredUserDTO registeredUserDTO,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        registeredUserService.update(new RegisteredUser(registeredUserDTO), id);
+        registeredUserService.update(registeredUserDTO, id);
     }
 
     @DeleteMapping("/{id}")

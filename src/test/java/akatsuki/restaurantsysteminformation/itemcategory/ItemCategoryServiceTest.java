@@ -7,7 +7,6 @@ import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryD
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNameException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,9 +34,8 @@ class ItemCategoryServiceTest {
     ItemServiceImpl itemServiceMock;
 
     @Test
-    @DisplayName("When valid id is passed, required object is returned.")
     public void getOne_ValidId_ReturnedObject() {
-        ItemCategory itemCategory = new ItemCategory(1L, "Dessert");
+        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(itemCategory));
         ItemCategory foundItemCategory = itemCategoryService.getOne(1L);
@@ -46,23 +44,20 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid id is passed, exception should occur.")
     public void getOne_NegativeId_ExceptionThrown() {
         Mockito.when(itemCategoryRepositoryMock.findById(8000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemCategoryService.getOne(8000L));
     }
 
     @Test
-    @DisplayName("When valid item category name is passed, required object is returned.")
     public void getByName_ValidItemCategoryName_ReturnedObject() {
-        ItemCategory existingItemCategory = new ItemCategory(1L, "Dessert");
+        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(existingItemCategory);
         ItemCategory foundItemCategory = itemCategoryService.getByName("Dessert");
         Assertions.assertEquals(foundItemCategory, existingItemCategory);
     }
 
     @Test
-    @DisplayName("When invalid item category name is passed, exception should occur.")
     public void getByName_InvalidItemCategoryName_ExceptionThrown() {
         Mockito.when(itemCategoryRepositoryMock.findByName("")).thenReturn(null);
         ItemCategory foundItemCategory = itemCategoryService.getByName("");
@@ -70,9 +65,8 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When there are objects in the database, return list.")
     void getAll_ItemCategoriesExist_ReturnedList() {
-        List<ItemCategory> list = Collections.singletonList(new ItemCategory(1L, "Dessert"));
+        List<ItemCategory> list = Collections.singletonList(new ItemCategory("Dessert", CategoryType.DISH));
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(list);
 
         List<ItemCategory> foundList = itemCategoryService.getAll();
@@ -80,7 +74,6 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When there are not objects in the database, exception should occur.")
     void getAll_ItemCategoriesDontExist_ReturnedNull() {
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(null);
         List<ItemCategory> foundList = itemCategoryService.getAll();
@@ -88,10 +81,9 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When valid entity is passed, new object is created.")
     public void create_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory(1L, "DESSERT");
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(2L, "Soup"));
+        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory("Soup", CategoryType.DISH));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
@@ -102,10 +94,9 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When invalid entity is passed, exception should occur.")
     public void create_InvalidEntity_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory(1L, "SOUP");
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(2L, "Soup"));
+        ItemCategory itemCategory = new ItemCategory("Soup", CategoryType.DISH);
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory("Soup", CategoryType.DISH));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
@@ -114,10 +105,9 @@ class ItemCategoryServiceTest {
 
 
     @Test
-    @DisplayName("When valid entity and id are passed, required object is changed.")
     public void update_ValidEntityAndId_SavedObject() {
-        ItemCategory existingItemCategory = new ItemCategory(1L, "Chocolate desert");
-        ItemCategory itemCategory = new ItemCategory(2L, "Dessert");
+        ItemCategory existingItemCategory = new ItemCategory("Chocolate desert", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory( "Dessert", CategoryType.DISH);
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(null);
@@ -129,10 +119,9 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When entity name is the same, exception should occur.")
     public void update_EntityNameIsTheSame_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory(1L, "Dessert");
-        ItemCategory itemCategory = new ItemCategory(2L, "DESSERT  ");
+        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory("DESSERT  ", CategoryType.DISH);
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
 
@@ -140,11 +129,10 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When entity name already exist, exception should occur.")
     public void update_EntityNameAlreadyExist_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory(1L, "Barbeque");
-        ItemCategory itemCategory = new ItemCategory(2L, "DESSERT  ");
-        ItemCategory foundCategoryByName = new ItemCategory(3L, "Dessert");
+        ItemCategory existingItemCategory = new ItemCategory("Barbeque", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory("DESSERT  ", CategoryType.DISH);
+        ItemCategory foundCategoryByName = new ItemCategory( "Dessert", CategoryType.DISH);
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(foundCategoryByName);
@@ -153,9 +141,8 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When valid id is passed, required object is deleted.")
     public void delete_ValidId_SavedObject() {
-        ItemCategory existingItemCategory = new ItemCategory(1L, "Chocolate desert");
+        ItemCategory existingItemCategory = new ItemCategory( "Chocolate desert", CategoryType.DISH);
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
         Mockito.when(itemServiceMock.getAllActive()).thenReturn(new ArrayList<>());
@@ -166,9 +153,8 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When id is passed and , exception should occur.")
     public void delete_ItemHasCategory_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory(1L, "Dessert");
+        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
         List<Item> items = new ArrayList<>();
         items.add(new Item("Kinder", "Creamy", null, true, false, ItemType.DISH, null, existingItemCategory, null));
 
@@ -179,9 +165,8 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("When valid entity is passed, required object is saved.")
     public void save_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Chocolate desert");
+        ItemCategory itemCategory = new ItemCategory("Chocolate desert", CategoryType.DISH);
         itemCategoryService.save(itemCategory);
         Mockito.verify(itemCategoryRepositoryMock, Mockito.times(1)).save(itemCategory);
     }

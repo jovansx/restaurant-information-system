@@ -1,5 +1,7 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+
 import java.util.List;
 
 public interface RegisteredUserService {
@@ -7,9 +9,13 @@ public interface RegisteredUserService {
 
     List<RegisteredUser> getAll();
 
-    void create(RegisteredUser registeredUser);
+    RegisteredUser create(RegisteredUserDTO registeredUserDTO);
 
-    void update(RegisteredUser registeredUser, long id);
+    RegisteredUser update(RegisteredUserDTO registeredUserDTO, long id);
 
-    void delete(long id);
+    RegisteredUser delete(long id);
+
+    void deleteById(long id);
+
+    void save(RegisteredUser foundUser);
 }

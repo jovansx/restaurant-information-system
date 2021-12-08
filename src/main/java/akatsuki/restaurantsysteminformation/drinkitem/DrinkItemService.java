@@ -4,5 +4,5 @@ public interface DrinkItemService {
 
     DrinkItem create(DrinkItem drinkItem);
 
-    void delete(DrinkItem drinkItem);
+    DrinkItem delete(DrinkItem drinkItem);
 }

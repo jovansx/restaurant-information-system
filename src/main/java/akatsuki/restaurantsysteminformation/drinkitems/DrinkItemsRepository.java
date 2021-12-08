@@ -15,6 +15,13 @@ public interface DrinkItemsRepository extends JpaRepository<DrinkItems, Long> {
             "and ( d.state = 1 or d.state = 2  or d.state = 3 )")
     Optional<DrinkItems> findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(Long id);
 
+    @Query("select d from DrinkItems d join fetch d.drinkItemList dil join fetch dil.item i left join fetch d.bartender b where d.id = (:id) and d.active = true " +
+            "and ( d.state = 1 or d.state = 2  or d.state = 3 or d.state = 4 )")
+    Optional<DrinkItems> findOneActiveAndFetchBartenderAndItemsAndStateIsNotNew(Long id);
+
+    @Query("select d from DrinkItems d join fetch d.drinkItemList dil join fetch dil.item i where d.id = (:id) and d.active = true ")
+    Optional<DrinkItems> findOneWithItems(long id);
+
     List<DrinkItems> findAllByActiveIsTrueAndBartender(UnregisteredUser bartender);
 
     @Query("select d from DrinkItems d join fetch d.drinkItemList dil join fetch dil.item i left join fetch d.bartender b")
