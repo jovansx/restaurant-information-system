@@ -7,6 +7,7 @@ import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundE
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
@@ -118,10 +119,10 @@ public class DishItemServiceImpl implements DishItemService {
         } else if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
             dishItem.setChef(user);
-            restaurantTableService.changeStateOfTableWithOrder(order);
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
         } else if (dishItem.getState().equals(ItemState.PREPARATION)) {
             dishItem.setState(ItemState.READY);
-            restaurantTableService.changeStateOfTableWithOrder(order);
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
         } else
             dishItem.setState(ItemState.DELIVERED);
 

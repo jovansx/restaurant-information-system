@@ -69,10 +69,22 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public void changeStateOfTableWithOrder(Order order) {
+    public void changeStateOfTableWithOrder(Order order, TableState state) {
         RestaurantTable table = restaurantTableRepository.findByActiveOrder(order).orElseThrow(
                 () -> new RestaurantTableNotFoundException("Restaurant table with order id " + order.getId() + " is not found in the database."));
-        table.setState(TableState.CHANGED);
+        table.setState(state);
+
+        if(state.equals(TableState.FREE))
+            table.setActiveOrder(null);
+
+        restaurantTableRepository.save(table);
+    }
+
+    @Override
+    public void setOrderToTable(Long tableId, Order order) {
+        RestaurantTable table = getOne(tableId);
+        table.setActiveOrder(order);
+        table.setState(TableState.TAKEN);
         restaurantTableRepository.save(table);
     }
 

@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.restauranttable;
 
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface RestaurantTableService {
 
     RestaurantTable update(RestaurantTable table, long id, long roomId);
 
-    void changeStateOfTableWithOrder(Order order);
+    void changeStateOfTableWithOrder(Order order, TableState state);
 
     RestaurantTable delete(long id);
 
@@ -24,4 +25,6 @@ public interface RestaurantTableService {
     Long getOrderByTableName(String name);
 
     RestaurantTable getOneByNameWithOrder(String name);
+
+    void setOrderToTable(Long tableId, Order order);
 }

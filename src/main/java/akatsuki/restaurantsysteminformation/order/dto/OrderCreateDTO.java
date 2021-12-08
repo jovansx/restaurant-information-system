@@ -17,4 +17,10 @@ public class OrderCreateDTO {
     private @Getter
     @Setter
     Long waiterId;
+
+    @NotNull(message = "It has to be null.")
+    @Positive(message = "It has to be a positive value.")
+    private @Getter
+    @Setter
+    Long tableId;
 }

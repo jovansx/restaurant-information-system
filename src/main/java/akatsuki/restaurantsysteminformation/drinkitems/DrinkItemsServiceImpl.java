@@ -10,6 +10,7 @@ import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotCo
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
@@ -140,10 +141,10 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
             drinkItems.setState(ItemState.PREPARATION);
             drinkItems.setBartender(bartender);
-            restaurantTableService.changeStateOfTableWithOrder(order);
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
         } else if (drinkItems.getState().equals(ItemState.PREPARATION)) {
             drinkItems.setState(ItemState.READY);
-            restaurantTableService.changeStateOfTableWithOrder(order);
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
         } else
             drinkItems.setState(ItemState.DELIVERED);
 
