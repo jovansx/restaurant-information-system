@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.room.dto;
 
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.room.Room;
 import lombok.Getter;

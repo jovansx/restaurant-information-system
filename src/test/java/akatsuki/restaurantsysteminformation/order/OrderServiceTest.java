@@ -60,7 +60,7 @@ class OrderServiceTest {
 
     @Test
     public void create_ValidDto_SavedObject() {
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L, 1L);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
                 "0645678989", null, UserType.WAITER, false, "1111");
 
@@ -73,7 +73,7 @@ class OrderServiceTest {
 
     @Test
     public void create_InvalidUserType_ExceptionThrown() {
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L, 1L);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
                 "0645678989", null, UserType.CHEF, false, "1111");
 

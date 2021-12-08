@@ -19,7 +19,7 @@ public class ItemCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="type", nullable = false)
+    @Column(name = "type", nullable = false)
     private CategoryType type;
 
     @Column(name = "name", nullable = false)
