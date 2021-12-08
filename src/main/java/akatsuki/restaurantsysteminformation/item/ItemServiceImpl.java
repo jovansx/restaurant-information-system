@@ -2,7 +2,6 @@ package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.item.exception.ItemAlreadyDeletedException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemCodeNotValidException;
-import akatsuki.restaurantsysteminformation.item.exception.ItemExistsException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryService;
@@ -101,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item update(Item item, long id) {
-         checkItemCategory(item);
+        checkItemCategory(item);
 
         Optional<Item> itemOptional = itemRepository.findByIdAndOriginalIsTrueAndDeletedIsFalse(id);
         if (itemOptional.isEmpty())
@@ -120,7 +119,7 @@ public class ItemServiceImpl implements ItemService {
             for (Item i : itemList) {
                 if (!i.isOriginal())
                     assignItemFields(item, i);
-                    item.setId(i.getId());
+                item.setId(i.getId());
             }
         }
 

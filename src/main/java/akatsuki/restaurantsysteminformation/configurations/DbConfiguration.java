@@ -254,12 +254,12 @@ public class DbConfiguration {
             orderRepository.save(order9);
             orderRepository.save(order10);
 //          RestaurantTable
-            RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.TAKEN, TableShape.CIRCLE, false, order1);
+            RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.TAKEN, TableShape.CIRCLE, false, order1, 0, 1);
             restaurantTableRepository.save(restaurantTable1);
-            RestaurantTable restaurantTable2 = new RestaurantTable("T2", TableState.FREE, TableShape.CIRCLE, false, null);
+            RestaurantTable restaurantTable2 = new RestaurantTable("T2", TableState.FREE, TableShape.SQUARE, false, null, 1, 0);
             restaurantTableRepository.save(restaurantTable2);
 //          Room
-            Room room1 = new Room("Room number 1", false, Collections.singletonList(restaurantTable1));
+            Room room1 = new Room("Room number 1", false, Arrays.asList(restaurantTable1, restaurantTable2), 2, 2);
             roomRepository.save(room1);
 
             log.info("Database is populated");

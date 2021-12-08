@@ -9,9 +9,9 @@ public interface RestaurantTableService {
 
     List<RestaurantTable> getAll();
 
-    RestaurantTable create(RestaurantTable restaurantTable);
+    RestaurantTable create(RestaurantTable restaurantTable, long roomId);
 
-    RestaurantTable update(RestaurantTable table, long id);
+    RestaurantTable update(RestaurantTable table, long id, long roomId);
 
     RestaurantTable delete(long id);
 
