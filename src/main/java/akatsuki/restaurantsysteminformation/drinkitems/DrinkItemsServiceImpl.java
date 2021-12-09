@@ -10,12 +10,14 @@ import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotCo
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
@@ -34,10 +36,18 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private final OrderService orderService;
     private final ItemService itemService;
     private final DrinkItemService drinkItemService;
+    private final RestaurantTableService restaurantTableService;
 
     @Override
     public DrinkItems getOne(long id) {
         return drinkItemsRepository.findById(id).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+        );
+    }
+
+    @Override
+    public DrinkItems findOneWithItems(long id) {
+        return drinkItemsRepository.findOneWithItems(id).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
     }
@@ -126,13 +136,18 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         if (!bartender.getType().equals(typeOfAllowedUser))
             throw new UserNotFoundException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
 
+        Order order = orderService.getOneByOrderItem(drinkItems);
+
         if (drinkItems.getState().equals(ItemState.ON_HOLD)) {
             drinkItems.setState(ItemState.PREPARATION);
             drinkItems.setBartender(bartender);
-        } else if (drinkItems.getState().equals(ItemState.PREPARATION))
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
+        } else if (drinkItems.getState().equals(ItemState.PREPARATION)) {
             drinkItems.setState(ItemState.READY);
-        else
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
+        } else
             drinkItems.setState(ItemState.DELIVERED);
+
         drinkItemsRepository.save(drinkItems);
         return drinkItems;
     }

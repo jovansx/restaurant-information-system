@@ -4,14 +4,14 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiveException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
+import akatsuki.restaurantsysteminformation.order.exception.*;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
@@ -72,6 +72,11 @@ public class OrderServiceImpl implements OrderService {
         Order order1 = getOneWithDrinks(orderId);
         Order order2 = getOneWithDishes(orderId);
         order1.setDishes(order2.getDishes());
+        List<DrinkItems> items = new ArrayList<>();
+        for (DrinkItems di : order1.getDrinks()) {
+            items.add(drinkItemsService.findOneWithItems(di.getId()));
+        }
+        order1.setDrinks(items);
         return order1;
     }
 
@@ -106,6 +111,9 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
+
+        restaurantTableService.setOrderToTable(orderDTO.getTableId(), order);
+
         return order;
     }
 
@@ -149,6 +157,9 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
         return order;
     }
 
@@ -164,6 +175,9 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
         return order;
     }
 
@@ -175,5 +189,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void save(Order order) {
         orderRepository.save(order);
+    }
+
+    @Override
+    public OrderDTO getOrderByRestaurantTableIdIfWaiterValid(Long tableId, String pinCode) {
+        RestaurantTable table = restaurantTableService.getOneWithOrder(tableId);
+        OrderDTO orderDTO = new OrderDTO();
+        if (table.getActiveOrder() != null) {
+            Order order = getOneWithAll(table.getActiveOrder().getId());
+            UnregisteredUser waiter = order.getWaiter();
+            if (!waiter.getPinCode().equals(pinCode)) {
+                throw new OrderWaiterNotValidException("Order with the id " + order.getId() + " does not belong to the waiter " + waiter.getFirstName() + " " + waiter.getLastName());
+            }
+            orderDTO = new OrderDTO(order);
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
+        }
+
+        orderDTO.getDishItemList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
+        orderDTO.getDrinkItemsList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
+
+        return orderDTO;
     }
 }

@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.salary.Salary;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserEssentialsDTO;
 import org.junit.jupiter.api.Assertions;
@@ -14,9 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,8 +46,8 @@ class UnregisteredUserControllerIntegrationTest {
 
     @Test
     public void getAll_Valid_ObjectsReturned() {
-        ResponseEntity<UnregisteredUser[]> responseEntity = restTemplate.getForEntity(URL_PREFIX, UnregisteredUser[].class);
-        List<UnregisteredUser> list = Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+        ResponseEntity<UnregisteredUserDTO[]> responseEntity = restTemplate.getForEntity(URL_PREFIX, UnregisteredUserDTO[].class);
+        List<UnregisteredUserDTO> list = Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
         Assertions.assertEquals(8, list.size());
     }
 
@@ -66,7 +63,7 @@ class UnregisteredUserControllerIntegrationTest {
         Assertions.assertEquals(size + 1, users.size());
         Assertions.assertEquals("sekica@gmail.com", users.get(users.size() - 1).getEmailAddress());
 
-        unregisteredUserService.delete(Long.parseLong(res.getBody()));
+        unregisteredUserService.deleteById(Long.parseLong(res.getBody()));
     }
 
     @Test
@@ -119,7 +116,7 @@ class UnregisteredUserControllerIntegrationTest {
 
     @Test
     void delete_Valid_SavedObject() {
-        UnregisteredUser user = unregisteredUserService.create(new UnregisteredUser("Marko", "Savic", "markos@gmail.com", "0611141111", Collections.singletonList(new Salary(LocalDateTime.now(), 1000)), UserType.WAITER, false, "1167"));
+        UnregisteredUser user = unregisteredUserService.create(new UnregisteredUserDTO("Marko", "Savic", "markos@gmail.com", "0611141111", 1000, UserType.WAITER, "1167"));
         int size = unregisteredUserService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + user.getId(),

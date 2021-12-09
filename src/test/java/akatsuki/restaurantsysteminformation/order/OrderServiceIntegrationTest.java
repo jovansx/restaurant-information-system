@@ -32,14 +32,14 @@ class OrderServiceIntegrationTest {
 
     @Test
     public void create_ValidDto_SavedObject() {
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L, 1L);
         Order order = orderService.create(orderCreateDTO);
         Assertions.assertNotNull(order);
     }
 
     @Test
     public void create_InvalidUserType_ExceptionThrown() {
-        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(2L);
+        OrderCreateDTO orderCreateDTO = new OrderCreateDTO(2L, 1L);
         Assertions.assertThrows(UserTypeNotValidException.class, () -> orderService.create(orderCreateDTO));
     }
 
@@ -132,7 +132,11 @@ class OrderServiceIntegrationTest {
         assertTrue(isActive);
     }
 
-    //TODO fali test getOneWithAll
+    @Test
+    public void getOneWithAll_ValidId_ReturnedList() {
+        Order foundOrder = orderService.getOneWithAll(1L);
+        Assertions.assertNotNull(foundOrder);
+    }
 
     @Test
     public void getOneWithDishes_InvalidId_ExceptionThrown() {

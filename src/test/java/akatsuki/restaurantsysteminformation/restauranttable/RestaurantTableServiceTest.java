@@ -76,7 +76,7 @@ class RestaurantTableServiceTest {
 
         Mockito.when(restaurantTableRepositoryMock.findByName("name1")).thenReturn(Optional.empty());
 
-        restaurantTableService.create(table);
+        restaurantTableService.create(table, 1L);
 
         Mockito.verify(restaurantTableRepositoryMock, Mockito.times(1)).save(table);
     }
@@ -88,7 +88,7 @@ class RestaurantTableServiceTest {
 
         Mockito.when(restaurantTableRepositoryMock.findByName("name1")).thenReturn(Optional.of(new RestaurantTable()));
 
-        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.create(table));
+        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.create(table, 1L));
     }
 
     @Test
@@ -101,7 +101,7 @@ class RestaurantTableServiceTest {
         Mockito.when(restaurantTableRepositoryMock.findById(1L)).thenReturn(Optional.of(new RestaurantTable()));
         Mockito.when(restaurantTableRepositoryMock.save(Mockito.any(RestaurantTable.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        RestaurantTable restaurantTable = restaurantTableService.update(table, 1L);
+        RestaurantTable restaurantTable = restaurantTableService.update(table, 1L, 1L);
 
         Assertions.assertEquals(restaurantTable.getShape(), table.getShape());
         Assertions.assertEquals(restaurantTable.getName(), table.getName());
@@ -118,7 +118,7 @@ class RestaurantTableServiceTest {
         Mockito.when(restaurantTableRepositoryMock.findByName("name1")).thenReturn(Optional.of(table));
         Mockito.when(restaurantTableRepositoryMock.findById(1L)).thenReturn(Optional.of(new RestaurantTable()));
 
-        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.update(table, 1L));
+        Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.update(table, 1L, 1L));
     }
 
     @Test

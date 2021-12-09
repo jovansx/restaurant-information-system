@@ -4,7 +4,6 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
-import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -47,9 +46,7 @@ public class DishItemStreamController {
     public SocketResponseDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
         DishItem dishItem = dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId());
         SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully changed!");
-        if (dishItem.getState().equals(ItemState.READY)) {
-            this.template.convertAndSend("/topic/order", socketResponseDTO);
-        }
+        this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
 

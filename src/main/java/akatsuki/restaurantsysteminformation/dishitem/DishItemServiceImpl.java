@@ -7,11 +7,13 @@ import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundE
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
@@ -28,6 +30,7 @@ public class DishItemServiceImpl implements DishItemService {
     private final UnregisteredUserService unregisteredUserService;
     private final OrderService orderService;
     private final ItemService itemService;
+    private final RestaurantTableService restaurantTableService;
 
     @Override
     public DishItem getOne(long id) {
@@ -109,15 +112,20 @@ public class DishItemServiceImpl implements DishItemService {
         if (!user.getType().equals(typeOfAllowedUser))
             throw new UserTypeNotValidException("User with the id " + userId + " is not a " + typeOfAllowedUser.name().toLowerCase() + ".");
 
+        Order order = orderService.getOneByOrderItem(dishItem);
+
         if (dishItem.getState().equals(ItemState.NEW)) {
             dishItem.setState(ItemState.ON_HOLD);
         } else if (dishItem.getState().equals(ItemState.ON_HOLD)) {
             dishItem.setState(ItemState.PREPARATION);
             dishItem.setChef(user);
-        } else if (dishItem.getState().equals(ItemState.PREPARATION))
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
+        } else if (dishItem.getState().equals(ItemState.PREPARATION)) {
             dishItem.setState(ItemState.READY);
-        else
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.CHANGED);
+        } else
             dishItem.setState(ItemState.DELIVERED);
+
         dishItemRepository.save(dishItem);
         return dishItem;
     }

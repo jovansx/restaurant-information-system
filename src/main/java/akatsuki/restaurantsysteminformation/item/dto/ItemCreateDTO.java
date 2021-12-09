@@ -2,14 +2,11 @@ package akatsuki.restaurantsysteminformation.item.dto;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data

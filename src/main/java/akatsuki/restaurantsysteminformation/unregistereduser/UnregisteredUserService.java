@@ -1,6 +1,7 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 
 import java.util.List;
 
@@ -10,11 +11,13 @@ public interface UnregisteredUserService {
 
     List<UnregisteredUser> getAll();
 
-    UnregisteredUser create(UnregisteredUser unregisteredUser);
+    UnregisteredUser create(UnregisteredUserDTO unregisteredUser);
 
-    UnregisteredUser update(UnregisteredUser unregisteredUser, long id);
+    UnregisteredUser update(UnregisteredUserDTO unregisteredUserDTO, long id);
 
     UnregisteredUser delete(long id);
+
+    void deleteById(long id);
 
     void save(UnregisteredUser unregisteredUser);
 

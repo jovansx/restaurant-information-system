@@ -54,7 +54,7 @@ public class OrderStreamControllerIntegrationTest {
                 .get(1, SECONDS);
 
         session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-        OrderCreateDTO dto = new OrderCreateDTO(1L);
+        OrderCreateDTO dto = new OrderCreateDTO(1L, 1L);
 
         session.send("/app/order/create", dto);
         Thread.sleep(100);
@@ -81,7 +81,7 @@ public class OrderStreamControllerIntegrationTest {
                 .get(1, SECONDS);
 
         session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-        OrderCreateDTO dto = new OrderCreateDTO(2L);
+        OrderCreateDTO dto = new OrderCreateDTO(2L, 1L);
 
         session.send("/app/order/create", dto);
         Thread.sleep(100);
@@ -103,7 +103,7 @@ public class OrderStreamControllerIntegrationTest {
                 .get(1, SECONDS);
 
         session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-        OrderCreateDTO dto = new OrderCreateDTO(55L);
+        OrderCreateDTO dto = new OrderCreateDTO(55L, 1L);
 
         session.send("/app/order/create", dto);
         Thread.sleep(100);
@@ -116,7 +116,7 @@ public class OrderStreamControllerIntegrationTest {
 
     @Test
     public void discard_Valid_DiscardObject() throws Exception {
-        Order order = orderService.create(new OrderCreateDTO(1L));
+        Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
         int size = orderService.getAllActive().size();
 
@@ -209,7 +209,7 @@ public class OrderStreamControllerIntegrationTest {
 
     @Test
     public void charge_Valid_DiscardObject() throws Exception {
-        Order order = orderService.create(new OrderCreateDTO(1L));
+        Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
         int size = orderService.getAllActive().size();
 
@@ -302,7 +302,7 @@ public class OrderStreamControllerIntegrationTest {
 
     @Test
     public void delete_Valid_DeletedObject() throws Exception {
-        Order order = orderService.create(new OrderCreateDTO(1L));
+        Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
         int size = orderService.getAllActive().size();
 

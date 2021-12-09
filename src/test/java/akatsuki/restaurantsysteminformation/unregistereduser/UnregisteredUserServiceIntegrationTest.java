@@ -1,7 +1,7 @@
 package akatsuki.restaurantsysteminformation.unregistereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.salary.Salary;
+import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.util.Collections;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,40 +21,51 @@ class UnregisteredUserServiceIntegrationTest {
     UnregisteredUserServiceImpl unregisteredUserService;
 
     @Test
+    public void getOne_ValidId_ReturnedObject() {
+        UnregisteredUser foundRegisteredUser = unregisteredUserService.getOne(1L);
+        Assertions.assertNotNull(foundRegisteredUser);
+    }
+
+    @Test
+    public void getOne_InvalidId_ExceptionThrown() {
+        Assertions.assertThrows(UserNotFoundException.class, () -> unregisteredUserService.getOne(8000L));
+    }
+
+    @Test
     void create_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069121223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "9999");
+        UnregisteredUserDTO user = new UnregisteredUserDTO("Jelena", "Stojanovic", "sekica@gmail.com", "069121223", 12, UserType.WAITER, "9999");
         UnregisteredUser createdUser = unregisteredUserService.create(user);
         Assertions.assertNotNull(createdUser);
     }
 
     @Test
     void create_InvalidPin_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1111");
+        UnregisteredUserDTO user = new UnregisteredUserDTO("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", 12, UserType.WAITER, "1111");
         Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.create(user));
     }
 
     @Test
     void create_InvalidUserType_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.MANAGER, false, "8888");
+        UnregisteredUserDTO user = new UnregisteredUserDTO("Jelena", "Stojanovic", "sekica@gmail.com", "069111223", 12, UserType.MANAGER, "8888");
         Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.create(user));
     }
 
     @Test
     void update_Valid_SavedObject() {
-        UnregisteredUser user = new UnregisteredUser("Simon", "Baker", "simonbaker@gmail.com", "0611111112", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1112");
+        UnregisteredUserDTO user = new UnregisteredUserDTO("Simon", "Baker", "simonbaker@gmail.com", "0611111112", 145, UserType.WAITER, "1112");
         UnregisteredUser updatedUser = unregisteredUserService.update(user, 2L);
         Assertions.assertNotNull(updatedUser);
     }
 
     @Test
     void update_InvalidPin_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.WAITER, false, "1112");
+        UnregisteredUserDTO user = new UnregisteredUserDTO("John", "Cena", "johncena@gmail.com", "069111223", 13, UserType.WAITER, "1112");
         Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.update(user, 1L));
     }
 
     @Test
     void update_InvalidUserType_ExceptionThrown() {
-        UnregisteredUser user = new UnregisteredUser("John", "Cena", "johncena@gmail.com", "069111223", Collections.singletonList(new Salary(LocalDateTime.now(), 1000000)), UserType.MANAGER, false, "1111");
+        UnregisteredUserDTO user = new UnregisteredUserDTO("John", "Cena", "johncena@gmail.com", "069111223", 13, UserType.MANAGER, "1111");
         Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.update(user, 1L));
     }
 

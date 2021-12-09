@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -30,8 +33,6 @@ public abstract class UserDTO {
     @Pattern(regexp = "\\+[0-9]{12}|[0-9]{10}", message = "Phone number not match required format.")
     private String phoneNumber;
 
-    @NotNull(message = "It cannot be null.")
-    @Positive(message = "It has to be a positive number.")
     private double salary;
 
     @NotNull(message = "It cannot be null.")

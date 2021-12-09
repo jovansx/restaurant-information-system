@@ -13,15 +13,24 @@ import java.util.stream.Collectors;
 public class RoomWithTablesDTO extends RoomCreateDTO {
     private @Getter
     @Setter
-    List<RestaurantTableDTO> tables;
+    Long id;
 
-    public RoomWithTablesDTO(String name, List<RestaurantTableDTO> tables) {
-        super(name);
-        this.tables = tables;
-    }
+    private @Getter
+    @Setter
+    int rows;
+    private @Getter
+    @Setter
+    int columns;
+
+    private @Getter
+    @Setter
+    List<RestaurantTableDTO> tables;
 
     public RoomWithTablesDTO(Room room) {
         super(room.getName());
+        this.id = room.getId();
         this.tables = room.getRestaurantTables().stream().map(RestaurantTableDTO::new).collect(Collectors.toList());
+        this.rows = room.getRows();
+        this.columns = room.getColumns();
     }
 }
