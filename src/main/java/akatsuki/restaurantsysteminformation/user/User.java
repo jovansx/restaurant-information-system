@@ -65,6 +65,7 @@ public abstract class User {
         this.isDeleted = isDeleted;
     }
 
+
     public String getName() {
         return firstName + " " + lastName;
     }

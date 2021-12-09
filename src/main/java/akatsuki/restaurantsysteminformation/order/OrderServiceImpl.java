@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
+import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.ItemService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
         Order order2 = getOneWithDishes(orderId);
         order1.setDishes(order2.getDishes());
         List<DrinkItems> items = new ArrayList<>();
-        for(DrinkItems di : order1.getDrinks()) {
+        for (DrinkItems di : order1.getDrinks()) {
             items.add(drinkItemsService.findOneWithItems(di.getId()));
         }
         order1.setDrinks(items);
@@ -110,6 +110,9 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = new Order(0, LocalDateTime.now(), false, true, waiter, new ArrayList<>(), new ArrayList<>());
         orderRepository.save(order);
+
+        restaurantTableService.setOrderToTable(orderDTO.getTableId(), order);
+
         return order;
     }
 
@@ -153,6 +156,9 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
         return order;
     }
 
@@ -168,6 +174,9 @@ public class OrderServiceImpl implements OrderService {
         order.getDishes().forEach(dish -> dish.setActive(false));
         order.getDrinks().forEach(drinks -> drinks.setActive(false));
         orderRepository.save(order);
+
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
         return order;
     }
 
@@ -184,17 +193,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO getOrderByRestaurantTableNameIfWaiterValid(String name, String pinCode) {
         Long orderId = restaurantTableService.getOrderByTableName(name);
-        Order order;
+        Order order = null;
         OrderDTO orderDTO = new OrderDTO();
-        if(orderId != null) {
+        if (orderId != null) {
             order = getOneWithAll(orderId);
             UnregisteredUser waiter = order.getWaiter();
-            if(!waiter.getPinCode().equals(pinCode)) {
+            if (!waiter.getPinCode().equals(pinCode)) {
                 throw new OrderWaiterNotValidException("Order with the id " + order.getId() + " does not belong to the waiter " + waiter.getFirstName() + " " + waiter.getLastName());
             }
             orderDTO = new OrderDTO(order);
         }
 
+        restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
         return orderDTO;
     }
 }

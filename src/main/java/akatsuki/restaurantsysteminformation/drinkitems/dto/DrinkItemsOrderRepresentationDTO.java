@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.drinkitems.dto;
 
-import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +28,9 @@ public class DrinkItemsOrderRepresentationDTO {
         this.state = drinks.getState();
         this.itemList = new ArrayList<>();
         this.name = "";
-        for(int i = 0; i < drinks.getDrinkItemList().size(); i++) {
+        for (int i = 0; i < drinks.getDrinkItemList().size(); i++) {
             itemList.add(new DrinkItemDTO(drinks.getDrinkItemList().get(i)));
-            if(i == drinks.getDrinkItemList().size()-1) {
+            if (i == drinks.getDrinkItemList().size() - 1) {
                 name += drinks.getDrinkItemList().get(i).getItem().getName();
                 break;
             }

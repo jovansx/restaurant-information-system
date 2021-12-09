@@ -31,19 +31,29 @@ public class Room {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
+    @Column(name = "rows", nullable = false)
+    private int rows;
+
+    @Column(name = "columns", nullable = false)
+    private int columns;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<RestaurantTable> restaurantTables;
 
-    public Room(String name, boolean isDeleted, List<RestaurantTable> restaurantTables) {
+    public Room(String name, boolean isDeleted, List<RestaurantTable> restaurantTables, int rows, int columns) {
         this.name = name;
         this.isDeleted = isDeleted;
         this.restaurantTables = restaurantTables;
+        this.rows = rows;
+        this.columns = columns;
     }
 
     public Room(RoomCreateDTO roomDTO) {
         this.name = roomDTO.getName();
         this.isDeleted = false;
         this.restaurantTables = new ArrayList<>();
+        this.rows = 2;
+        this.columns = 2;
     }
 
 }

@@ -227,7 +227,7 @@ public class DbConfiguration {
             drinkItemsRepository.save(drinkItems4);
             DrinkItems drinkItems5 = new DrinkItems(null, LocalDateTime.now().minusMinutes(10), false, ItemState.DELIVERED, null, Collections.singletonList(drinkItem6), true);
             drinkItemsRepository.save(drinkItems5);
-            DrinkItems drinkItems6 = new DrinkItems("To be hot xD", LocalDateTime.now().minusMinutes(5), false, ItemState.ON_HOLD, bartender1, Arrays.asList(drinkItem7, drinkItem8, drinkItem9), true);
+            DrinkItems drinkItems6 = new DrinkItems("To be hot xD", LocalDateTime.now().minusMinutes(5), false, ItemState.ON_HOLD, null, Arrays.asList(drinkItem7, drinkItem8, drinkItem9), true);
             drinkItemsRepository.save(drinkItems6);
 
 //          Order
@@ -242,7 +242,6 @@ public class DbConfiguration {
             Order order9 = new Order(1200, LocalDateTime.of(2021, 5, 15, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
             Order order10 = new Order(1200, LocalDateTime.of(2020, 12, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
 
-
             orderRepository.save(order1);
             orderRepository.save(order2);
             orderRepository.save(order3);
@@ -254,13 +253,15 @@ public class DbConfiguration {
             orderRepository.save(order9);
             orderRepository.save(order10);
 //          RestaurantTable
-            RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.TAKEN, TableShape.CIRCLE, false, order1);
+            RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.TAKEN, TableShape.CIRCLE, false, order1, 0, 1);
             restaurantTableRepository.save(restaurantTable1);
-            RestaurantTable restaurantTable2 = new RestaurantTable("T2", TableState.FREE, TableShape.CIRCLE, false, null);
+            RestaurantTable restaurantTable2 = new RestaurantTable("T2", TableState.FREE, TableShape.SQUARE, false, null, 1, 0);
             restaurantTableRepository.save(restaurantTable2);
 //          Room
-            Room room1 = new Room("Room number 1", false, Collections.singletonList(restaurantTable1));
+            Room room1 = new Room("Room 1", false, Arrays.asList(restaurantTable1, restaurantTable2), 2, 2);
             roomRepository.save(room1);
+            Room room2 = new Room("Room 2", false, new ArrayList<>(), 2, 2);
+            roomRepository.save(room2);
 
             log.info("Database is populated");
         };

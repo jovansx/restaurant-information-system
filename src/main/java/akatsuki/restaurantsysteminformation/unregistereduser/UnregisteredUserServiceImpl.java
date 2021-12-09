@@ -5,10 +5,8 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.salary.Salary;
-import akatsuki.restaurantsysteminformation.salary.SalaryRepository;
 import akatsuki.restaurantsysteminformation.salary.SalaryService;
 import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserDTO;
-import akatsuki.restaurantsysteminformation.unregistereduser.dto.UnregisteredUserRepresentationDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.exception.UnregisteredUserActiveException;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserService;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +83,7 @@ public class UnregisteredUserServiceImpl implements UnregisteredUserService {
         user.setEmailAddress(unregisteredUserDTO.getEmailAddress());
         user.setPhoneNumber(unregisteredUserDTO.getPhoneNumber());
 
-        if(unregisteredUserDTO.getSalary() != 0) {
+        if (unregisteredUserDTO.getSalary() != 0) {
             Salary salary = salaryService.create(new Salary(LocalDateTime.now(), unregisteredUserDTO.getSalary()));
             List<Salary> salaries = user.getSalary();
             salaries.add(salary);
