@@ -108,11 +108,13 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
             throw new DrinkItemsInvalidStateException("Cannot change drink items list, because its state is " + itemState.name().toLowerCase() + ". Allowed state to change is 'on_hold'.");
 
         List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
+
+        List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
         drinkItems.getDrinkItemList().clear();
         drinkItemsRepository.save(drinkItems);
         for (DrinkItem drinkItem : ref)
             drinkItemService.delete(drinkItem);
-        List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
+
         drinkItems.setDrinkItemList(drinkItemsOfList);
         drinkItems.setNotes(drinkItemsDTO.getNotes());
         drinkItemsRepository.save(drinkItems);
@@ -177,7 +179,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     private void checkDrinks(List<DrinkItemCreateDTO> drinkItems) {
         drinkItems.forEach(drinkItem -> {
-            Item item = itemService.getOne(drinkItem.getItemId());
+            Item item = drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
             if (item.getType() != ItemType.DRINK)
                 throw new ItemNotFoundException("Not correct type of drink item!");
         });
@@ -187,7 +189,9 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         List<DrinkItem> drinkItemsOfList = new ArrayList<>();
 
         for (DrinkItemCreateDTO drinkItemDTO : drinkItemsDTOList) {
-            Item item = itemService.getOne(drinkItemDTO.getItemId());
+//            Item item = itemService.getOne(drinkItemDTO.getId());
+            Item item = drinkItemService.findByIdAndFetchItem(drinkItemDTO.getId()).getItem();
+
             DrinkItem drinkItem = new DrinkItem(drinkItemDTO.getAmount(), item);
             DrinkItem savedDrinkItem = drinkItemService.create(drinkItem);
             drinkItemsOfList.add(savedDrinkItem);

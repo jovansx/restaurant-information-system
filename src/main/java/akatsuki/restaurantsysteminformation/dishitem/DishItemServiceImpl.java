@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +70,12 @@ public class DishItemServiceImpl implements DishItemService {
     @Override
     public DishItem update(DishItemCreateDTO itemCreateDTO, long id) {
         Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
-        Item item = itemService.getOne(itemCreateDTO.getItemId());
+//        Item item = itemService.getOne(itemCreateDTO.getItemId());
+        Optional<DishItem> dishItemMaybe = dishItemRepository.findByIdAndFetchItem(id);
+        if(dishItemMaybe.isEmpty()) {
+            throw new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.");
+        }
+        Item item = dishItemMaybe.get().getItem();
         if (!item.getType().equals(ItemType.DISH))
             throw new DishItemInvalidTypeException("Item type is not DISH.");
         DishItem dishItem = null;

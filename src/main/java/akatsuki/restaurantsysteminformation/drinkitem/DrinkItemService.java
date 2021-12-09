@@ -5,4 +5,6 @@ public interface DrinkItemService {
     DrinkItem create(DrinkItem drinkItem);
 
     DrinkItem delete(DrinkItem drinkItem);
+
+    DrinkItem findByIdAndFetchItem(long id);
 }
