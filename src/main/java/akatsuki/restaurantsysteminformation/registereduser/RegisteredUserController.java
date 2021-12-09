@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.registereduser;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,30 +18,38 @@ import java.util.List;
 public class RegisteredUserController {
     private final RegisteredUserService registeredUserService;
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/{id}")
     public RegisteredUser getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return registeredUserService.getOne(id);
     }
 
+    //    TODO Vidi da li se koristi
     @GetMapping
     public List<RegisteredUser> getAll() {
         return registeredUserService.getAll();
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody @Valid RegisteredUserDTO registeredUserDTO) {
         return registeredUserService.create(registeredUserDTO).getId().toString();
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid RegisteredUserDTO registeredUserDTO,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.update(registeredUserDTO, id);
     }
 
+    //    TODO ovo ne vidim da se koristi, sto je cudno
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.delete(id);
     }
+
+//    TODO fali oanj change-password
 }
