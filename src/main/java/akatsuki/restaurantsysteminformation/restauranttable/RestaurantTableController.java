@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 public class RestaurantTableController {
     private final RestaurantTableService restaurantTableService;
 
+    //  TODO proveri da li se koristi
     @GetMapping("/{id}")
     public RestaurantTableDTO getOne(@PathVariable("id") @Positive(message = "Id has to be a positive value.") long id) {
         return new RestaurantTableDTO(restaurantTableService.getOne(id));
     }
 
+    //  TODO proveri da li se koristi
     @GetMapping
     public List<RestaurantTableDTO> getAll() {
         List<RestaurantTable> tables = restaurantTableService.getAll();
