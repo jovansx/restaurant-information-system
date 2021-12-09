@@ -152,10 +152,10 @@ public class DbConfiguration {
             priceRepository.save(p8);
             priceRepository.save(p9);
 //            ItemCategory
-            ItemCategory ic1 = new ItemCategory("Juices");
-            ItemCategory ic2 = new ItemCategory("Cocktails");
-            ItemCategory ic3 = new ItemCategory("Sandwich");
-            ItemCategory ic4 = new ItemCategory("Meat");
+            ItemCategory ic1 = new ItemCategory("Juices", ItemType.DRINK);
+            ItemCategory ic2 = new ItemCategory("Cocktails", ItemType.DRINK);
+            ItemCategory ic3 = new ItemCategory("Sandwich", ItemType.DISH);
+            ItemCategory ic4 = new ItemCategory("Meat", ItemType.DISH);
             itemCategoryRepository.save(ic1);
             itemCategoryRepository.save(ic2);
             itemCategoryRepository.save(ic3);

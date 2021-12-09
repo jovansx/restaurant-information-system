@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory.dto;
 
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,13 @@ public class ItemCategoryDTO {
     @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.")
     private String name;
 
+    @Getter
+    @Setter
+    @NotNull(message = "Name cannot be null.")
+    private ItemType type;
+
     public ItemCategoryDTO(ItemCategory itemCategory) {
         this.name = itemCategory.getName();
+        this.type = itemCategory.getType();
     }
 }

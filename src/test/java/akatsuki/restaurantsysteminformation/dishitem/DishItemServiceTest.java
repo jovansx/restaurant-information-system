@@ -80,7 +80,7 @@ class DishItemServiceTest {
         DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert"), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -97,7 +97,7 @@ class DishItemServiceTest {
         DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -109,7 +109,7 @@ class DishItemServiceTest {
     public void update_ValidDtoAndId_ChangedObject() {
         DishItemCreateDTO dto = new DishItemCreateDTO(1L, 10, "New note.", 1L);
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert"), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
         DishItem dishItem = new DishItem("Old note.", LocalDateTime.now(), false, ItemState.NEW, 5, null, null, true);
         dishItem.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, Collections.singletonList(dishItem), new ArrayList<>());
@@ -129,7 +129,7 @@ class DishItemServiceTest {
     public void update_InvalidItemType_ExceptionThrown() {
         DishItemCreateDTO dto = new DishItemCreateDTO(1L, 10, "New note.", 1L);
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert"), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
@@ -142,7 +142,7 @@ class DishItemServiceTest {
     public void update_InvalidDishItem_ExceptionThrown() {
         DishItemCreateDTO dto = new DishItemCreateDTO(1L, 10, "New note.", 1L);
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert"), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
         DishItem dishItem = new DishItem("Old note.", LocalDateTime.now(), false, ItemState.NEW, 5, null, null, true);
         dishItem.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
@@ -157,7 +157,7 @@ class DishItemServiceTest {
     public void update_InvalidItemState_ExceptionThrown() {
         DishItemCreateDTO dto = new DishItemCreateDTO(1L, 10, "New note.", 1L);
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert"), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
         DishItem dishItem = new DishItem("Old note.", LocalDateTime.now(), false, ItemState.PREPARATION, 5, null, null, true);
         dishItem.setId(1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, Collections.singletonList(dishItem), new ArrayList<>());

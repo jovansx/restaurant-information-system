@@ -42,6 +42,7 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
                 throw new ItemCategoryNameException("Similar category is recorded with required name " + formattedName + ".");
         });
         category.setName(formattedName);
+        category.setType(category.getType());
         itemCategoryRepository.save(category);
         return category;
     }

@@ -74,12 +74,12 @@ public class Item {
         this.code = UUID.randomUUID().toString();
         this.name = itemDTO.getName();
         this.description = itemDTO.getDescription();
-        this.iconBase64 = itemDTO.getIconBase64().getBytes();
+        this.iconBase64 = itemDTO.getIconBase64() == null ? null : itemDTO.getIconBase64().getBytes();
         this.original = false;
         this.deleted = false;
         this.type = itemDTO.getType();
         this.components = new ArrayList<>(itemDTO.getComponents());
-        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory().getName(), itemDTO.getItemCategory().getType());
         this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
     }
 
@@ -92,7 +92,7 @@ public class Item {
         this.deleted = false;
         this.type = itemDTO.getType();
         this.components = new ArrayList<>(itemDTO.getComponents());
-        this.itemCategory = new ItemCategory(itemDTO.getItemCategory());
+        this.itemCategory = new ItemCategory(itemDTO.getItemCategory().getName(), itemDTO.getItemCategory().getType());
         this.prices = Collections.singletonList(new Price(LocalDateTime.now(), itemDTO.getPrice()));
     }
 

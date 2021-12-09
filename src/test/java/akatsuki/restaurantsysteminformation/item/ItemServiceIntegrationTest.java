@@ -75,7 +75,7 @@ class ItemServiceIntegrationTest {
     @Test
     void create_CategoryNotExist_ExceptionThrown() {
         Item item = new Item();
-        item.setItemCategory(new ItemCategory("Chips"));
+        item.setItemCategory(new ItemCategory("Chips", ItemType.DISH));
 
         Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemService.create(item));
     }
@@ -83,7 +83,7 @@ class ItemServiceIntegrationTest {
     @Test
     void create_ValidItem_ObjectIsCreated() {
         Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Meat"), null);
+                null, new ItemCategory("Meat", ItemType.DISH), null);
         item.setPrices(Collections.singletonList(new Price(LocalDateTime.now(), 22)));
 
         Item createdItem = itemService.create(item);
@@ -94,7 +94,7 @@ class ItemServiceIntegrationTest {
     @Test
     void update_InvalidItemId_ExceptionThrown() {
         Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Meat"), null);
+                null, new ItemCategory("Meat", ItemType.DISH), null);
 
         Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.update(item, 7L));
     }
@@ -102,7 +102,7 @@ class ItemServiceIntegrationTest {
     @Test
     void update_InvalidItemCode_ExceptionThrown() {
         Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Meat"), null);
+                null, new ItemCategory("Meat", ItemType.DISH), null);
         item.setCode("c6d7d3c8");
 
         Assertions.assertThrows(ItemCodeNotValidException.class, () -> itemService.update(item, 1L));
@@ -111,7 +111,7 @@ class ItemServiceIntegrationTest {
     @Test
     void update_FirstTimeValidUpdate_ObjectUpdated() {
         Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Juices"), List.of(new Price(LocalDateTime.now(), 22)));
+                null, new ItemCategory("Juices", ItemType.DRINK), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("c6d7d3c8-2273-4343-a6dc-87efe43867fa");
 
         Item updatedItem = itemService.update(item, 1L);
@@ -121,7 +121,7 @@ class ItemServiceIntegrationTest {
     @Test
     void update_SecondTimeValidUpdate_ObjectUpdated() {
         Item item = new Item("Chicken meat", "", null, true, false, ItemType.DISH,
-                new ArrayList<>(), new ItemCategory("Meat"), List.of(new Price(LocalDateTime.now(), 22)));
+                new ArrayList<>(), new ItemCategory("Meat", ItemType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("9a191868-228d-4dbb-819f-ca615d29fefe");
 
         Item updatedItem = itemService.update(item, 5L);
@@ -131,7 +131,7 @@ class ItemServiceIntegrationTest {
     @Test
     void delete_AlreadyDeleted_ExceptionThrown() {
         Item item = new Item("Chicken meat", "", null, true, false, ItemType.DISH,
-                new ArrayList<>(), new ItemCategory("Meat"), List.of(new Price(LocalDateTime.now(), 22)));
+                new ArrayList<>(), new ItemCategory("Meat", ItemType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("7807ec36-1888-44a9-8fc5-ca11df02492f");
 
         Assertions.assertThrows(ItemAlreadyDeletedException.class, () -> itemService.delete(4L));
@@ -140,7 +140,7 @@ class ItemServiceIntegrationTest {
     @Test
     void delete_FirstValidDelete_ItemIsDeleted() {
         Item item = new Item("Coca cola", "", null, true, false, ItemType.DRINK,
-                new ArrayList<>(), new ItemCategory("Juices"), List.of(new Price(LocalDateTime.now(), 22)));
+                new ArrayList<>(), new ItemCategory("Juices", ItemType.DRINK), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("c6d7d3c8-2273-4343-a6dc-87efe43867fa");
 
         Item deletedItem = itemService.delete(1L);
@@ -150,7 +150,7 @@ class ItemServiceIntegrationTest {
     @Test
     void delete_OneValidCopy_ItemIsDeleted() {
         Item item = new Item("Chicken legs", "", null, true, false, ItemType.DISH,
-                new ArrayList<>(), new ItemCategory("Meat"), List.of(new Price(LocalDateTime.now(), 22)));
+                new ArrayList<>(), new ItemCategory("Meat", ItemType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("9a191868-228d-4dbb-819f-ca615d29fefe");
 
         Item deletedItem = itemService.delete(5L);

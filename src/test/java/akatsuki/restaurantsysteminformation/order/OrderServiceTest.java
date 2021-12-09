@@ -109,8 +109,8 @@ class OrderServiceTest {
 
     @Test
     public void updateTotalPriceAndSave_ValidOrder_SavedObject() {
-        Item sandwich = new Item(1L, "1111-2222-3333", "Chicken sandwich", "Very good chicken sandwich!", null, true, false, ItemType.DISH, null, new ItemCategory("Meat"), null);
-        Item juice = new Item(2L, "2222-3333-4444", "Apple juice", "Very good apple juice!", null, true, false, ItemType.DRINK, null, new ItemCategory("Juice"), null);
+        Item sandwich = new Item(1L, "1111-2222-3333", "Chicken sandwich", "Very good chicken sandwich!", null, true, false, ItemType.DISH, null, new ItemCategory("Meat", ItemType.DISH), null);
+        Item juice = new Item(2L, "2222-3333-4444", "Apple juice", "Very good apple juice!", null, true, false, ItemType.DRINK, null, new ItemCategory("Juice", ItemType.DRINK), null);
 
         DishItem dishItem = new DishItem(1L, "Old note.", LocalDateTime.now(), false, ItemState.READY, true, 2, null, sandwich);
         DrinkItem drinkItem = new DrinkItem(2, juice);

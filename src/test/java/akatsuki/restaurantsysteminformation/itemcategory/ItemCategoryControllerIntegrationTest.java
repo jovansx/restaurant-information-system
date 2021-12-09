@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class ItemCategoryControllerIntegrationTest {
     public void create_ValidDto_ObjectIsCreated() {
         int size = itemCategoryService.getAll().size();
 
-        ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, new ItemCategoryDTO("chips"), String.class);
+        ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, new ItemCategoryDTO("chips", ItemType.DISH), String.class);
 
         Assertions.assertNotNull(res.getBody());
 
@@ -69,7 +70,7 @@ class ItemCategoryControllerIntegrationTest {
 
     @Test
     public void create_NameAlreadyExist_ErrorConflict() {
-        ResponseEntity<Void> responseEntity = restTemplate.postForEntity(URL_PREFIX, new ItemCategoryDTO("meat"), Void.class);
+        ResponseEntity<Void> responseEntity = restTemplate.postForEntity(URL_PREFIX, new ItemCategoryDTO("meat", ItemType.DISH), Void.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 
@@ -77,7 +78,7 @@ class ItemCategoryControllerIntegrationTest {
     public void update_ValidEntityAndId_SavedObject() {
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new ItemCategoryDTO("Edited juices")),
+                        new HttpEntity<>(new ItemCategoryDTO("Edited juices", ItemType.DRINK)),
                         Void.class);
 
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
@@ -93,7 +94,7 @@ class ItemCategoryControllerIntegrationTest {
     public void update_EntityNameIsTheSame_ExceptionThrown() {
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new ItemCategoryDTO("juices")),
+                        new HttpEntity<>(new ItemCategoryDTO("juices", ItemType.DRINK)),
                         Void.class);
 
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
@@ -103,7 +104,7 @@ class ItemCategoryControllerIntegrationTest {
     public void update_EntityNameAlreadyExist_ExceptionThrown() {
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new ItemCategoryDTO("meat")),
+                        new HttpEntity<>(new ItemCategoryDTO("meat", ItemType.DISH)),
                         Void.class);
 
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
@@ -111,7 +112,7 @@ class ItemCategoryControllerIntegrationTest {
 
     @Test
     public void delete_ValidId_ObjectRemoved() {
-        ItemCategory itemCategory = itemCategoryService.create(new ItemCategory("chips"));
+        ItemCategory itemCategory = itemCategoryService.create(new ItemCategory("chips", ItemType.DISH));
         int size = itemCategoryService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + itemCategory.getId(),
