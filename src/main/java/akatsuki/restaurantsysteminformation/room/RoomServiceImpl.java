@@ -89,7 +89,7 @@ public class RoomServiceImpl implements RoomService {
             deleting = deleting.stream().filter(tb -> !tb.getName().equals(t.getName())).collect(Collectors.toList());
         }
 
-        List<RestaurantTable> tables = createNewTables(adding);
+        List<RestaurantTable> tables = createNewTables(adding, id);
         List<RestaurantTable> updatedTables = updateTables(editing, id);
         tables.addAll(updatedTables);
 
@@ -143,10 +143,10 @@ public class RoomServiceImpl implements RoomService {
             throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
     }
 
-    private List<RestaurantTable> createNewTables(List<RestaurantTableDTO> newTablesDTO) {
+    private List<RestaurantTable> createNewTables(List<RestaurantTableDTO> newTablesDTO, Long roomId) {
         List<RestaurantTable> tables = new ArrayList<>();
         newTablesDTO.forEach(tableDTO -> {
-            RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO), 1L);
+            RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO), roomId);
             tables.add(table);
         });
         return tables;
