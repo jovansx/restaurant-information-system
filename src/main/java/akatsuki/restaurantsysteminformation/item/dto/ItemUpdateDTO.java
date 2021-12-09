@@ -15,9 +15,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class ItemUpdateDTO extends ItemDTO {
-
-    @NotNull(message = "It cannot be null.")
-    @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.")
     private ItemCategoryDTO itemCategory;
 
     @Positive(message = "Price has to be a positive value.")

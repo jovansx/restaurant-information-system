@@ -195,7 +195,7 @@ class ItemServiceTest {
         item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
 
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
-        Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.empty());
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.update(item, 1L));
     }
@@ -212,7 +212,7 @@ class ItemServiceTest {
 
 
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
-        Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item2));
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item2));
 
         Assertions.assertThrows(ItemCodeNotValidException.class, () -> itemService.update(item, 1L));
     }
@@ -229,8 +229,8 @@ class ItemServiceTest {
         item2.setOriginal(true);
 
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
-        Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(item2));
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2));
 
         itemService.update(item, 1L);
 
@@ -256,8 +256,8 @@ class ItemServiceTest {
 
 
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
-        Mockito.when(itemRepositoryMock.findByIdAndOriginalIsTrueAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(item2, item3));
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2, item3));
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(Mockito.any())).thenReturn(Optional.of(item));
 
         itemService.update(item, 1L);
@@ -275,7 +275,7 @@ class ItemServiceTest {
         item.getPrices().add(new Price(LocalDateTime.now(), 22));
 
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(new Item()));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(new Item()));
 
         itemService.delete(1L);
 
@@ -300,7 +300,7 @@ class ItemServiceTest {
         item3.setDeleted(true);
 
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(item2, item3));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2, item3));
 
         Assertions.assertThrows(ItemAlreadyDeletedException.class, () -> itemService.delete(1L));
     }
@@ -322,7 +322,7 @@ class ItemServiceTest {
         item3.setDeleted(false);
 
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCode("code1")).thenReturn(List.of(item2, item3));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2, item3));
 
         itemService.delete(1L);
 

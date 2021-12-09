@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
 
+    @GetMapping("/not-active/{id}")
+    public ItemDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new ItemDetailsDTO(itemService.getOne(id));
+    }
+
     @GetMapping("/{id}")
     public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new ItemDetailsDTO(itemService.getOneActive(id));
