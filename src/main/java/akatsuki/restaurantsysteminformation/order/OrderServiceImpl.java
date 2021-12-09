@@ -11,6 +11,7 @@ import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
 import akatsuki.restaurantsysteminformation.order.exception.*;
 import akatsuki.restaurantsysteminformation.orderitem.OrderItem;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
@@ -191,20 +192,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO getOrderByRestaurantTableNameIfWaiterValid(String name, String pinCode) {
-        Long orderId = restaurantTableService.getOrderByTableName(name);
-        Order order = null;
+    public OrderDTO getOrderByRestaurantTableIdIfWaiterValid(Long tableId, String pinCode) {
+        RestaurantTable table = restaurantTableService.getOneWithOrder(tableId);
         OrderDTO orderDTO = new OrderDTO();
-        if (orderId != null) {
-            order = getOneWithAll(orderId);
+        if (table.getActiveOrder() != null) {
+            Order order = getOneWithAll(table.getActiveOrder().getId());
             UnregisteredUser waiter = order.getWaiter();
             if (!waiter.getPinCode().equals(pinCode)) {
                 throw new OrderWaiterNotValidException("Order with the id " + order.getId() + " does not belong to the waiter " + waiter.getFirstName() + " " + waiter.getLastName());
             }
             orderDTO = new OrderDTO(order);
+            restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
         }
 
-        restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
+        orderDTO.getDishItemList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
+        orderDTO.getDrinkItemsList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
+
         return orderDTO;
     }
 }

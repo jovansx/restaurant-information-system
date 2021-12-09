@@ -30,9 +30,9 @@ public class OrderController {
         return new OrderBasicInfoDTO(orderService.getOneByRestaurantTableId(id));
     }
 
-    @GetMapping("/{name}/{pinCode}")
-    public OrderDTO getOrderByRestaurantTable(@PathVariable String name, @PathVariable String pinCode) {
-        return orderService.getOrderByRestaurantTableNameIfWaiterValid(name, pinCode);
+    @GetMapping("/{tableId}/{pinCode}")
+    public OrderDTO getOrderByRestaurantTable(@PathVariable Long tableId, @PathVariable String pinCode) {
+        return orderService.getOrderByRestaurantTableIdIfWaiterValid(tableId, pinCode);
     }
 
     @GetMapping

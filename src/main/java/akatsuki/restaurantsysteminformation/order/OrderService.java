@@ -37,5 +37,5 @@ public interface OrderService {
 
     void save(Order order);
 
-    OrderDTO getOrderByRestaurantTableNameIfWaiterValid(String name, String pinCode);
+    OrderDTO getOrderByRestaurantTableIdIfWaiterValid(Long tableId, String pinCode);
 }
