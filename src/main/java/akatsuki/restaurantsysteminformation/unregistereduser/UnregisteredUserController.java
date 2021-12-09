@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class UnregisteredUserController {
     private final UnregisteredUserService unregisteredUserService;
 
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'SYSTEM_ADMIN')")
     @GetMapping("/{id}")
     public UnregisteredUserRepresentationDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new UnregisteredUserRepresentationDTO(unregisteredUserService.getOne(id));
