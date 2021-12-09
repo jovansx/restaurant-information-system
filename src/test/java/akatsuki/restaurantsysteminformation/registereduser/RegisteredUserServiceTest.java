@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
 import akatsuki.restaurantsysteminformation.role.Role;
 import akatsuki.restaurantsysteminformation.role.RoleRepository;
@@ -114,8 +115,8 @@ class RegisteredUserServiceTest {
 
     @Test
     public void update_ValidEntityAndId_SavedObject() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 0, UserType.MANAGER, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 0, UserType.MANAGER, "michael123");
         RegisteredUser existingUser = new RegisteredUser(1L, "Micha", "Boo", "michaboo@gmail.com",
                 "0645674444", null, UserType.MANAGER, false, "michael123", "boo", new Role());
 
@@ -130,14 +131,13 @@ class RegisteredUserServiceTest {
         Assertions.assertEquals(existingUser.getLastName(), user.getLastName());
         Assertions.assertEquals(existingUser.getEmailAddress(), user.getEmailAddress());
         Assertions.assertEquals(existingUser.getPhoneNumber(), user.getPhoneNumber());
-        Assertions.assertEquals(existingUser.getPassword(), user.getPassword());
         Mockito.verify(registeredUserRepositoryMock, Mockito.times(1)).save(existingUser);
     }
 
     @Test
     public void update_ChangedUserType_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 0, UserType.MANAGER, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 0, UserType.MANAGER, "michael123");
         RegisteredUser existingUser = new RegisteredUser(1L, "Micha", "Boo", "michaboo@gmail.com",
                 "0645674444", null, UserType.SYSTEM_ADMIN, false, "michael123", "boo", new Role());
 
@@ -148,8 +148,8 @@ class RegisteredUserServiceTest {
 
     @Test
     public void update_UsernameAlreadyExist_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 0, UserType.MANAGER, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 0, UserType.MANAGER, "michael123");
         RegisteredUser existingUser = new RegisteredUser(1L, "Micha", "Boo", "michaboo@gmail.com",
                 "0645674444", null, UserType.MANAGER, false, "michael123", "boo", new Role());
         RegisteredUser existingUser2 = new RegisteredUser(3L, "Micha", "Boo", "michaboo@gmail.com",
@@ -165,8 +165,8 @@ class RegisteredUserServiceTest {
 
     @Test
     public void update_EmailAlreadyExist_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 0, UserType.MANAGER, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 0, UserType.MANAGER, "michael123");
         RegisteredUser existingUser = new RegisteredUser(1L, "Micha", "Boo", "michaboo@gmail.com",
                 "0645674444", null, UserType.MANAGER, false, "michael123", "boo", new Role());
         RegisteredUser existingUser2 = new RegisteredUser(3L, "Micha", "Boo", "michaellock@gmail.com",
@@ -182,8 +182,8 @@ class RegisteredUserServiceTest {
 
     @Test
     public void update_PhoneNumberAlreadyExist_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 0, UserType.MANAGER, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 0, UserType.MANAGER, "michael123");
         RegisteredUser existingUser = new RegisteredUser(1L, "Micha", "Boo", "michaboo@gmail.com",
                 "0645674444", null, UserType.MANAGER, false, "michael123", "boo", new Role());
         RegisteredUser existingUser2 = new RegisteredUser(3L, "Micha", "Boo", "michaellock2@gmail.com",

@@ -14,7 +14,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class ItemUpdateDTO extends ItemDTO {
-
     private ItemCategoryDTO itemCategory;
 
     @Positive(message = "Price has to be a positive value.")

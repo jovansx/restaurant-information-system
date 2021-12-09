@@ -1,8 +1,11 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
+import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserPasswordException;
 import akatsuki.restaurantsysteminformation.role.Role;
 import akatsuki.restaurantsysteminformation.role.RoleRepository;
 import akatsuki.restaurantsysteminformation.salary.Salary;
@@ -13,6 +16,7 @@ import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,7 +31,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     private final UserService userService;
     private final SalaryService salaryService;
     private final RoleRepository roleRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisteredUser getOne(long id) {
@@ -59,11 +63,14 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 registeredUserDTO.getUsername(),
                 registeredUserDTO.getPassword(), role);
 
+        String passwordHash = passwordEncoder.encode(user.getPassword());
+        user.setPassword(passwordHash);
+
         return registeredUserRepository.save(user);
     }
 
     @Override
-    public RegisteredUser update(RegisteredUserDTO registeredUserDTO, long id) {
+    public RegisteredUser update(RegisteredUserDetailsDTO registeredUserDTO, long id) {
         RegisteredUser user = getOne(id);
         validateUpdate(id, registeredUserDTO, user.getType());
 
@@ -79,8 +86,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             user.setSalary(salaries);
         }
 
-        user.setPassword(registeredUserDTO.getPassword());
-
         return registeredUserRepository.save(user);
     }
 
@@ -94,6 +99,19 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
+    public RegisteredUser changePassword(RegisteredUserChangePasswordDTO dto, long id) {
+        RegisteredUser foundUser = getOne(id);
+
+        String newPasswordHash = passwordEncoder.encode(dto.getNewPassword());
+        if (!passwordEncoder.matches(dto.getOldPassword(), foundUser.getPassword())) {
+            throw new RegisteredUserPasswordException("Old password " + dto.getOldPassword() + " not matches with recorded user password!");
+        }
+        foundUser.setPassword(newPasswordHash);
+        registeredUserRepository.save(foundUser);
+        return foundUser;
+    }
+
+    @Override
     public void deleteById(long id) {
         registeredUserRepository.deleteById(id);
     }
@@ -103,7 +121,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         registeredUserRepository.save(foundUser);
     }
 
-    private void validateUpdate(long id, RegisteredUserDTO registeredUser, UserType oldType) {
+    private void validateUpdate(long id, RegisteredUserDetailsDTO registeredUser, UserType oldType) {
         checkUserType(registeredUser.getType());
         if (!oldType.equals(registeredUser.getType())) {
             throw new UserTypeNotValidException("User type " + oldType.name().toLowerCase() + " cannot be changed to " + registeredUser.getType().name().toLowerCase() + ".");

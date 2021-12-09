@@ -6,18 +6,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class ItemCreateDTO extends ItemDTO {
-
-    @NotNull(message = "It cannot be null.")
-    @Size(min = 3, max = 30, message = "It has to be between 3 and 30 characters long.")
     private ItemCategoryDTO itemCategory;
 
     @Positive(message = "Price has to be a positive value.")

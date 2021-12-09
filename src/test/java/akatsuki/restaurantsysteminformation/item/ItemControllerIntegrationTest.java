@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryService;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
@@ -86,7 +85,7 @@ public class ItemControllerIntegrationTest {
     public void create_ValidDto_ObjectIsCreated() {
         int size = itemService.getAll().size();
 
-        ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Juices", CategoryType.DRINK), 400, "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, createDTO, String.class);
 
         Assertions.assertNotNull(res.getBody());
@@ -102,14 +101,14 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void create_CategoryDoesNotExist_ErrorNotFount() {
-        ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Chocolate", CategoryType.DISH), 400, "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Chocolate", ItemType.DISH), 400, "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, createDTO, String.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
     @Test
     public void create_InvalidName_ErrorNotFount() {
-        ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Chocolate", CategoryType.DISH), 400, null, "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Chocolate", ItemType.DISH), 400, null, "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, createDTO, String.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
@@ -118,7 +117,7 @@ public class ItemControllerIntegrationTest {
     public void update_ValidEntityAndIdFirst_SavedObject() {
         int size = itemService.getAll().size();
 
-        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", CategoryType.DRINK), 400, "c6d7d3c8-2273-4343-a6dc-87efe43867fa", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "c6d7d3c8-2273-4343-a6dc-87efe43867fa", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
                 new HttpEntity<>(updateDTO), String.class);
 
@@ -135,7 +134,7 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void update_ValidEntityAndIdSecond_SavedObject() {
-        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", CategoryType.DRINK), 400, "9a191868-228d-4dbb-819f-ca615d29fefe", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "9a191868-228d-4dbb-819f-ca615d29fefe", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX + "/5", HttpMethod.PUT,
                 new HttpEntity<>(updateDTO), String.class);
 
@@ -160,7 +159,7 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void update_CategoryDoesNotExist_ExceptionThrown() {
-        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Chocolate", CategoryType.DISH), 400, "9a191868-228d-4dbb-819f-ca615d29fefe", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Chocolate", ItemType.DISH), 400, "9a191868-228d-4dbb-819f-ca615d29fefe", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX + "/5", HttpMethod.PUT,
                 new HttpEntity<>(updateDTO), String.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
@@ -168,7 +167,7 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void update_NotOriginalItem_ExceptionThrown() {
-        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", CategoryType.DRINK), 400, "9a191868-228d-4dbb-819f-ca615d29fefe", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "9a191868-228d-4dbb-819f-ca615d29fefe", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX + "/6", HttpMethod.PUT,
                 new HttpEntity<>(updateDTO), String.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
@@ -176,7 +175,7 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void update_NotValidCode_ExceptionThrown() {
-        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", CategoryType.DRINK), 400, "9a191868-228d-4dbb-819f-ca615d29fddd", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
+        ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "9a191868-228d-4dbb-819f-ca615d29fddd", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX + "/5", HttpMethod.PUT,
                 new HttpEntity<>(updateDTO), String.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());

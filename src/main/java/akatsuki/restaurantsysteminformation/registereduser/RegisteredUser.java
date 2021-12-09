@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.role.Role;
 import akatsuki.restaurantsysteminformation.salary.Salary;
 import akatsuki.restaurantsysteminformation.user.User;
@@ -50,5 +51,11 @@ public class RegisteredUser extends User {
                 registeredUserDTO.getPhoneNumber(), Collections.singletonList(new Salary(LocalDateTime.now(), registeredUserDTO.getSalary())), registeredUserDTO.getType(), false);
         this.username = registeredUserDTO.getUsername();
         this.password = registeredUserDTO.getPassword();
+    }
+
+    public RegisteredUser(RegisteredUserDetailsDTO registeredUserDTO) {
+        super(registeredUserDTO.getFirstName(), registeredUserDTO.getLastName(), registeredUserDTO.getEmailAddress(),
+                registeredUserDTO.getPhoneNumber(), Collections.singletonList(new Salary(LocalDateTime.now(), registeredUserDTO.getSalary())), registeredUserDTO.getType(), false);
+        this.username = registeredUserDTO.getUsername();
     }
 }

@@ -35,7 +35,7 @@ class ItemCategoryServiceTest {
 
     @Test
     public void getOne_ValidId_ReturnedObject() {
-        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(itemCategory));
         ItemCategory foundItemCategory = itemCategoryService.getOne(1L);
@@ -51,7 +51,7 @@ class ItemCategoryServiceTest {
 
     @Test
     public void getByName_ValidItemCategoryName_ReturnedObject() {
-        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(existingItemCategory);
         ItemCategory foundItemCategory = itemCategoryService.getByName("Dessert");
         Assertions.assertEquals(foundItemCategory, existingItemCategory);
@@ -66,7 +66,7 @@ class ItemCategoryServiceTest {
 
     @Test
     void getAll_ItemCategoriesExist_ReturnedList() {
-        List<ItemCategory> list = Collections.singletonList(new ItemCategory("Dessert", CategoryType.DISH));
+        List<ItemCategory> list = Collections.singletonList(new ItemCategory(1L, ItemType.DISH, "Dessert"));
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(list);
 
         List<ItemCategory> foundList = itemCategoryService.getAll();
@@ -82,8 +82,8 @@ class ItemCategoryServiceTest {
 
     @Test
     public void create_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory("Soup", CategoryType.DISH));
+        ItemCategory itemCategory = new ItemCategory(1L, ItemType.DISH, "DESSERT");
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(2L, ItemType.DISH, "Soup"));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
@@ -95,8 +95,8 @@ class ItemCategoryServiceTest {
 
     @Test
     public void create_InvalidEntity_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Soup", CategoryType.DISH);
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory("Soup", CategoryType.DISH));
+        ItemCategory itemCategory = new ItemCategory(1L, ItemType.DISH, "SOUP");
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(2L, ItemType.DISH, "Soup"));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
@@ -106,8 +106,8 @@ class ItemCategoryServiceTest {
 
     @Test
     public void update_ValidEntityAndId_SavedObject() {
-        ItemCategory existingItemCategory = new ItemCategory("Chocolate desert", CategoryType.DISH);
-        ItemCategory itemCategory = new ItemCategory( "Dessert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Chocolate desert");
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "Dessert");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(null);
@@ -120,8 +120,8 @@ class ItemCategoryServiceTest {
 
     @Test
     public void update_EntityNameIsTheSame_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
-        ItemCategory itemCategory = new ItemCategory("DESSERT  ", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "DESSERT  ");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
 
@@ -130,9 +130,9 @@ class ItemCategoryServiceTest {
 
     @Test
     public void update_EntityNameAlreadyExist_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory("Barbeque", CategoryType.DISH);
-        ItemCategory itemCategory = new ItemCategory("DESSERT  ", CategoryType.DISH);
-        ItemCategory foundCategoryByName = new ItemCategory( "Dessert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Barbeque");
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "DESSERT  ");
+        ItemCategory foundCategoryByName = new ItemCategory(3L, ItemType.DISH, "Dessert");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(foundCategoryByName);
@@ -142,7 +142,7 @@ class ItemCategoryServiceTest {
 
     @Test
     public void delete_ValidId_SavedObject() {
-        ItemCategory existingItemCategory = new ItemCategory( "Chocolate desert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Chocolate desert");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
         Mockito.when(itemServiceMock.getAllActive()).thenReturn(new ArrayList<>());
@@ -154,7 +154,7 @@ class ItemCategoryServiceTest {
 
     @Test
     public void delete_ItemHasCategory_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
         List<Item> items = new ArrayList<>();
         items.add(new Item("Kinder", "Creamy", null, true, false, ItemType.DISH, null, existingItemCategory, null));
 
@@ -166,7 +166,7 @@ class ItemCategoryServiceTest {
 
     @Test
     public void save_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Chocolate desert", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory("Chocolate desert", ItemType.DISH);
         itemCategoryService.save(itemCategory);
         Mockito.verify(itemCategoryRepositoryMock, Mockito.times(1)).save(itemCategory);
     }

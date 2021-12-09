@@ -1,6 +1,8 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +20,11 @@ import java.util.List;
 public class RegisteredUserController {
     private final RegisteredUserService registeredUserService;
 
+    //TODO: verovatno pada test jer sam promenio tip povratne vrednosti
     @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/{id}")
-    public RegisteredUser getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return registeredUserService.getOne(id);
+    public RegisteredUserDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new RegisteredUserDetailsDTO(registeredUserService.getOne(id));
     }
 
     //    TODO Vidi da li se koristi
@@ -39,17 +42,22 @@ public class RegisteredUserController {
 
     @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PutMapping("/{id}")
-    public void update(@RequestBody @Valid RegisteredUserDTO registeredUserDTO,
+    public void update(@RequestBody @Valid RegisteredUserDetailsDTO registeredUserDTO,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.update(registeredUserDTO, id);
     }
 
     //    TODO ovo ne vidim da se koristi, sto je cudno
     @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    //TODO: naknadno dodato
+    @PutMapping("/change-password/{id}")
+    public void changePassword(@RequestBody @Valid RegisteredUserChangePasswordDTO registeredUserDTO,
+                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        registeredUserService.changePassword(registeredUserDTO, id);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.delete(id);
     }
-
-//    TODO fali oanj change-password
 }
