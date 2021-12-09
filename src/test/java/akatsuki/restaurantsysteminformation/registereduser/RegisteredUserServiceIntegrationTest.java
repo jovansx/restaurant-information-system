@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
 import akatsuki.restaurantsysteminformation.role.Role;
 import akatsuki.restaurantsysteminformation.salary.Salary;
@@ -64,37 +65,37 @@ class RegisteredUserServiceIntegrationTest {
 
     @Test
     public void update_ValidEntityAndId_SavedObject() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 1300, UserType.SYSTEM_ADMIN, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 1300, UserType.SYSTEM_ADMIN, "michael123");
         RegisteredUser updatedUser = registeredUserService.update(user, 11L);
         Assertions.assertNotNull(updatedUser);
     }
 
     @Test
     public void update_ChangedUserType_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0645678822", 0, UserType.MANAGER, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0645678822", 0, UserType.MANAGER, "michael123");
         Assertions.assertThrows(UserTypeNotValidException.class, () -> registeredUserService.update(user, 10L));
     }
 
     @Test
     public void update_UsernameAlreadyExist_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "bradpitt@gmail.com",
-                "0645678822", 0, UserType.SYSTEM_ADMIN, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "bradpitt@gmail.com",
+                "0645678822", 0, UserType.SYSTEM_ADMIN, "michael123");
         Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
     }
 
     @Test
     public void update_EmailAlreadyExist_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "calikikoki@gmail.com",
-                "0645678822", 0, UserType.SYSTEM_ADMIN, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "calikikoki@gmail.com",
+                "0645678822", 0, UserType.SYSTEM_ADMIN, "michael123");
         Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
     }
 
     @Test
     public void update_PhoneNumberAlreadyExist_ExceptionThrown() {
-        RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
-                "0611111114", 0, UserType.SYSTEM_ADMIN, "michael123", "lock");
+        RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
+                "0611111114", 0, UserType.SYSTEM_ADMIN, "michael123");
         Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
     }
 

@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.registereduser;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserPasswordException;
 import akatsuki.restaurantsysteminformation.role.Role;
@@ -69,7 +70,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public RegisteredUser update(RegisteredUserDTO registeredUserDTO, long id) {
+    public RegisteredUser update(RegisteredUserDetailsDTO registeredUserDTO, long id) {
         RegisteredUser user = getOne(id);
         validateUpdate(id, registeredUserDTO, user.getType());
 
@@ -84,8 +85,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             salaries.add(salary);
             user.setSalary(salaries);
         }
-
-        user.setPassword(registeredUserDTO.getPassword());
 
         return registeredUserRepository.save(user);
     }
@@ -122,7 +121,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         registeredUserRepository.save(foundUser);
     }
 
-    private void validateUpdate(long id, RegisteredUserDTO registeredUser, UserType oldType) {
+    private void validateUpdate(long id, RegisteredUserDetailsDTO registeredUser, UserType oldType) {
         checkUserType(registeredUser.getType());
         if (!oldType.equals(registeredUser.getType())) {
             throw new UserTypeNotValidException("User type " + oldType.name().toLowerCase() + " cannot be changed to " + registeredUser.getType().name().toLowerCase() + ".");

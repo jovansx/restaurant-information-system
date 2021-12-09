@@ -44,7 +44,7 @@ public class RegisteredUserController {
     @PutMapping("/{id}")
     public void update(@RequestBody @Valid RegisteredUserDetailsDTO registeredUserDTO,
                        @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        registeredUserService.update(new RegisteredUser(registeredUserDTO), id);
+        registeredUserService.update(registeredUserDTO, id);
     }
 
     //    TODO ovo ne vidim da se koristi, sto je cudno
