@@ -177,13 +177,19 @@ values (1, 5),
        (1, 8),
        (1, 9);
 
-insert into restaurant_table (is_deleted, name, shape, state, order_id)
-values (false, 'T1', 0, 1, 1),
-       (false, 'T2', 0, 0, null);
+insert into restaurant_table (is_deleted, name, shape, state, order_id, rows, columns)
+values (false, 'T1', 0, 1, 1, 0, 0),
+       (false, 'T2', 0, 0, null, 1, 1),
+       (false, 'T3', 0, 0, null, 1, 1),
+       (false, 'T4', 0, 0, null, 1, 1);
 
-insert into room (is_deleted, name)
-values (false, 'Room 1'),
-       (false, 'Room 2');
+insert into room (is_deleted, name, rows, columns)
+values (false, 'Room 1', 4, 4),
+       (false, 'Room 2', 2, 2),
+       (false, 'Room 7', 2, 2);
 
 insert into room_restaurant_tables (room_id, restaurant_tables_id)
-values (1, 1);
+values (1, 1),
+       (1, 2),
+       (3, 3),
+       (1, 4);

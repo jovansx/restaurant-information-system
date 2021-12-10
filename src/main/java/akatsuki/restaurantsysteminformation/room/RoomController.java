@@ -56,10 +56,10 @@ public class RoomController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/{id}")
-    public void update(@RequestBody @Valid RoomTablesUpdateDTO updateRoomDTO,
-                       @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
-        roomService.updateByRoomDTO(updateRoomDTO, id);
+    @PutMapping("/{id}/tables")
+    public void updateRoomTables(@RequestBody @Valid RoomTablesUpdateDTO updateRoomDTO,
+                                 @Positive(message = "Id has to be a positive value.") @PathVariable long id) {
+        roomService.updateTables(updateRoomDTO, id);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

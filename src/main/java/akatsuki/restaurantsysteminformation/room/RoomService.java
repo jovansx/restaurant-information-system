@@ -12,15 +12,13 @@ public interface RoomService {
 
     Room create(Room room);
 
-    Room update(Room room, long id);
+    Room updateName(String newName, long id);
 
-    void updateName(String newName, long id);
+    Room updateLayout(RoomLayoutDTO layoutDTO, long id);
 
-    void updateLayout(RoomLayoutDTO layoutDTO, long id);
+    Room updateTables(RoomTablesUpdateDTO roomDTO, long id);
 
     Room delete(long id);
-
-    Room updateByRoomDTO(RoomTablesUpdateDTO roomDTO, long id);
 
     void save(Room room);
 }

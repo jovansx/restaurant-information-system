@@ -64,6 +64,8 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
 
         table.setName(restaurantTable.getName());
         table.setShape(restaurantTable.getShape());
+        table.setColumn(restaurantTable.getColumn());
+        table.setRow(restaurantTable.getRow());
 
         return restaurantTableRepository.save(table);
     }
