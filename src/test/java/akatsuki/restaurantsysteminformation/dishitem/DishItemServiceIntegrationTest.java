@@ -56,33 +56,33 @@ class DishItemServiceIntegrationTest {
         Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.create(dishItemCreateDTO));
     }
 
-    @Test
-    public void update_ValidDtoAndId_ChangedObject() {
-        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 7, "New note.", 1L);
-        DishItem dishItem = dishItemService.update(dto, 1L);
+//    @Test
+//    public void update_ValidDtoAndId_ChangedObject() {
+//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 7, "New note.", 1L);
+//        DishItem dishItem = dishItemService.update(dto, 1L);
+//
+//        Assertions.assertEquals(dishItem.getAmount(), 7);
+//        Assertions.assertEquals(dishItem.getItem().getId(), 4L);
+//        Assertions.assertEquals(dishItem.getNotes(), "New note.");
+//    }
 
-        Assertions.assertEquals(dishItem.getAmount(), 7);
-        Assertions.assertEquals(dishItem.getItem().getId(), 4L);
-        Assertions.assertEquals(dishItem.getNotes(), "New note.");
-    }
-
-    @Test
-    public void update_InvalidItemType_ExceptionThrown() {
-        DishItemCreateDTO dto = new DishItemCreateDTO(1L, 10, "New note.", 1L);
-        Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.update(dto, 1L));
-    }
-
-    @Test
-    public void update_InvalidDishItem_ExceptionThrown() {
-        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 10, "New note.", 2L);
-        Assertions.assertThrows(DishItemOrderException.class, () -> dishItemService.update(dto, 1L));
-    }
-
-    @Test
-    public void update_InvalidItemState_ExceptionThrown() {
-        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 10, "New note.", 1L);
-        Assertions.assertThrows(DishItemInvalidStateException.class, () -> dishItemService.update(dto, 2L));
-    }
+//    @Test
+//    public void update_InvalidItemType_ExceptionThrown() {
+//        DishItemCreateDTO dto = new DishItemCreateDTO(1L, 10, "New note.", 1L);
+//        Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.update(dto, 1L));
+//    }
+//
+//    @Test
+//    public void update_InvalidDishItem_ExceptionThrown() {
+//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 10, "New note.", 2L);
+//        Assertions.assertThrows(DishItemOrderException.class, () -> dishItemService.update(dto, 1L));
+//    }
+//
+//    @Test
+//    public void update_InvalidItemState_ExceptionThrown() {
+//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 10, "New note.", 1L);
+//        Assertions.assertThrows(DishItemInvalidStateException.class, () -> dishItemService.update(dto, 2L));
+//    }
 
     @Test
     void changeStateOfDishItem_FromOnHoldToPreparation_ChangedState() {

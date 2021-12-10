@@ -2,9 +2,7 @@ package akatsuki.restaurantsysteminformation.drinkitems.dto;
 
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemUpdateDTO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -13,10 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class DrinkItemsCreateDTO {
-
+public class DrinkItemsUpdateDTO {
     @NotNull(message = "It cannot be null.")
     @Positive(message = "Id has to be a positive value.")
     private int orderId;

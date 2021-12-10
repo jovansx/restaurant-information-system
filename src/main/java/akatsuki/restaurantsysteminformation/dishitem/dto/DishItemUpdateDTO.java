@@ -8,11 +8,10 @@ import javax.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
-public class DishItemCreateDTO {
-
+public class DishItemUpdateDTO {
     @NotNull(message = "It cannot be null.")
     @Positive(message = "Id has to be a positive value.")
-    private long itemId;
+    private long id;
 
     @NotNull(message = "It cannot be null.")
     @Positive(message = "Id has to be a positive value.")

@@ -14,11 +14,11 @@ public class DrinkItemServiceIntegrationTest {
     @Autowired
     DrinkItemServiceImpl drinkItemService;
 
-    @Test
-    public void create_ValidObject_SavedObject() {
-        DrinkItem drinkItem = drinkItemService.create(new DrinkItem());
-        Assertions.assertNotNull(drinkItem);
-    }
+//    @Test
+//    public void create_ValidObject_SavedObject() {
+//        DrinkItem drinkItem = drinkItemService.create(new DrinkItem());
+//        Assertions.assertNotNull(drinkItem);
+//    }
 
     @Test
     public void delete_ValidObject_SavedObject() {

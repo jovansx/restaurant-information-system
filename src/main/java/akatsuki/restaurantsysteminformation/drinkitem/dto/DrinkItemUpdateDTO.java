@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DrinkItemCreateDTO {
+public class DrinkItemUpdateDTO {
     private int amount;
     private long itemId;
+    private long id;
+    private int status;
 }

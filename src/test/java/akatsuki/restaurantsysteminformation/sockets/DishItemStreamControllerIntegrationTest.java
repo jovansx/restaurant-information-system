@@ -105,26 +105,26 @@ public class DishItemStreamControllerIntegrationTest {
         assertFalse(returnDTO.isSuccessfullyFinished());
     }
 
-    @Test
-    public void update_Valid_UpdatedObject() throws Exception {
-
-        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
-
-        session.send("/app/dish-item/update/1", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertTrue(returnDTO.isSuccessfullyFinished());
-        assertEquals("Dish item with 1 is successfully updated!", returnDTO.getMessage());
-
-        dto = new DishItemCreateDTO(4L, 1, null, 1L);
-        dishItemService.update(dto, 1);
-
-        Order order = orderService.getOneWithAll(1L);
-        order.setTotalPrice(8);
-        orderService.save(order);
-    }
+//    @Test
+//    public void update_Valid_UpdatedObject() throws Exception {
+//
+//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
+//
+//        session.send("/app/dish-item/update/1", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertTrue(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Dish item with 1 is successfully updated!", returnDTO.getMessage());
+//
+//        dto = new DishItemCreateDTO(4L, 1, null, 1L);
+//        dishItemService.update(dto, 1);
+//
+//        Order order = orderService.getOneWithAll(1L);
+//        order.setTotalPrice(8);
+//        orderService.save(order);
+//    }
 
     @Test
     public void update_OrderNotContainingItem_ExceptionThrown() throws Exception {

@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsActionRequestDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsUpdateDTO;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -31,15 +32,19 @@ public class DrinkItemsStreamController {
     @SendTo("/topic/drink-items")
     public SocketResponseDTO create(@RequestBody @Valid DrinkItemsCreateDTO drinkItemsDTO) {
         drinkItemsService.create(drinkItemsDTO);
-        return new SocketResponseDTO(true, "Drink items are successfully created!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items are successfully created!");
+        this.template.convertAndSend("/topic/order", socketResponseDTO);
+        return socketResponseDTO;
     }
 
     @MessageMapping({"/drink-items/update/{id}"})
     @SendTo("/topic/drink-items")
-    public SocketResponseDTO update(@RequestBody DrinkItemsCreateDTO drinkItemsDTO,
+    public SocketResponseDTO update(@RequestBody DrinkItemsUpdateDTO drinkItemsDTO,
                                     @DestinationVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         drinkItemsService.update(drinkItemsDTO, id);
-        return new SocketResponseDTO(true, "Drink items with " + id + " are successfully updated!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items with " + id + " are successfully updated!");
+        this.template.convertAndSend("/topic/order", socketResponseDTO);
+        return socketResponseDTO;
     }
 
     @MessageMapping({"/drink-items/change-state"})
