@@ -1,9 +1,6 @@
 package akatsuki.restaurantsysteminformation.item;
 
-import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
+import akatsuki.restaurantsysteminformation.item.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +20,11 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
 
+    @GetMapping("/not-active/{id}")
+    public ItemDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new ItemDetailsDTO(itemService.getOne(id));
+    }
+
     //    TODO NE KORISTI SE KOD MENE
     @GetMapping("/{id}")
     public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
@@ -33,6 +35,11 @@ public class ItemController {
     @GetMapping
     public List<ItemDetailsDTO> getAllActive() {
         return itemService.getAllActive().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/menu")
+    public List<ItemBasicInfoDTO> getAllForMenuInsight() {
+        return itemService.getAllForMenuInsight().stream().map(ItemBasicInfoDTO::new).collect(Collectors.toList());
     }
 
     //    TODO Ovo koristi jelena

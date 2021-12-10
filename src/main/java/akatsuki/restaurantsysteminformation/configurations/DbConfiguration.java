@@ -140,9 +140,10 @@ public class DbConfiguration {
             Price p5 = new Price(LocalDateTime.of(2021, 5, 2, 0, 0, 0), 150);
             Price p6 = new Price(LocalDateTime.of(2020, 4, 3, 1, 10, 30), 100);
             Price p7 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
-            Price p8 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
-            Price p9 = new Price(LocalDateTime.of(2019, 4, 3, 1, 10, 30), 100);
-
+            Price p8 = new Price(LocalDateTime.of(2021, 4, 3, 1, 10, 30), 100);
+            Price p9 = new Price(LocalDateTime.of(2021, 5, 3, 1, 10, 30), 250);
+            Price p10 = new Price(LocalDateTime.of(2021, 8, 3, 1, 10, 30), 300);
+            Price p11 = new Price(LocalDateTime.of(2021, 9, 3, 1, 10, 30), 400);
             priceRepository.save(p1);
             priceRepository.save(p2);
             priceRepository.save(p3);
@@ -152,11 +153,13 @@ public class DbConfiguration {
             priceRepository.save(p7);
             priceRepository.save(p8);
             priceRepository.save(p9);
+            priceRepository.save(p10);
+            priceRepository.save(p11);
 //            ItemCategory
-            ItemCategory ic1 = new ItemCategory("Juices", CategoryType.DRINK);
-            ItemCategory ic2 = new ItemCategory("Cocktails", CategoryType.DRINK);
-            ItemCategory ic3 = new ItemCategory("Sandwich", CategoryType.DISH);
-            ItemCategory ic4 = new ItemCategory("Meat", CategoryType.DISH);
+            ItemCategory ic1 = new ItemCategory("Juices", ItemType.DRINK);
+            ItemCategory ic2 = new ItemCategory("Cocktails", ItemType.DRINK);
+            ItemCategory ic3 = new ItemCategory("Sandwich", ItemType.DISH);
+            ItemCategory ic4 = new ItemCategory("Meat", ItemType.DISH);
             itemCategoryRepository.save(ic1);
             itemCategoryRepository.save(ic2);
             itemCategoryRepository.save(ic3);
@@ -174,15 +177,20 @@ public class DbConfiguration {
             itemRepository.save(juice2);
             Item cocktail1 = new Item("Sex on the beach", "Very good cocktail!", sexOnTheBeachImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Potato", "Sugar", "Vodka"), ic2, Collections.singletonList(p4));
             itemRepository.save(cocktail1);
-            Item juice3 = new Item("Strawberry juice", "Very good strawberry juice!", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Strawberry", "Sugar"), ic1, Collections.singletonList(p8));
+            Item juice3 = new Item("Strawberry juice", "Very good strawberry juice!", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Strawberry", "Sugar"), ic1, Collections.singletonList(p10));
             itemRepository.save(juice3);
-            Item coffee1 = new Item("Coffee", "Black coffee", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Coffee", "Sugar", "Milk"), ic1, Collections.singletonList(p9));
+            Item coffee1 = new Item("Coffee", "Black coffee", orangeJuiceImage.getBytes(), true, false, ItemType.DRINK, Arrays.asList("Coffee", "Sugar", "Milk"), ic1, Collections.singletonList(p11));
             itemRepository.save(coffee1);
-
             Item sandwich1 = new Item("Chicken sandwich", "Very good chicken sandwich!", chickenSandwichImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Tomato", "Bread"), ic3, Arrays.asList(p5, p6));
             itemRepository.save(sandwich1);
             Item chickenBreast = new Item("Chicken breast", "Very good chicken breast!", chickenBreastImage.getBytes(), true, false, ItemType.DISH, Arrays.asList("Chicken", "Potato"), ic4, Collections.singletonList(p7));
             itemRepository.save(chickenBreast);
+            Item cocktail2 = new Item("Sex on the beachhhh", "Very good cocktail!!!!", sexOnTheBeachImage.getBytes(), false, false, ItemType.DRINK, Arrays.asList("Potato", "Sugar", "Vodka", "Lemon"), ic2, Collections.singletonList(p8));
+            cocktail2.setCode(cocktail1.getCode());
+            itemRepository.save(cocktail2);
+            Item sandwich2 = new Item("Chicken sandwich", "Very good chicken sandwich!", chickenSandwichImage.getBytes(), false, true, ItemType.DISH, Arrays.asList("Chicken", "Tomato", "Bread"), ic3, Collections.singletonList(p9));
+            sandwich2.setCode(sandwich1.getCode());
+            itemRepository.save(sandwich2);
 //          DishItem
             DishItem dishItem1 = new DishItem(null, LocalDateTime.now(), false, ItemState.ON_HOLD, 1, null, sandwich1, true);
             dishItemRepository.save(dishItem1);

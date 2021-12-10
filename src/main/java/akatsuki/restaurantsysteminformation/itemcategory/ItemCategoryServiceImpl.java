@@ -42,6 +42,7 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
                 throw new ItemCategoryNameException("Similar category is recorded with required name " + formattedName + ".");
         });
         category.setName(formattedName);
+        category.setType(category.getType());
         itemCategoryRepository.save(category);
         return category;
     }
@@ -62,7 +63,7 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     @Override
     public ItemCategory delete(long id) {
         ItemCategory category = getOne(id);
-        List<Item> items = itemService.getAllActive();
+        List<Item> items = itemService.getAllWithAll();
         items.forEach(item -> {
             if (item.getItemCategory().getId().equals(id))
                 throw new ItemCategoryDeleteException("Item category with the id " + id + " is contained by other items. It cannot be deleted.");

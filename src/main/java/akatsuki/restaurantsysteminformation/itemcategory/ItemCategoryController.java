@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,16 @@ public class ItemCategoryController {
     @GetMapping
     public List<ItemCategoryDTO> getAll() {
         return itemCategoryService.getAll().stream().map(ItemCategoryDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/drink")
+    public List<ItemCategory> getAllDrinkCategories() {
+        return itemCategoryService.getAll().stream().filter(i -> i.getType().equals(ItemType.DRINK)).collect(Collectors.toList());
+    }
+
+    @GetMapping("/dish")
+    public List<ItemCategory> getAllDishCategories() {
+        return itemCategoryService.getAll().stream().filter(i -> i.getType().equals(ItemType.DISH)).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
