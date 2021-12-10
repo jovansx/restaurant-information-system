@@ -4,6 +4,7 @@ import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserCha
 
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
+import akatsuki.restaurantsysteminformation.user.User;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ public interface RegisteredUserService {
     RegisteredUser getOne(long id);
 
     List<RegisteredUser> getAll();
+
+    List<User> getAllSystemAdmins();
 
     RegisteredUser create(RegisteredUserDTO registeredUserDTO);
 

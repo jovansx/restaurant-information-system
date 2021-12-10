@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
-import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemServiceImpl;
