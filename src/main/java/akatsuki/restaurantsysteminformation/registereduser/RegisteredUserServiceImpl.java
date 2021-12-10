@@ -46,6 +46,11 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
+    public List<User> getAllSystemAdmins() {
+        return registeredUserRepository.findAllSystemAdmins();
+    }
+
+    @Override
     public RegisteredUser create(RegisteredUserDTO registeredUserDTO) {
         checkUsernameExistence(registeredUserDTO.getUsername());
         userService.checkEmailExistence(registeredUserDTO.getEmailAddress());
