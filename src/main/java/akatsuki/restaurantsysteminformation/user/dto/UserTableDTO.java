@@ -19,14 +19,14 @@ public class UserTableDTO {
         this.id = user.getId();
         this.name = user.getName();
         this.phoneNumber = user.getPhoneNumber();
-        setType(user.getType());
+        configureType(user.getType());
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(UserType type) {
+    public void configureType(UserType type) {
         this.type = type.name().toLowerCase();
     }
 }
