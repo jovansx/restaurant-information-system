@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsActionRequestDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
@@ -50,7 +49,7 @@ public class DrinkItemsStreamController {
     @MessageMapping({"/drink-items/change-state"})
     @SendTo("/topic/drink-items")
     public SocketResponseDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
-        DrinkItems drinkItems = drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
+        drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
         SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items state is successfully changed!");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;

@@ -10,7 +10,6 @@ import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemServiceImpl;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderServiceImpl;
@@ -81,7 +80,7 @@ class DishItemServiceTest {
         DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", CategoryType.DISH), new ArrayList<>());
+                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
@@ -98,7 +97,7 @@ class DishItemServiceTest {
         DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
         Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
         Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert", CategoryType.DISH), new ArrayList<>());
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
 
         Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
         Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);

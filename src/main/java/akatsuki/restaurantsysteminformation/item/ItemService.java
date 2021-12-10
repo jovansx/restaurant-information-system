@@ -11,6 +11,10 @@ public interface ItemService {
 
     List<Item> getAllActive();
 
+    List<Item> getAllWithAll();
+
+    List<Item> getAllForMenuInsight();
+
     List<Item> getAll();
 
     List<Item> getAllActiveByCategory(String category);

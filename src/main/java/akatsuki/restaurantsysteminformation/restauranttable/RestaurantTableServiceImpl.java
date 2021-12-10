@@ -64,6 +64,8 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
 
         table.setName(restaurantTable.getName());
         table.setShape(restaurantTable.getShape());
+        table.setColumn(restaurantTable.getColumn());
+        table.setRow(restaurantTable.getRow());
 
         return restaurantTableRepository.save(table);
     }
@@ -74,7 +76,7 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
                 () -> new RestaurantTableNotFoundException("Restaurant table with order id " + order.getId() + " is not found in the database."));
         table.setState(state);
 
-        if(state.equals(TableState.FREE))
+        if (state.equals(TableState.FREE))
             table.setActiveOrder(null);
 
         restaurantTableRepository.save(table);
