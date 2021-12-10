@@ -60,7 +60,9 @@ public class DrinkItemsStreamController {
     @SendTo("/topic/drink-items")
     public SocketResponseDTO delete(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         drinkItemsService.delete(id);
-        return new SocketResponseDTO(true, "Drink items with " + id + " are successfully deleted!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items with " + id + " are successfully deleted!");
+        this.template.convertAndSend("/topic/order", socketResponseDTO);
+        return socketResponseDTO;
     }
 
     @MessageExceptionHandler
