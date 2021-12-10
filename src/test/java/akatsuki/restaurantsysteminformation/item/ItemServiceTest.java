@@ -3,7 +3,7 @@ package akatsuki.restaurantsysteminformation.item;
 import akatsuki.restaurantsysteminformation.item.exception.ItemAlreadyDeletedException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemCodeNotValidException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryService;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;

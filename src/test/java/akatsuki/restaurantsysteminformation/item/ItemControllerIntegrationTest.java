@@ -5,7 +5,7 @@ import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
 import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryService;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;

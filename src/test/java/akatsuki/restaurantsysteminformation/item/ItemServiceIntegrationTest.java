@@ -4,7 +4,7 @@ import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.item.exception.ItemAlreadyDeletedException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemCodeNotValidException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
 import akatsuki.restaurantsysteminformation.price.Price;

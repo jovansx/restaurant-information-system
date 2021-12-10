@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

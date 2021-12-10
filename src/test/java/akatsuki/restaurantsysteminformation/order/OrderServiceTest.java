@@ -9,7 +9,7 @@ import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemService;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;

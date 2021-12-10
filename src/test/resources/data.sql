@@ -59,12 +59,12 @@ values (1, 1),
        (11, 11),
        (11, 12);
 
-insert into item_category (name)
-values ('Juices'),
-       ('Cocktails'),
-       ('Sandwich'),
-       ('Meat'),
-       ('Soup');
+insert into item_category (name, type)
+values ('Juices', 0),
+       ('Cocktails', 0),
+       ('Sandwich', 1),
+       ('Meat', 1),
+       ('Soup', 1);
 
 insert into item (code, description, icon_base_64, name, original, type, item_category_id, deleted)
 values ('c6d7d3c8-2273-4343-a6dc-87efe43867fa', 'Very good apple juice!', null, 'Apple juice', true, 1, 1, false),
@@ -177,13 +177,19 @@ values (1, 5),
        (1, 8),
        (1, 9);
 
-insert into restaurant_table (is_deleted, name, shape, state, order_id)
-values (false, 'T1', 0, 1, 1),
-       (false, 'T2', 0, 0, null);
+insert into restaurant_table (is_deleted, name, shape, state, order_id, rows, columns)
+values (false, 'T1', 0, 1, 1, 0, 0),
+       (false, 'T2', 0, 0, null, 1, 1),
+       (false, 'T3', 0, 0, null, 1, 1),
+       (false, 'T4', 0, 0, null, 1, 1);
 
-insert into room (is_deleted, name)
-values (false, 'Room 1'),
-       (false, 'Room 2');
+insert into room (is_deleted, name, rows, columns)
+values (false, 'Room 1', 4, 4),
+       (false, 'Room 2', 2, 2),
+       (false, 'Room 7', 2, 2);
 
 insert into room_restaurant_tables (room_id, restaurant_tables_id)
-values (1, 1);
+values (1, 1),
+       (1, 2),
+       (3, 3),
+       (1, 4);

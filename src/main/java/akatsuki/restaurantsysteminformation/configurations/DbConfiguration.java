@@ -9,7 +9,6 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsRepository;
 import akatsuki.restaurantsysteminformation.enums.*;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.item.ItemRepository;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryRepository;
 import akatsuki.restaurantsysteminformation.order.Order;

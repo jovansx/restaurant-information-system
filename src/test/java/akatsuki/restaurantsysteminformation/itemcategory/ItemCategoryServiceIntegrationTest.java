@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryDeleteException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNameException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;

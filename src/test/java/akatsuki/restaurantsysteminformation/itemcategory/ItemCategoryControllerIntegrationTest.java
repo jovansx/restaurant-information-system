@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import akatsuki.restaurantsysteminformation.enums.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
