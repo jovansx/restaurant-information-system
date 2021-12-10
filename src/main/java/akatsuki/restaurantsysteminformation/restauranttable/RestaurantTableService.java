@@ -16,7 +16,7 @@ public interface RestaurantTableService {
 
     RestaurantTable update(RestaurantTable table, long id, long roomId);
 
-    void changeStateOfTableWithOrder(Order order, TableState state);
+    RestaurantTable changeStateOfTableWithOrder(Order order, TableState state);
 
     RestaurantTable delete(long id);
 
@@ -26,5 +26,5 @@ public interface RestaurantTableService {
 
     RestaurantTable getOneByNameWithOrder(String name);
 
-    void setOrderToTable(Long tableId, Order order);
+    RestaurantTable setOrderToTable(Long tableId, Order order);
 }
