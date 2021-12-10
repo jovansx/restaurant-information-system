@@ -51,50 +51,9 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public RestaurantTable create(RestaurantTable restaurantTable, long roomId) {
-        checkNameExistence(restaurantTable.getName(), -1, roomId);
-        return restaurantTableRepository.save(restaurantTable);
-    }
-
-    @Override
-    public RestaurantTable update(RestaurantTable restaurantTable, long id, long roomId) {
-        RestaurantTable table = getOne(id);
-
-        checkNameExistence(restaurantTable.getName(), id, roomId);
-
-        table.setName(restaurantTable.getName());
-        table.setShape(restaurantTable.getShape());
-        table.setColumn(restaurantTable.getColumn());
-        table.setRow(restaurantTable.getRow());
-
-        return restaurantTableRepository.save(table);
-    }
-
-    @Override
-    public void changeStateOfTableWithOrder(Order order, TableState state) {
-        RestaurantTable table = restaurantTableRepository.findByActiveOrder(order).orElseThrow(
-                () -> new RestaurantTableNotFoundException("Restaurant table with order id " + order.getId() + " is not found in the database."));
-        table.setState(state);
-
-        if (state.equals(TableState.FREE))
-            table.setActiveOrder(null);
-
-        restaurantTableRepository.save(table);
-    }
-
-    @Override
-    public void setOrderToTable(Long tableId, Order order) {
-        RestaurantTable table = getOne(tableId);
-        table.setActiveOrder(order);
-        table.setState(TableState.TAKEN);
-        restaurantTableRepository.save(table);
-    }
-
-    @Override
-    public RestaurantTable delete(long id) {
-        RestaurantTable table = getOne(id);
-        table.setDeleted(true);
-        return restaurantTableRepository.save(table);
+    public Long getOrderByTableName(String name) {
+        RestaurantTable table = getOneByNameWithOrder(name);
+        return table.getActiveOrder() == null ? null : table.getActiveOrder().getId();
     }
 
     @Override
@@ -106,9 +65,49 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public Long getOrderByTableName(String name) {
-        RestaurantTable table = getOneByNameWithOrder(name);
-        return table.getActiveOrder() == null ? null : table.getActiveOrder().getId();
+    public RestaurantTable create(RestaurantTable restaurantTable, long roomId) {
+        checkNameExistence(restaurantTable.getName(), -1, roomId);
+        return restaurantTableRepository.save(restaurantTable);
+    }
+
+    @Override
+    public RestaurantTable update(RestaurantTable restaurantTable, long id, long roomId) {
+        RestaurantTable table = getOne(id);
+        checkNameExistence(restaurantTable.getName(), id, roomId);
+
+        table.setName(restaurantTable.getName());
+        table.setShape(restaurantTable.getShape());
+        table.setColumn(restaurantTable.getColumn());
+        table.setRow(restaurantTable.getRow());
+
+        return restaurantTableRepository.save(table);
+    }
+
+    @Override
+    public RestaurantTable changeStateOfTableWithOrder(Order order, TableState state) {
+        RestaurantTable table = restaurantTableRepository.findByActiveOrder(order).orElseThrow(
+                () -> new RestaurantTableNotFoundException("Restaurant table with order id " + order.getId() + " is not found in the database."));
+        table.setState(state);
+
+        if (state.equals(TableState.FREE))
+            table.setActiveOrder(null);
+
+        return restaurantTableRepository.save(table);
+    }
+
+    @Override
+    public RestaurantTable setOrderToTable(Long tableId, Order order) {
+        RestaurantTable table = getOne(tableId);
+        table.setActiveOrder(order);
+        table.setState(TableState.TAKEN);
+        return restaurantTableRepository.save(table);
+    }
+
+    @Override
+    public RestaurantTable delete(long id) {
+        RestaurantTable table = getOne(id);
+        table.setDeleted(true);
+        return restaurantTableRepository.save(table);
     }
 
     private RestaurantTable getTableByNameIfHeIsContainedInRoom(String name, long roomId) {
