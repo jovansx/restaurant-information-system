@@ -60,11 +60,11 @@ values (1, 1),
        (11, 12);
 
 insert into item_category (name, type)
-values ('Juices', 0),
-       ('Cocktails', 0),
-       ('Sandwich', 1),
-       ('Meat', 1),
-       ('Soup', 1);
+values ('Juices', 1),
+       ('Cocktails', 1),
+       ('Sandwich', 0),
+       ('Meat', 0),
+       ('Soup', 0);
 
 insert into item (code, description, icon_base_64, name, original, type, item_category_id, deleted)
 values ('c6d7d3c8-2273-4343-a6dc-87efe43867fa', 'Very good apple juice!', null, 'Apple juice', true, 1, 1, false),
