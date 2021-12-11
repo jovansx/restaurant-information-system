@@ -75,35 +75,35 @@ class DishItemServiceTest {
         Assertions.assertEquals(foundList, list);
     }
 
-    @Test
-    public void create_ValidDto_SavedObject() {
-        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
-        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
-        Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
+//    @Test
+//    public void create_ValidDto_SavedObject() {
+//        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
+//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
+//        Item item = new Item("Chocolate", "Creamy",
+//                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
+//
+//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
+//
+//        dishItemService.create(dishItemCreateDTO);
+//
+//        Assertions.assertEquals(order.getDishes().size(), 1);
+//        Mockito.verify(dishItemRepositoryMock, Mockito.times(1)).save(Mockito.any(DishItem.class));
+//        Mockito.verify(orderServiceMock, Mockito.times(1)).updateTotalPriceAndSave(order);
+//    }
 
-        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-
-        dishItemService.create(dishItemCreateDTO);
-
-        Assertions.assertEquals(order.getDishes().size(), 1);
-        Mockito.verify(dishItemRepositoryMock, Mockito.times(1)).save(Mockito.any(DishItem.class));
-        Mockito.verify(orderServiceMock, Mockito.times(1)).updateTotalPriceAndSave(order);
-    }
-
-    @Test
-    public void create_InvalidItemType_ExceptionThrown() {
-        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
-        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
-        Item item = new Item("Chocolate", "Creamy",
-                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
-
-        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-
-        Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.create(dishItemCreateDTO));
-    }
+//    @Test
+//    public void create_InvalidItemType_ExceptionThrown() {
+//        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
+//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
+//        Item item = new Item("Chocolate", "Creamy",
+//                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("dessert", ItemType.DISH), new ArrayList<>());
+//
+//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
+//
+//        Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.create(dishItemCreateDTO));
+//    }
 
 //    @Test
 //    public void update_ValidDtoAndId_ChangedObject() {

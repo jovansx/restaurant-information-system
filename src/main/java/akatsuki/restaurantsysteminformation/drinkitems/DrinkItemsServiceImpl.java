@@ -82,7 +82,13 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public DrinkItems create(DrinkItemsCreateDTO drinkItemsDTO) {
-        Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
+        Order order;
+        if(drinkItemsDTO.getOrderId() == 0) {
+            order = orderService.create(drinkItemsDTO.getOrderCreateDTO());
+        } else {
+            order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
+        }
+
         List<DrinkItemUpdateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItems();
         checkDrinks(drinkItemsDTOList);
 

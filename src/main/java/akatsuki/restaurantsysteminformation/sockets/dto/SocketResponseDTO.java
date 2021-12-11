@@ -13,5 +13,6 @@ public class SocketResponseDTO {
 
     private boolean successfullyFinished;
     private String message;
+    private String code;
 
 }

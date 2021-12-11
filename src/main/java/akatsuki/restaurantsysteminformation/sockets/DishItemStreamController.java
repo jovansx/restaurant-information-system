@@ -31,8 +31,13 @@ public class DishItemStreamController {
     @SendTo("/topic/dish-item")
     public SocketResponseDTO create(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO) {
         dishItemService.create(dishItemCreateDTO);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!");
-        this.template.convertAndSend("/topic/order", socketResponseDTO);
+        SocketResponseDTO socketResponseDTO;
+        if(dishItemCreateDTO.getOrderCreateDTO() != null) {
+            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "ORDER_CREATED");
+        } else {
+            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "");
+        }
+         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
 
@@ -41,7 +46,7 @@ public class DishItemStreamController {
     public SocketResponseDTO update(@RequestBody @Valid DishItemUpdateDTO dishItemDTO,
                                     @DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         dishItemService.update(dishItemDTO, id);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item with " + id + " is successfully updated!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item with " + id + " is successfully updated!", "");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -50,7 +55,7 @@ public class DishItemStreamController {
     @SendTo("/topic/dish-item")
     public SocketResponseDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
         dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId());
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully changed!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully changed!", "");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -59,7 +64,7 @@ public class DishItemStreamController {
     @SendTo("/topic/dish-item")
     public SocketResponseDTO delete(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         dishItemService.delete(id);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully deleted!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully deleted!", "");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -67,6 +72,6 @@ public class DishItemStreamController {
     @MessageExceptionHandler
     @SendTo("/topic/dish-item")
     public SocketResponseDTO handleException(RuntimeException exception) {
-        return new SocketResponseDTO(false, exception.getLocalizedMessage());
+        return new SocketResponseDTO(false, exception.getLocalizedMessage(), "");
     }
 }

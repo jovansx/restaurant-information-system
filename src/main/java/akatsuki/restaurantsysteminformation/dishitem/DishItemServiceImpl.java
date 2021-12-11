@@ -61,7 +61,13 @@ public class DishItemServiceImpl implements DishItemService {
 
     @Override
     public DishItem create(DishItemCreateDTO dishItemCreateDTO) {
-        Order order = orderService.getOneWithAll(dishItemCreateDTO.getOrderId());
+        Order order;
+        if(dishItemCreateDTO.getOrderId() == 0) {
+            order = orderService.create(dishItemCreateDTO.getOrderCreateDTO());
+        } else {
+            order = orderService.getOneWithAll(dishItemCreateDTO.getOrderId());
+        }
+
         Item item = itemService.getOne(dishItemCreateDTO.getItemId());
         if (!item.getType().equals(ItemType.DISH))
             throw new DishItemInvalidTypeException("Item type is not DISH.");

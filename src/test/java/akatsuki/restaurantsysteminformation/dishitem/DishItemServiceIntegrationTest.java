@@ -43,18 +43,18 @@ class DishItemServiceIntegrationTest {
         Assertions.assertEquals(foundList.size(), 3);
     }
 
-    @Test
-    public void create_ValidDto_SavedObject() {
-        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(4L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
-        DishItem dishItem = dishItemService.create(dishItemCreateDTO);
-        Assertions.assertNotNull(dishItem);
-    }
-
-    @Test
-    public void create_InvalidItemType_ExceptionThrown() {
-        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
-        Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.create(dishItemCreateDTO));
-    }
+//    @Test
+//    public void create_ValidDto_SavedObject() {
+//        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(4L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
+//        DishItem dishItem = dishItemService.create(dishItemCreateDTO);
+//        Assertions.assertNotNull(dishItem);
+//    }
+//
+//    @Test
+//    public void create_InvalidItemType_ExceptionThrown() {
+//        DishItemCreateDTO dishItemCreateDTO = new DishItemCreateDTO(1L, 10, "Give me the coldest beer that you have. I'll give you a good tip.", 1L);
+//        Assertions.assertThrows(DishItemInvalidTypeException.class, () -> dishItemService.create(dishItemCreateDTO));
+//    }
 
 //    @Test
 //    public void update_ValidDtoAndId_ChangedObject() {

@@ -31,7 +31,12 @@ public class DrinkItemsStreamController {
     @SendTo("/topic/drink-items")
     public SocketResponseDTO create(@RequestBody @Valid DrinkItemsCreateDTO drinkItemsDTO) {
         drinkItemsService.create(drinkItemsDTO);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items are successfully created!");
+        SocketResponseDTO socketResponseDTO;
+        if(drinkItemsDTO.getOrderCreateDTO() != null) {
+            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "ORDER_CREATED");
+        } else {
+            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "");
+        }
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -41,7 +46,7 @@ public class DrinkItemsStreamController {
     public SocketResponseDTO update(@RequestBody DrinkItemsUpdateDTO drinkItemsDTO,
                                     @DestinationVariable @Min(value = 1, message = "Id has to be a positive value.") long id) {
         drinkItemsService.update(drinkItemsDTO, id);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items with " + id + " are successfully updated!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items with " + id + " are successfully updated!", "");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -50,7 +55,7 @@ public class DrinkItemsStreamController {
     @SendTo("/topic/drink-items")
     public SocketResponseDTO changeStateOfDrinkItems(@RequestBody @Valid DrinkItemsActionRequestDTO dto) {
         drinkItemsService.changeStateOfDrinkItems(dto.getItemId(), dto.getUserId());
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items state is successfully changed!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items state is successfully changed!", "");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -59,7 +64,7 @@ public class DrinkItemsStreamController {
     @SendTo("/topic/drink-items")
     public SocketResponseDTO delete(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         drinkItemsService.delete(id);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items with " + id + " are successfully deleted!");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Drink items with " + id + " are successfully deleted!", "");
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -67,7 +72,7 @@ public class DrinkItemsStreamController {
     @MessageExceptionHandler
     @SendTo("/topic/drink-items")
     public SocketResponseDTO handleException(RuntimeException exception) {
-        return new SocketResponseDTO(false, exception.getLocalizedMessage());
+        return new SocketResponseDTO(false, exception.getLocalizedMessage(), "");
     }
 
 }

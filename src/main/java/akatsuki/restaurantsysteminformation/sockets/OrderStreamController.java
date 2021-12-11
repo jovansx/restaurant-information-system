@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
+import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
@@ -25,34 +26,34 @@ public class OrderStreamController {
     @MessageMapping({"/order/create"})
     @SendTo("/topic/order")
     public SocketResponseDTO create(@RequestBody @Valid OrderCreateDTO orderCreateDTO) {
-        orderService.create(orderCreateDTO);
-        return new SocketResponseDTO(true, "Order is successfully created!");
+        Order order = orderService.create(orderCreateDTO);
+        return new SocketResponseDTO(true, "Order is successfully created!", "");
     }
 
     @MessageMapping({"/order/discard/{id}"})
     @SendTo("/topic/order")
     public SocketResponseDTO discard(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         orderService.discard(id);
-        return new SocketResponseDTO(true, "Order with id " + id + " is successfully discarded!");
+        return new SocketResponseDTO(true, "Order with id " + id + " is successfully discarded!", "");
     }
 
     @MessageMapping({"/order/charge/{id}"})
     @SendTo("/topic/order")
     public SocketResponseDTO charge(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         orderService.charge(id);
-        return new SocketResponseDTO(true, "Order with id " + id + " is successfully charged!");
+        return new SocketResponseDTO(true, "Order with id " + id + " is successfully charged!", "");
     }
 
     @MessageMapping({"/order/delete/{id}"})
     @SendTo("/topic/order")
     public SocketResponseDTO delete(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
         orderService.delete(id);
-        return new SocketResponseDTO(true, "Order with id " + id + " is successfully deleted!");
+        return new SocketResponseDTO(true, "Order with id " + id + " is successfully deleted!", "");
     }
 
     @MessageExceptionHandler
     @SendTo("/topic/order")
     public SocketResponseDTO handleException(RuntimeException exception) {
-        return new SocketResponseDTO(false, exception.getLocalizedMessage());
+        return new SocketResponseDTO(false, exception.getLocalizedMessage(), "");
     }
 }
