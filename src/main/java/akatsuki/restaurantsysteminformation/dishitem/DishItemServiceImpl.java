@@ -1,10 +1,12 @@
 package akatsuki.restaurantsysteminformation.dishitem;
 
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
+import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemUpdateDTO;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidStateException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidTypeException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
+import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.TableState;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,12 +60,18 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
-    public DishItem create(DishItemCreateDTO itemCreateDTO) {
-        Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
-        Item item = itemService.getOne(itemCreateDTO.getItemId());
+    public DishItem create(DishItemCreateDTO dishItemCreateDTO) {
+        Order order;
+        if(dishItemCreateDTO.getOrderId() == 0) {
+            order = orderService.create(dishItemCreateDTO.getOrderCreateDTO());
+        } else {
+            order = orderService.getOneWithAll(dishItemCreateDTO.getOrderId());
+        }
+
+        Item item = itemService.getOne(dishItemCreateDTO.getItemId());
         if (!item.getType().equals(ItemType.DISH))
             throw new DishItemInvalidTypeException("Item type is not DISH.");
-        DishItem dishItem = new DishItem(itemCreateDTO.getNotes(), LocalDateTime.now(), false, ItemState.NEW, itemCreateDTO.getAmount(), null, item, true);
+        DishItem dishItem = new DishItem(dishItemCreateDTO.getNotes(), LocalDateTime.now(), false, ItemState.NEW, dishItemCreateDTO.getAmount(), null, item, true);
         dishItem = dishItemRepository.save(dishItem);
         order.getDishes().add(dishItem);
         orderService.updateTotalPriceAndSave(order);
@@ -70,9 +79,13 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
-    public DishItem update(DishItemCreateDTO itemCreateDTO, long id) {
-        Order order = orderService.getOneWithAll(itemCreateDTO.getOrderId());
-        Item item = itemService.getOne(itemCreateDTO.getItemId());
+    public DishItem update(DishItemUpdateDTO dishItemDTO, long id) {
+        Order order = orderService.getOneWithAll(dishItemDTO.getOrderId());
+        Optional<DishItem> dishItemMaybe = dishItemRepository.findByIdAndFetchItem(id);
+        if(dishItemMaybe.isEmpty()) {
+            throw new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.");
+        }
+        Item item = dishItemMaybe.get().getItem();
         if (!item.getType().equals(ItemType.DISH))
             throw new DishItemInvalidTypeException("Item type is not DISH.");
         DishItem dishItem = null;
@@ -84,15 +97,23 @@ public class DishItemServiceImpl implements DishItemService {
         }
 
         if (dishItem == null)
-            throw new DishItemOrderException("Dish item order id is not equal to " + itemCreateDTO.getOrderId() + ". Order cannot be changed.");
+            throw new DishItemOrderException("Dish item order id is not equal to " + dishItemDTO.getOrderId() + ". Order cannot be changed.");
 
         ItemState itemState = dishItem.getState();
         if (!itemState.equals(ItemState.NEW) && !itemState.equals(ItemState.ON_HOLD))
             throw new DishItemInvalidStateException("Cannot change dish item, because its state is " + itemState.name().toLowerCase() + ".");
 
-        dishItem.setItem(item);
-        dishItem.setAmount(itemCreateDTO.getAmount());
-        dishItem.setNotes(itemCreateDTO.getNotes());
+//        dishItem.setItem(item);
+        dishItem.setAmount(dishItemDTO.getAmount());
+        dishItem.setNotes(dishItemDTO.getNotes());
+        int index = 0;
+        for(DishItem diInOrder: order.getDishes()) {
+            if(diInOrder.getId() == id) {
+                break;
+            }
+            index++;
+        }
+        order.getDishes().set(index, dishItem);
         orderService.updateTotalPriceAndSave(order);
         return dishItem;
     }
