@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,6 +31,13 @@ class UnregisteredUserServiceIntegrationTest {
     public void getOne_InvalidId_ExceptionThrown() {
         Assertions.assertThrows(UserNotFoundException.class, () -> unregisteredUserService.getOne(8000L));
     }
+
+    @Test
+    public void getAll_Valid_ReturnedList() {
+        List<UnregisteredUser> list = unregisteredUserService.getAll();
+        Assertions.assertEquals(8, list.size());
+    }
+
 
     @Test
     void create_Valid_SavedObject() {
@@ -64,6 +72,18 @@ class UnregisteredUserServiceIntegrationTest {
     }
 
     @Test
+    void update_InvalidEmail_ExceptionThrown() {
+        UnregisteredUserDTO user = new UnregisteredUserDTO("John", "Cena", "simonbaker@gmail.com", "069111223", 13, UserType.WAITER, "1111");
+        Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.update(user, 1L));
+    }
+
+    @Test
+    void update_InvalidPhoneNumber_ExceptionThrown() {
+        UnregisteredUserDTO user = new UnregisteredUserDTO("John", "Cena", "johncena@gmail.com", "0611111113", 13, UserType.WAITER, "1111");
+        Assertions.assertThrows(UserExistsException.class, () -> unregisteredUserService.update(user, 1L));
+    }
+
+    @Test
     void update_InvalidUserType_ExceptionThrown() {
         UnregisteredUserDTO user = new UnregisteredUserDTO("John", "Cena", "johncena@gmail.com", "069111223", 13, UserType.MANAGER, "1111");
         Assertions.assertThrows(UserTypeNotValidException.class, () -> unregisteredUserService.update(user, 1L));
@@ -93,6 +113,6 @@ class UnregisteredUserServiceIntegrationTest {
 
     @Test
     void checkPinCode_InvalidUserType_ExceptionThrown() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> unregisteredUserService.checkPinCode("8989", UserType.MANAGER));
+        Assertions.assertThrows(UserNotFoundException.class, () -> unregisteredUserService.checkPinCode("1112", UserType.MANAGER));
     }
 }

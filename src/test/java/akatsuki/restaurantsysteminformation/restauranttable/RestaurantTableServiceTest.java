@@ -7,15 +7,20 @@ import akatsuki.restaurantsysteminformation.restauranttable.exception.Restaurant
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomService;
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +33,6 @@ class RestaurantTableServiceTest {
     RestaurantTableRepository restaurantTableRepositoryMock;
     @Mock
     RoomService roomServiceMock;
-
-//    TODO proveri zasto nece da mockuje room service
 
     @Test
     void getOne_ValidId_ObjectIsReturned() {
@@ -138,7 +141,10 @@ class RestaurantTableServiceTest {
         RestaurantTable table = new RestaurantTable();
         table.setName("name1");
 
-        Mockito.when(restaurantTableRepositoryMock.findByName("name1")).thenReturn(Optional.of(new RestaurantTable()));
+        Room room = new Room();
+        room.setRestaurantTables(Collections.singletonList(table));
+
+        Mockito.when(roomServiceMock.getOne(1L)).thenReturn(room);
 
         Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.create(table, 1L));
     }
@@ -149,9 +155,12 @@ class RestaurantTableServiceTest {
         table.setName("name1");
         table.setShape(TableShape.SQUARE);
 
-        Mockito.when(restaurantTableRepositoryMock.findByName("name1")).thenReturn(Optional.empty());
+        Room room = new Room();
+        room.setRestaurantTables(new ArrayList<>());
+
         Mockito.when(restaurantTableRepositoryMock.findById(1L)).thenReturn(Optional.of(new RestaurantTable()));
         Mockito.when(restaurantTableRepositoryMock.save(Mockito.any(RestaurantTable.class))).thenAnswer(i -> i.getArguments()[0]);
+        Mockito.when(roomServiceMock.getOne(1L)).thenReturn(room);
 
         RestaurantTable restaurantTable = restaurantTableService.update(table, 1L, 1L);
 
@@ -167,8 +176,14 @@ class RestaurantTableServiceTest {
         table.setId(2L);
         table.setName("name1");
 
-        Mockito.when(restaurantTableRepositoryMock.findByName("name1")).thenReturn(Optional.of(table));
+        Room room = new Room();
+        room.setRestaurantTables(Collections.singletonList(table));
+
+
         Mockito.when(restaurantTableRepositoryMock.findById(1L)).thenReturn(Optional.of(new RestaurantTable()));
+
+        Mockito.when(roomServiceMock.getOne(1L)).thenReturn(room);
+
 
         Assertions.assertThrows(RestaurantTableExistsException.class, () -> restaurantTableService.update(table, 1L, 1L));
     }
