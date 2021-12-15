@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RoomControllerIntegrationTest {
@@ -47,22 +48,6 @@ class RoomControllerIntegrationTest {
             this.headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + accessToken);
         }
-    }
-
-    @Test
-    void getOne_ValidId_ObjectIsReturned() {
-        ResponseEntity<RoomWithTablesDTO> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/1", RoomWithTablesDTO.class);
-        RoomWithTablesDTO dto = responseEntity.getBody();
-
-        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        Assertions.assertNotNull(dto);
-        Assertions.assertEquals("Room 1", dto.getName());
-    }
-
-    @Test
-    void getOne_InvalidId_ExceptionThrown() {
-        ResponseEntity<RoomWithTablesDTO> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/8000", RoomWithTablesDTO.class);
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -174,54 +159,61 @@ class RoomControllerIntegrationTest {
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 
-//    @Test
-//    public void updateRoomTables_ValidTables_ObjectUpdated() {
-//        RestaurantTable table1 = restaurantTableService.create(new RestaurantTable(
-//                "Table 1", TableState.FREE, TableShape.SQUARE, false, null, 0, 1), 1);
-//        RestaurantTable table2 = restaurantTableService.create(new RestaurantTable(
-//                "Table 2", TableState.FREE, TableShape.SQUARE, false, null, 1, 1), 1);
-//        RestaurantTable table3 = restaurantTableService.create(new RestaurantTable(
-//                "Table 4", TableState.FREE, TableShape.SQUARE, false, null, 0, 1), 1);
-//        Room room = roomService.create(new Room("room 4", false, Arrays.asList(table1, table2, table3), 4, 4));
-//
-//        int size = restaurantTableService.getAll().size();
-//
-//        RestaurantTableDTO restaurantTableDTO1 = new RestaurantTableDTO(table1);
-//        restaurantTableDTO1.setShape(TableShape.CIRCLE);
-//        restaurantTableDTO1.setRow(1);
-//
-//        RestaurantTableDTO restaurantTableDTO2 = new RestaurantTableDTO(table2);
-//        restaurantTableDTO2.setId(0);
-//        restaurantTableDTO2.setName("Table 3");
-//        restaurantTableDTO2.setColumn(0);
-//
-//        RestaurantTableDTO restaurantTableDTO3 = new RestaurantTableDTO(table2);
-//        restaurantTableDTO3.setId(0);
-//        restaurantTableDTO3.setName("Table 4");
-//        restaurantTableDTO3.setColumn(0);
-//
-//        RoomTablesUpdateDTO roomUpdateDTO = new RoomTablesUpdateDTO(Arrays.asList(restaurantTableDTO1, restaurantTableDTO2, restaurantTableDTO3));
-//
-//        ResponseEntity<Void> res =
-//                restTemplate.exchange(URL_PREFIX + "/" + room.getId() + "/tables", HttpMethod.PUT,
-//                        new HttpEntity<>(roomUpdateDTO, this.headers),
-//                        Void.class);
-//
-//        RestaurantTable updatedTable1 = restaurantTableService.getOne(table1.getId());
-//        RestaurantTable updatedTable2 = restaurantTableService.getOne(table3.getId());
-//
-//        RestaurantTable addedTable2 = restaurantTableService.getOneByNameWithOrder(restaurantTableDTO2.getName());
-//
-//        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
-//        Assertions.assertEquals(1, updatedTable1.getRow());
-//        Assertions.assertEquals(TableShape.CIRCLE, updatedTable1.getShape());
-//        Assertions.assertEquals(0, updatedTable2.getColumn());
-//        Assertions.assertEquals(0, addedTable2.getColumn());
-//        Assertions.assertNotEquals(0, addedTable2.getId());
-//        Assertions.assertEquals(size, restaurantTableService.getAll().size());
-//
-//        roomService.delete(room.getId());
-//    }
+    @Test
+    public void delete_RoomDoesNotExist_ExceptionThrown() {
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/4000",
+                HttpMethod.DELETE, new HttpEntity<>(this.headers), Void.class);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void updateRoomTables_ValidTables_ObjectUpdated() {
+        RestaurantTable table1 = restaurantTableService.create(new RestaurantTable(
+                "Table 1", TableState.FREE, TableShape.SQUARE, false, null, 0, 1), 1);
+        RestaurantTable table2 = restaurantTableService.create(new RestaurantTable(
+                "Table 2", TableState.FREE, TableShape.SQUARE, false, null, 1, 1), 1);
+        RestaurantTable table3 = restaurantTableService.create(new RestaurantTable(
+                "Table 4", TableState.FREE, TableShape.SQUARE, false, null, 0, 1), 1);
+        Room room = roomService.create(new Room("room 4", false, Arrays.asList(table1, table2, table3), 4, 4));
+
+        int size = restaurantTableService.getAll().size();
+
+        RestaurantTableDTO restaurantTableDTO1 = new RestaurantTableDTO(table1);
+        restaurantTableDTO1.setShape(TableShape.CIRCLE);
+        restaurantTableDTO1.setRow(1);
+
+        RestaurantTableDTO restaurantTableDTO2 = new RestaurantTableDTO(table2);
+        restaurantTableDTO2.setId(0);
+        restaurantTableDTO2.setName("Table 3");
+        restaurantTableDTO2.setColumn(0);
+
+        RestaurantTableDTO restaurantTableDTO3 = new RestaurantTableDTO(table2);
+        restaurantTableDTO3.setId(0);
+        restaurantTableDTO3.setName("Table 4");
+        restaurantTableDTO3.setColumn(0);
+
+        RoomTablesUpdateDTO roomUpdateDTO = new RoomTablesUpdateDTO(Arrays.asList(restaurantTableDTO1, restaurantTableDTO2, restaurantTableDTO3));
+
+        ResponseEntity<Void> res =
+                restTemplate.exchange(URL_PREFIX + "/" + room.getId() + "/tables", HttpMethod.PUT,
+                        new HttpEntity<>(roomUpdateDTO, this.headers),
+                        Void.class);
+
+        List<RestaurantTable> list = restaurantTableService.getAll();
+        RestaurantTable updatedTable1 = restaurantTableService.getOne(table1.getId());
+        RestaurantTable updatedTable2 = restaurantTableService.getOne(table3.getId());
+        RestaurantTable addedTable2 = list.stream().filter(table -> table.getName().equals(restaurantTableDTO2.getName())).collect(Collectors.toList()).get(0);
+
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Assertions.assertEquals(1, updatedTable1.getRow());
+        Assertions.assertEquals(TableShape.CIRCLE, updatedTable1.getShape());
+        Assertions.assertEquals(0, updatedTable2.getColumn());
+        Assertions.assertEquals(0, addedTable2.getColumn());
+        Assertions.assertNotEquals(0, addedTable2.getId());
+        Assertions.assertEquals(size, restaurantTableService.getAll().size());
+
+        roomService.delete(room.getId());
+    }
 
     @Test
     public void updateRoomTables_TableNotInRoom_ExceptionThrown() {

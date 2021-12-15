@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class RestaurantTableServiceImpl implements RestaurantTableService {
-    private final RestaurantTableRepository restaurantTableRepository;
+    @Autowired
+    private RestaurantTableRepository restaurantTableRepository;
     private RoomService roomService;
 
     @Autowired

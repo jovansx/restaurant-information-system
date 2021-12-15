@@ -62,13 +62,6 @@ class UnregisteredUserControllerIntegrationTest {
     }
 
     @Test
-    public void getAll_Valid_ObjectsReturned() {
-        ResponseEntity<UnregisteredUserDTO[]> responseEntity = restTemplate.getForEntity(URL_PREFIX, UnregisteredUserDTO[].class);
-        List<UnregisteredUserDTO> list = Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
-        Assertions.assertEquals(8, list.size());
-    }
-
-    @Test
     public void getAllForRowInTable_Valid_ObjectsReturned() {
         ResponseEntity<UserTableDTO[]> responseEntity = restTemplate.exchange(URL_PREFIX + "/table", HttpMethod.GET, new HttpEntity<>(headers), UserTableDTO[].class);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -190,6 +183,12 @@ class UnregisteredUserControllerIntegrationTest {
     @Test
     void checkPinCode_InvalidPinCode_ExceptionThrown() {
         ResponseEntity<UnregisteredUserDTO> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/pin-code/8761?usertype=waiter", UnregisteredUserDTO.class);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void checkPinCode_InvalidUserPinCode_ExceptionThrown() {
+        ResponseEntity<UnregisteredUserDTO> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/pin-code/1112?usertype=waiter", UnregisteredUserDTO.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
