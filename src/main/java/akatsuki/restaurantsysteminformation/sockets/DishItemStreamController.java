@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
-import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
@@ -32,12 +31,12 @@ public class DishItemStreamController {
     public SocketResponseDTO create(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO) {
         dishItemService.create(dishItemCreateDTO);
         SocketResponseDTO socketResponseDTO;
-        if(dishItemCreateDTO.getOrderCreateDTO() != null) {
+        if (dishItemCreateDTO.getOrderCreateDTO() != null) {
             socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "ORDER_CREATED");
         } else {
             socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "");
         }
-         this.template.convertAndSend("/topic/order", socketResponseDTO);
+        this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
 

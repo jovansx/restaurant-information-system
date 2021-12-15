@@ -23,10 +23,4 @@ public class DrinkItemServiceTest {
         Mockito.verify(drinkItemRepositoryMock, Mockito.times(1)).save(Mockito.any(DrinkItem.class));
     }
 
-    @Test
-    public void delete_ValidObject_SavedObject() {
-        drinkItemService.delete(new DrinkItem());
-        Mockito.verify(drinkItemRepositoryMock, Mockito.times(1)).delete(Mockito.any(DrinkItem.class));
-    }
-
 }

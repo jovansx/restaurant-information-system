@@ -64,25 +64,6 @@ class ItemCategoryServiceIntegrationTest {
     }
 
     @Test
-    public void update_ValidEntityAndId_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Dessert", ItemType.DISH);
-        ItemCategory updatedItemCategory = itemCategoryService.update(itemCategory, 1L);
-        Assertions.assertEquals("Dessert", updatedItemCategory.getName());
-    }
-
-    @Test
-    public void update_EntityNameIsTheSame_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Juices  ", ItemType.DRINK);
-        Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.update(itemCategory, 1L));
-    }
-
-    @Test
-    public void update_EntityNameAlreadyExist_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Cocktails  ", ItemType.DRINK);
-        Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.update(itemCategory, 1L));
-    }
-
-    @Test
     public void delete_ValidId_SavedObject() {
         ItemCategory deletedItemCategory = itemCategoryService.delete(5L);
         Assertions.assertEquals("Soup", deletedItemCategory.getName());

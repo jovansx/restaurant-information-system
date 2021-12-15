@@ -74,41 +74,6 @@ class ItemCategoryControllerIntegrationTest {
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 
-    @Test
-    public void update_ValidEntityAndId_SavedObject() {
-        ResponseEntity<Void> res =
-                restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new ItemCategoryDTO("Edited juices", ItemType.DRINK)),
-                        Void.class);
-
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
-
-        ItemCategory itemCategory = itemCategoryService.getOne(1L);
-        Assertions.assertEquals("Edited juices", itemCategory.getName());
-
-        itemCategory.setName("Juices");
-        itemCategoryService.save(itemCategory);
-    }
-
-    @Test
-    public void update_EntityNameIsTheSame_ExceptionThrown() {
-        ResponseEntity<Void> res =
-                restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new ItemCategoryDTO("juices", ItemType.DRINK)),
-                        Void.class);
-
-        Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
-    }
-
-    @Test
-    public void update_EntityNameAlreadyExist_ExceptionThrown() {
-        ResponseEntity<Void> res =
-                restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new ItemCategoryDTO("meat", ItemType.DISH)),
-                        Void.class);
-
-        Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
-    }
 
     @Test
     public void delete_ValidId_ObjectRemoved() {

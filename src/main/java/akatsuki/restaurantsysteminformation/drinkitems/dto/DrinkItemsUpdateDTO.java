@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.drinkitems.dto;
 
-import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemUpdateDTO;
 import lombok.Getter;
 import lombok.Setter;

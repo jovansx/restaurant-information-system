@@ -43,7 +43,7 @@ public class OrderStreamControllerIntegrationTest {
 
     @Test
     public void create_Valid_SavedObject() throws Exception {
-        int size = orderService.getAllActive().size();
+        int size = orderService.getAllWithAll().size();
 
         BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -61,7 +61,7 @@ public class OrderStreamControllerIntegrationTest {
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<Order> orders = orderService.getAllActive();
+        List<Order> orders = orderService.getAllWithAll();
 
         assertNotNull(returnDTO);
         assertEquals(size + 1, orders.size());
@@ -118,7 +118,7 @@ public class OrderStreamControllerIntegrationTest {
     public void discard_Valid_DiscardObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
-        int size = orderService.getAllActive().size();
+        int size = orderService.getAllWithAll().size();
 
         BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -135,7 +135,7 @@ public class OrderStreamControllerIntegrationTest {
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<Order> orders = orderService.getAllActive();
+        List<Order> orders = orderService.getAllWithAll();
 
         assertNotNull(returnDTO);
         assertEquals(size - 1, orders.size());
@@ -211,7 +211,7 @@ public class OrderStreamControllerIntegrationTest {
     public void charge_Valid_DiscardObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
-        int size = orderService.getAllActive().size();
+        int size = orderService.getAllWithAll().size();
 
         BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -228,7 +228,7 @@ public class OrderStreamControllerIntegrationTest {
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<Order> orders = orderService.getAllActive();
+        List<Order> orders = orderService.getAllWithAll();
 
         assertNotNull(returnDTO);
         assertEquals(size - 1, orders.size());
@@ -304,7 +304,7 @@ public class OrderStreamControllerIntegrationTest {
     public void delete_Valid_DeletedObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
-        int size = orderService.getAllActive().size();
+        int size = orderService.getAllWithAll().size();
 
         BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -321,7 +321,7 @@ public class OrderStreamControllerIntegrationTest {
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<Order> orders = orderService.getAllActive();
+        List<Order> orders = orderService.getAllWithAll();
 
         assertNotNull(returnDTO);
         assertEquals(size - 1, orders.size());

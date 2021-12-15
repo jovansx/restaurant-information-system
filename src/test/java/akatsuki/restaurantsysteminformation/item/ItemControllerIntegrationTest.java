@@ -83,7 +83,7 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void create_ValidDto_ObjectIsCreated() {
-        int size = itemService.getAll().size();
+        int size = itemService.getAllWithAll().size();
 
         ItemCreateDTO createDTO = new ItemCreateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, createDTO, String.class);
@@ -91,7 +91,7 @@ public class ItemControllerIntegrationTest {
         Assertions.assertNotNull(res.getBody());
         Assertions.assertEquals(HttpStatus.CREATED, res.getStatusCode());
 
-        List<Item> items = itemService.getAll();
+        List<Item> items = itemService.getAllWithAll();
         Assertions.assertEquals(size + 1, items.size());
         Assertions.assertEquals("Lemon juice", items.get(items.size() - 1).getName());
         Assertions.assertEquals("It is made from lemon.", items.get(items.size() - 1).getDescription());
@@ -115,7 +115,7 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void update_ValidEntityAndIdFirst_SavedObject() {
-        int size = itemService.getAll().size();
+        int size = itemService.getAllWithAll().size();
 
         ItemUpdateDTO updateDTO = new ItemUpdateDTO(new ItemCategoryDTO("Juices", ItemType.DRINK), 400, "c6d7d3c8-2273-4343-a6dc-87efe43867fa", "Lemon juice", "It is made from lemon.", null, ItemType.DRINK, List.of("Lemon"));
         ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
@@ -124,7 +124,7 @@ public class ItemControllerIntegrationTest {
         Assertions.assertNotNull(res.getBody());
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
 
-        List<Item> items = itemService.getAll();
+        List<Item> items = itemService.getAllWithAll();
         Assertions.assertEquals(size + 1, items.size());
         Assertions.assertEquals("Lemon juice", items.get(items.size() - 1).getName());
         Assertions.assertEquals("It is made from lemon.", items.get(items.size() - 1).getDescription());
@@ -183,13 +183,13 @@ public class ItemControllerIntegrationTest {
 
     @Test
     public void delete_CopyDoesNotExist_ObjectRemoved() {
-        int size = itemService.getAll().size();
+        int size = itemService.getAllWithAll().size();
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(URL_PREFIX + "/1",
                 HttpMethod.DELETE, new HttpEntity<>(null), String.class);
 
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        Assertions.assertEquals(size + 1, itemService.getAll().size());
+        Assertions.assertEquals(size + 1, itemService.getAllWithAll().size());
 
         itemService.deleteForTesting(Long.parseLong(Objects.requireNonNull(responseEntity.getBody())));
     }

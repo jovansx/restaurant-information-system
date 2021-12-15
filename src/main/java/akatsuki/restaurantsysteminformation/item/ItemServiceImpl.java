@@ -57,16 +57,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAllActive() {
-        return itemRepository.findAllActiveIndexes().stream().map(this::getOneActive).collect(Collectors.toList());
-    }
-
-    @Override
     public List<Item> getAllForMenuInsight() {
         List<Item> chosenItems = new ArrayList<>();
         List<Item> items = itemRepository.findAll();
 
-        for (Item i: items) {
+        for (Item i : items) {
             List<Item> items2 = items.stream().filter(item -> item.getCode().equals(i.getCode())).collect(Collectors.toList());
             if (items2.size() > 2) {
                 throw new ItemExistsException("Not possible!");
@@ -76,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
                     chosenItems.add(i);
                 continue;
             }
-            for (Item filteredItem: items2) {
+            for (Item filteredItem : items2) {
                 if (filteredItem.isOriginal()) continue;
                 if (filteredItem.isDeleted()) continue;
                 if (!chosenItems.contains(filteredItem))
@@ -85,11 +80,6 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return chosenItems;
-    }
-
-    @Override
-    public List<Item> getAll() {
-        return itemRepository.findAll();
     }
 
     @Override
@@ -134,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
     public Item update(Item item, long id) {
         checkItemCategory(item);
 
-        Optional<Item> itemOptional = itemRepository.findByIdAndDeletedIsFalse(id); //TODO: izmenjeno
+        Optional<Item> itemOptional = itemRepository.findByIdAndDeletedIsFalse(id);
         if (itemOptional.isEmpty())
             throw new ItemNotFoundException("Item with the id " + id + " is not found in the database.");
         Item foundItem = itemOptional.get();
@@ -147,11 +137,10 @@ public class ItemServiceImpl implements ItemService {
             Price price = item.getPrices().get(0);
             priceService.save(price);
             itemRepository.save(item);
-        } else if (itemList.size() == 1 && !itemList.get(0).isOriginal()) { //TODO: dodato
+        } else if (itemList.size() == 1 && !itemList.get(0).isOriginal()) {
             assignItemFields(item, itemList.get(0));
             item.setId(itemList.get(0).getId());
-        }
-        else {
+        } else {
             for (Item i : itemList) {
                 if (!i.isOriginal())
                     assignItemFields(item, i);
@@ -173,7 +162,7 @@ public class ItemServiceImpl implements ItemService {
             copy.setOriginal(false);
             copy.setDeleted(true);
             itemRepository.save(copy);
-        } else if (itemList.size() == 1 && !item.isOriginal()) { //TODO: dodato
+        } else if (itemList.size() == 1 && !item.isOriginal()) {
             item.setDeleted(true);
             itemRepository.save(item);
             copy = item;
@@ -202,6 +191,11 @@ public class ItemServiceImpl implements ItemService {
         Item item = getOneWithAll(itemId);
         int index = item.getPrices().size() - 1;
         return item.getPrices().get(index).getValue();
+    }
+
+    @Override
+    public void save(Item item) {
+        itemRepository.save(item);
     }
 
     private void checkItemCategory(Item item) {
@@ -242,8 +236,4 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.save(original);
     }
 
-    @Override
-    public void save(Item item) {
-        itemRepository.save(item);
-    }
 }

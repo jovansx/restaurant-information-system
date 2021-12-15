@@ -8,11 +8,7 @@ import java.util.List;
 
 public interface DrinkItemsService {
 
-    DrinkItems getOne(long id);
-
     DrinkItems findOneWithItems(long id);
-
-    List<DrinkItems> getAll();
 
     DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id);
 

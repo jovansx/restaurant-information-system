@@ -76,20 +76,6 @@ class ItemServiceTest {
     }
 
     @Test
-    void getAllActive_ActiveItemsExist_ReturnedList() {
-        List<Long> listOfIndexes = Arrays.asList(1L, 2L);
-        Mockito.when(itemRepositoryMock.findAllActiveIndexes()).thenReturn(listOfIndexes);
-        Item item1 = new Item();
-        item1.setOriginal(true);
-        Item item2 = new Item();
-        item2.setOriginal(true);
-        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item1));
-        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(2L)).thenReturn(Optional.of(item2));
-        List<Item> foundList = itemService.getAllActive();
-        Assertions.assertEquals(foundList.size(), 2);
-    }
-
-    @Test
     void getAllActiveByCategory_ActiveItemsWithEqualCategoryExist_ReturnedList() {
         Item item1 = new Item();
         Item item2 = new Item();

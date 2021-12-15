@@ -6,7 +6,6 @@ import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidSt
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidTypeException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
-import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.TableState;
@@ -36,18 +35,6 @@ public class DishItemServiceImpl implements DishItemService {
     private final RestaurantTableService restaurantTableService;
 
     @Override
-    public DishItem getOne(long id) {
-        return dishItemRepository.findById(id).orElseThrow(
-                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
-        );
-    }
-
-    @Override
-    public List<DishItem> getAll() {
-        return dishItemRepository.findAll();
-    }
-
-    @Override
     public DishItem findOneActiveAndFetchItemAndChef(long id) {
         return dishItemRepository.findOneActiveAndFetchItemAndChef(id).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
@@ -62,7 +49,7 @@ public class DishItemServiceImpl implements DishItemService {
     @Override
     public DishItem create(DishItemCreateDTO dishItemCreateDTO) {
         Order order;
-        if(dishItemCreateDTO.getOrderId() == 0) {
+        if (dishItemCreateDTO.getOrderId() == 0) {
             order = orderService.create(dishItemCreateDTO.getOrderCreateDTO());
         } else {
             order = orderService.getOneWithAll(dishItemCreateDTO.getOrderId());
@@ -82,7 +69,7 @@ public class DishItemServiceImpl implements DishItemService {
     public DishItem update(DishItemUpdateDTO dishItemDTO, long id) {
         Order order = orderService.getOneWithAll(dishItemDTO.getOrderId());
         Optional<DishItem> dishItemMaybe = dishItemRepository.findByIdAndFetchItem(id);
-        if(dishItemMaybe.isEmpty()) {
+        if (dishItemMaybe.isEmpty()) {
             throw new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.");
         }
         Item item = dishItemMaybe.get().getItem();
@@ -107,8 +94,8 @@ public class DishItemServiceImpl implements DishItemService {
         dishItem.setAmount(dishItemDTO.getAmount());
         dishItem.setNotes(dishItemDTO.getNotes());
         int index = 0;
-        for(DishItem diInOrder: order.getDishes()) {
-            if(diInOrder.getId() == id) {
+        for (DishItem diInOrder : order.getDishes()) {
+            if (diInOrder.getId() == id) {
                 break;
             }
             index++;
@@ -165,6 +152,12 @@ public class DishItemServiceImpl implements DishItemService {
         return dishItem;
     }
 
+
+    @Override
+    public boolean isChefActive(UnregisteredUser user) {
+        return dishItemRepository.findAllByActiveIsTrueAndChef(user).isEmpty();
+    }
+
     @Override
     public void deleteById(long id) {
         DishItem dishItem = getOneActive(id);
@@ -175,18 +168,13 @@ public class DishItemServiceImpl implements DishItemService {
     }
 
     @Override
-    public boolean isChefActive(UnregisteredUser user) {
-        return dishItemRepository.findAllByActiveIsTrueAndChef(user).isEmpty();
+    public void save(DishItem dishItem) {
+        dishItemRepository.save(dishItem);
     }
 
     private DishItem getOneActive(long id) {
         return dishItemRepository.findByIdAndActiveIsTrue(id).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
-    }
-
-    @Override
-    public void save(DishItem dishItem) {
-        dishItemRepository.save(dishItem);
     }
 }

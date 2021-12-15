@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
-import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomService;
 import org.junit.jupiter.api.Assertions;
@@ -68,48 +67,6 @@ class RestaurantTableServiceTest {
     }
 
     @Test
-    void getOneByNameWithOrder_ValidName_ObjectReturned() {
-        Mockito.when(restaurantTableRepositoryMock.findByNameAndFetchOrder("T1")).thenReturn(Optional.of(new RestaurantTable()));
-
-        RestaurantTable table = restaurantTableService.getOneByNameWithOrder("T1");
-        Assertions.assertNotNull(table);
-    }
-
-    @Test
-    void getOneByNameWithOrder_InvalidName_ExceptionThrown() {
-        Mockito.when(restaurantTableRepositoryMock.findByNameAndFetchOrder("InvalidName")).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> restaurantTableService.getOneByNameWithOrder("InvalidName"));
-    }
-
-    @Test
-    void getOrderByTableName_ValidName_OrderIdReturned() {
-        Order order = new Order();
-        order.setId(1L);
-
-        RestaurantTable restaurantTable = new RestaurantTable();
-        restaurantTable.setActiveOrder(order);
-
-        Mockito.when(restaurantTableRepositoryMock.findByNameAndFetchOrder("T1")).thenReturn(Optional.of(restaurantTable));
-
-        Long orderId = restaurantTableService.getOrderByTableName("T1");
-
-        Assertions.assertEquals(1L, orderId);
-    }
-
-    @Test
-    void getOrderByTableName_OrderNotExistOnThatTable_NullReturned() {
-        RestaurantTable restaurantTable = new RestaurantTable();
-        restaurantTable.setActiveOrder(null);
-
-        Mockito.when(restaurantTableRepositoryMock.findByNameAndFetchOrder("T1")).thenReturn(Optional.of(restaurantTable));
-
-        Long orderId = restaurantTableService.getOrderByTableName("T1");
-
-        Assertions.assertNull(orderId);
-    }
-
-    @Test
     void getAll_ObjectsExist_ReturnedAsList() {
         Mockito.when(restaurantTableRepositoryMock.findAll()).thenReturn(List.of(new RestaurantTable(), new RestaurantTable()));
 
@@ -159,7 +116,7 @@ class RestaurantTableServiceTest {
 
         Mockito.when(restaurantTableRepositoryMock.findByActiveOrder(order)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(RestaurantTableNotFoundException.class, () ->  restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN));
+        Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN));
     }
 
     @Test
@@ -227,32 +184,6 @@ class RestaurantTableServiceTest {
         restaurantTableService.delete(1L);
 
         Mockito.verify(restaurantTableRepositoryMock, Mockito.times(1)).save(Mockito.any(RestaurantTable.class));
-    }
-
-    @Test
-    public void getActiveOrderIdByTableId_InvalidState_ExceptionThrown() {
-        RestaurantTable table = new RestaurantTable();
-        table.setState(TableState.FREE);
-
-        Mockito.when(restaurantTableRepositoryMock.findByIdAndFetchOrder(1L)).thenReturn(Optional.of(table));
-
-        Assertions.assertThrows(RestaurantTableStateNotValidException.class, () -> restaurantTableService.getActiveOrderIdByTableId(1L));
-    }
-
-    @Test
-    public void getActiveOrderIdByTableId_ValidId_IdReturned() {
-        RestaurantTable table = new RestaurantTable();
-        table.setState(TableState.TAKEN);
-
-        Order order = new Order();
-        order.setId(1L);
-        table.setActiveOrder(order);
-
-        Mockito.when(restaurantTableRepositoryMock.findByIdAndFetchOrder(1L)).thenReturn(Optional.of(table));
-
-        Long foundId = restaurantTableService.getActiveOrderIdByTableId(1L);
-
-        Assertions.assertEquals(foundId, order.getId());
     }
 
 
