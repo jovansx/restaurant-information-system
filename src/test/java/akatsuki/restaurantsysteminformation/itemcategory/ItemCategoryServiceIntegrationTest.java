@@ -28,7 +28,7 @@ class ItemCategoryServiceIntegrationTest {
     }
 
     @Test
-    public void getOne_NegativeId_ExceptionThrown() {
+    public void getOne_InvalidId_ExceptionThrown() {
         Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemCategoryService.getOne(8000L));
     }
 
@@ -47,7 +47,7 @@ class ItemCategoryServiceIntegrationTest {
     @Test
     void getAll_ItemCategoriesExist_ReturnedList() {
         List<ItemCategory> foundList = itemCategoryService.getAll();
-        Assertions.assertEquals(foundList.size(), 5);
+        Assertions.assertEquals(5, foundList.size());
     }
 
     @Test
