@@ -3,6 +3,7 @@ package akatsuki.restaurantsysteminformation.item;
 import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.item.exception.ItemAlreadyDeletedException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemCodeNotValidException;
+import akatsuki.restaurantsysteminformation.item.exception.ItemExistsException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategoryService;
@@ -33,46 +34,53 @@ class ItemServiceTest {
     PriceService priceServiceMock;
 
     @Test
-    void getOne_InvalidId_ExceptionThrown() {
-        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(8000L)).thenReturn(Optional.empty());
-        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOne(8000L));
-    }
-
-    @Test
     void getOne_ValidId_ReturnedObject() {
         Item item = new Item();
+
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
+
         Item foundItem = itemService.getOne(1L);
         Assertions.assertEquals(item, foundItem);
-        Assertions.assertEquals(foundItem.getComponents().size(), 0);
+        Assertions.assertEquals(0, foundItem.getComponents().size());
     }
 
     @Test
     void getOne_ValidIdWithComponents_ReturnedObjectWithComponents() {
         Item item = new Item();
         item.setComponents(Collections.singletonList("aca"));
+
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
         Mockito.when(itemRepositoryMock.findOneAndFetchComponents(1L)).thenReturn(Optional.of(item));
+
         Item foundItem = itemService.getOne(1L);
         Assertions.assertEquals(item, foundItem);
-        Assertions.assertEquals(foundItem.getComponents().size(), 1);
+        Assertions.assertEquals(1, foundItem.getComponents().size());
     }
 
     @Test
-    void getOneActive_NotOriginalItem_ExceptionThrown() {
-        Item item = new Item();
-        item.setOriginal(false);
-        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
-        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOneActive(1L));
+    void getOne_InvalidId_ExceptionThrown() {
+        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(8000L)).thenReturn(Optional.empty());
+        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOne(8000L));
     }
 
     @Test
     void getOneActive_ValidId_ReturnedObject() {
         Item item = new Item();
         item.setOriginal(true);
+
         Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
+
         Item foundItem = itemService.getOneActive(1L);
         Assertions.assertEquals(item, foundItem);
+    }
+
+    @Test
+    void getOneActive_NotOriginalItem_ExceptionThrown() {
+        Item item = new Item();
+        item.setOriginal(false);
+
+        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
+        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOneActive(1L));
     }
 
     @Test
@@ -80,15 +88,14 @@ class ItemServiceTest {
         Item item1 = new Item();
         Item item2 = new Item();
         List<Item> itemList = Arrays.asList(item1, item2);
-
         ItemCategory itemCategory = new ItemCategory("Meat", ItemType.DISH);
+
         Mockito.when(itemCategoryServiceMock.firstLetterUppercase("meat")).thenReturn("Meat");
         Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(itemCategory);
-
         Mockito.when(itemRepositoryMock.findAllByItemCategoryAndOriginalIsTrueAndDeletedIsFalse(itemCategory)).thenReturn(itemList);
 
         List<Item> foundList = itemService.getAllActiveByCategory("meat");
-        Assertions.assertEquals(foundList.size(), 2);
+        Assertions.assertEquals(2, foundList.size());
         Assertions.assertTrue(foundList.contains(item1));
         Assertions.assertTrue(foundList.contains(item2));
     }
@@ -102,14 +109,25 @@ class ItemServiceTest {
     }
 
     @Test
+    void getAllWithAll__ReturnedList() {
+        Item item = new Item();
+
+        Mockito.when(itemRepositoryMock.findAllIndexes()).thenReturn(List.of(1L));
+        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
+
+        List<Item> items = itemService.getAllWithAll();
+        Assertions.assertEquals(1, items.size());
+    }
+
+    @Test
     void saveChanges_Adding_NewAddedAndCopiesDeleted() {
         Item item1 = new Item();
         List<Item> itemList = List.of(item1);
+
         Mockito.when(itemRepositoryMock.findAllByOriginalIsFalse()).thenReturn(itemList);
         Mockito.when(itemRepositoryMock.findOneByCodeAndOriginalIsTrueAndDeletedIsFalse(Mockito.any())).thenReturn(Optional.empty());
 
         itemService.saveChanges();
-
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(item1);
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).removeAllByOriginalIsFalse();
     }
@@ -128,6 +146,7 @@ class ItemServiceTest {
         item3.setPrices(new ArrayList<>());
         item3.getPrices().add(new Price(LocalDateTime.now(), 22));
         List<Item> itemList = List.of(item1, item2, item3);
+
         Mockito.when(itemRepositoryMock.findAllByOriginalIsFalse()).thenReturn(itemList);
         Mockito.when(itemRepositoryMock.findOneByCodeAndOriginalIsTrueAndDeletedIsFalse(Mockito.any()))
                 .thenReturn(Optional.of(item1))
@@ -150,16 +169,6 @@ class ItemServiceTest {
     }
 
     @Test
-    void create_CategoryNotExist_ExceptionThrown() {
-        Item item = new Item();
-        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
-
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(null);
-
-        Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemService.create(item));
-    }
-
-    @Test
     void create_ValidItem_ObjectIsCreated() {
         Item item = new Item();
         item.setPrices(Collections.singletonList(new Price(LocalDateTime.now(), 22)));
@@ -173,6 +182,89 @@ class ItemServiceTest {
 
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(item);
         Mockito.verify(priceServiceMock, Mockito.times(1)).save(item.getPrices().get(0));
+    }
+
+    @Test
+    void create_CategoryNotExist_ExceptionThrown() {
+        Item item = new Item();
+        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
+
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(null);
+
+        Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemService.create(item));
+    }
+
+    @Test
+    void update_OneInListAndOriginalIsTrue_ObjectUpdated() {
+        Item item = new Item();
+        item.setCode("code1");
+        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
+        item.setPrices(new ArrayList<>());
+        item.getPrices().add(new Price(LocalDateTime.now(), 22));
+
+        Item item2 = new Item();
+        item2.setOriginal(true);
+
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2));
+
+        itemService.update(item, 1L);
+
+        Mockito.verify(priceServiceMock, Mockito.times(1)).save(item.getPrices().get(0));
+        Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(item);
+    }
+
+    @Test
+    void update_OneInListAndOriginalIsFalse_ObjectUpdated() {
+        Item item = new Item();
+        item.setCode("code1");
+        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
+        item.setPrices(new ArrayList<>());
+        item.getPrices().add(new Price(LocalDateTime.now(), 22));
+        item.setComponents(new ArrayList<>());
+
+        Item item2 = new Item();
+        item2.setOriginal(false);
+        item2.setPrices(new ArrayList<>());
+        item.getPrices().add(new Price(LocalDateTime.now(), 22));
+
+
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2));
+        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(Mockito.any())).thenReturn(Optional.of(item));
+
+        itemService.update(item, 1L);
+
+        Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(Mockito.any(Item.class));
+    }
+
+    @Test
+    void update_MoreThenOneInList_ObjectUpdated() {
+        Item item = new Item();
+        item.setCode("code1");
+        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
+        item.setPrices(new ArrayList<>());
+        item.getPrices().add(new Price(LocalDateTime.now(), 22));
+        item.setComponents(new ArrayList<>());
+
+        Item item2 = new Item();
+        item2.setOriginal(true);
+        Item item3 = new Item();
+        item3.setOriginal(false);
+        item3.setPrices(new ArrayList<>());
+        item.getPrices().add(new Price(LocalDateTime.now(), 22));
+
+
+        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
+        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2, item3));
+        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(Mockito.any())).thenReturn(Optional.of(item));
+
+        itemService.update(item, 1L);
+
+        Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(Mockito.any(Item.class));
     }
 
     @Test
@@ -204,51 +296,37 @@ class ItemServiceTest {
     }
 
     @Test
-    void update_FirstTimeValidUpdate_ObjectUpdated() {
-        Item item = new Item();
-        item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
-        item.setPrices(new ArrayList<>());
-        item.getPrices().add(new Price(LocalDateTime.now(), 22));
-
+    void getAllForMenuInsight_LessThenTwoItems_ReturnedList() {
+        Item item1 = new Item();
+        item1.setCode("code1");
+        item1.setDeleted(false);
         Item item2 = new Item();
+        item2.setCode("code2");
         item2.setOriginal(true);
+        Item item3 = new Item();
+        item3.setCode("code2");
+        item3.setOriginal(false);
+        item3.setDeleted(false);
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
-        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2));
+        Mockito.when(itemRepositoryMock.findAll()).thenReturn(List.of(item1, item2, item3));
 
-        itemService.update(item, 1L);
+        List<Item> items = itemService.getAllForMenuInsight();
 
-        Mockito.verify(priceServiceMock, Mockito.times(1)).save(item.getPrices().get(0));
-        Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(item);
+        Assertions.assertEquals(2, items.size());
     }
 
     @Test
-    void update_SecondTimeValidUpdate_ObjectUpdated() {
-        Item item = new Item();
-        item.setCode("code1");
-        item.setItemCategory(new ItemCategory("Meat", ItemType.DISH));
-        item.setPrices(new ArrayList<>());
-        item.getPrices().add(new Price(LocalDateTime.now(), 22));
-        item.setComponents(new ArrayList<>());
-
+    void getAllForMenuInsight_MoreThenTwoItems_ExceptionThrown() {
+        Item item1 = new Item();
+        item1.setCode("code1");
         Item item2 = new Item();
-        item2.setOriginal(true);
+        item2.setCode("code1");
         Item item3 = new Item();
-        item3.setOriginal(false);
-        item3.setPrices(new ArrayList<>());
-        item.getPrices().add(new Price(LocalDateTime.now(), 22));
+        item3.setCode("code1");
 
+        Mockito.when(itemRepositoryMock.findAll()).thenReturn(List.of(item1, item2, item3));
 
-        Mockito.when(itemCategoryServiceMock.getByName("Meat")).thenReturn(new ItemCategory("Meat", ItemType.DISH));
-        Mockito.when(itemRepositoryMock.findByIdAndDeletedIsFalse(1L)).thenReturn(Optional.of(item));
-        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item2, item3));
-        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(Mockito.any())).thenReturn(Optional.of(item));
-
-        itemService.update(item, 1L);
-
-        Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(Mockito.any(Item.class));
+        Assertions.assertThrows(ItemExistsException.class, () -> itemService.getAllForMenuInsight());
     }
 
     @Test
@@ -267,6 +345,22 @@ class ItemServiceTest {
 
         Mockito.verify(priceServiceMock, Mockito.times(1)).save(Mockito.any(Price.class));
         Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(Mockito.any(Item.class));
+    }
+
+    @Test
+    void delete_NotOriginalDelete_ItemIsDeleted() {
+        Item item = new Item();
+        item.setDeleted(false);
+        item.setOriginal(false);
+        item.setCode("code1");
+
+        Mockito.when(itemRepositoryMock.findOneAndFetchItemCategoryAndPrices(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepositoryMock.findAllByCodeAndPrices("code1")).thenReturn(List.of(item));
+
+        Item deleted = itemService.delete(1L);
+
+        Assertions.assertTrue(deleted.isDeleted());
+        Mockito.verify(itemRepositoryMock, Mockito.times(1)).save(item);
     }
 
     @Test
