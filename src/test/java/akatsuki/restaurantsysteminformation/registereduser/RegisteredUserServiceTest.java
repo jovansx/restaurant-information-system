@@ -79,10 +79,10 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    void getAll_RegisteredUsersDontExist_ReturnedNull() {
-        Mockito.when(registeredUserRepositoryMock.findAll()).thenReturn(null);
+    void getAll_RegisteredUsersDontExist_ReturnedEmpty() {
+        Mockito.when(registeredUserRepositoryMock.findAll()).thenReturn(new ArrayList<>());
         List<RegisteredUser> foundList = registeredUserService.getAll();
-        assertNull(foundList);
+        assertEquals(0, foundList.size());
     }
 
     @Test
