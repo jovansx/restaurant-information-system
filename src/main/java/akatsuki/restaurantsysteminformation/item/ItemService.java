@@ -9,6 +9,8 @@ public interface ItemService {
 
     Item getOneActive(Long id);
 
+    List<Item> getAll();
+
     List<Item> getAllWithAll();
 
     List<Item> getAllForMenuInsight();

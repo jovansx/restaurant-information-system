@@ -46,7 +46,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public List<User> getAllSystemAdmins() {
+    public List<RegisteredUser> getAllSystemAdmins() {
         return registeredUserRepository.findAllSystemAdmins();
     }
 
@@ -86,9 +86,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
         if (registeredUserDTO.getSalary() != 0) {
             Salary salary = salaryService.create(new Salary(LocalDateTime.now(), registeredUserDTO.getSalary()));
-            List<Salary> salaries = user.getSalary();
-            salaries.add(salary);
-            user.setSalary(salaries);
+            user.getSalary().add(salary);
         }
 
         return registeredUserRepository.save(user);

@@ -12,7 +12,7 @@ public interface RegisteredUserService {
 
     List<RegisteredUser> getAll();
 
-    List<User> getAllSystemAdmins();
+    List<RegisteredUser> getAllSystemAdmins();
 
     RegisteredUser create(RegisteredUserDTO registeredUserDTO);
 
