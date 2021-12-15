@@ -45,12 +45,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOneByRestaurantTableId(long id) {
-        Long orderId = restaurantTableService.getActiveOrderIdByTableId(id);
-        return getOneWithAll(orderId);
-    }
-
-    @Override
     public Order getOneByOrderItem(OrderItem orderItem) {
         List<Order> orderList = getAllWithAll();
 
@@ -81,26 +75,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOneWithDishes(Long orderId) {
-        return orderRepository.findByIdAndFetchWaiterAndFetchDishesAndItems(orderId).orElseThrow(
-                () -> new OrderNotFoundException("Order with the id " + orderId + " is not found in the database."));
-    }
-
-    @Override
-    public Order getOneWithDrinks(Long orderId) {
-        return orderRepository.findByIdAndFetchWaiterAndDrinks(orderId).orElseThrow(
-                () -> new OrderNotFoundException("Order with the id " + orderId + " is not found in the database."));
-    }
-
-    @Override
     public List<Order> getAllWithAll() {
         List<Long> indexes = orderRepository.findAllIndexes();
         return indexes.stream().map(this::getOneWithAll).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Order> getAllActive() {
-        return getAllWithAll().stream().filter(Order::isActive).collect(Collectors.toList());
     }
 
     @Override
@@ -209,5 +186,15 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.getDrinkItemsList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
 
         return orderDTO;
+    }
+
+    private Order getOneWithDishes(Long orderId) {
+        return orderRepository.findByIdAndFetchWaiterAndFetchDishesAndItems(orderId).orElseThrow(
+                () -> new OrderNotFoundException("Order with the id " + orderId + " is not found in the database."));
+    }
+
+    private Order getOneWithDrinks(Long orderId) {
+        return orderRepository.findByIdAndFetchWaiterAndDrinks(orderId).orElseThrow(
+                () -> new OrderNotFoundException("Order with the id " + orderId + " is not found in the database."));
     }
 }

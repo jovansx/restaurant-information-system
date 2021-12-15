@@ -49,32 +49,6 @@ class RestaurantTableServiceIntegrationTest {
         Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> restaurantTableService.getOneWithOrder(8000L));
     }
 
-
-    @Test
-    void getOneByNameWithOrder_ValidName_ObjectIsReturned() {
-        RestaurantTable foundTable = restaurantTableService.getOneByNameWithOrder("T1");
-        Assertions.assertNotNull(foundTable);
-        Assertions.assertNotNull(foundTable.getActiveOrder());
-    }
-
-    @Test
-    void getOneByNameWithOrder_NotExistingName_ExceptionThrown() {
-        Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> restaurantTableService.getOneByNameWithOrder("NameExistingName"));
-    }
-
-    @Test
-    void getOrderByTableName_ValidName_IdIsReturned() {
-        Long orderId = restaurantTableService.getOrderByTableName("T1");
-        Assertions.assertNotNull(orderId);
-        Assertions.assertTrue(orderId > 0);
-    }
-
-    @Test
-    void getOrderByTableName_TableDoesNotHaveOrder_ReturnedNull() {
-        Long orderId = restaurantTableService.getOrderByTableName("T2");
-        Assertions.assertNull(orderId);
-    }
-
     @Test
     void getAll_ObjectsExist_ReturnedAsList() {
         List<RestaurantTable> list = restaurantTableService.getAll();
@@ -133,16 +107,6 @@ class RestaurantTableServiceIntegrationTest {
         Assertions.assertNotNull(table);
     }
 
-    @Test
-    public void getActiveOrderIdByTableId_InvalidState_ExceptionThrown() {
-        Assertions.assertThrows(RestaurantTableStateNotValidException.class, () -> restaurantTableService.getActiveOrderIdByTableId(2L));
-    }
-
-    @Test
-    public void getActiveOrderIdByTableId_ValidId_IdReturned() {
-        Long foundId = restaurantTableService.getActiveOrderIdByTableId(1L);
-        Assertions.assertNotNull(foundId);
-    }
 
     @Test
     public void setOrderToTable_ValidId_ObjectUpdated() {

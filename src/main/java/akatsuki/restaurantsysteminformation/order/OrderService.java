@@ -13,15 +13,7 @@ public interface OrderService {
 
     Order getOneWithAll(Long orderId);
 
-    Order getOneWithDishes(Long orderId);
-
-    Order getOneWithDrinks(Long orderId);
-
-    Order getOneByRestaurantTableId(long id);
-
     List<Order> getAllWithAll();
-
-    List<Order> getAllActive();
 
     Order create(OrderCreateDTO order);
 

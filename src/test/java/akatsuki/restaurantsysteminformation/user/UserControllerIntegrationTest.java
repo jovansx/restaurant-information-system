@@ -2,9 +2,6 @@ package akatsuki.restaurantsysteminformation.user;
 
 import akatsuki.restaurantsysteminformation.dto.LoginDTO;
 import akatsuki.restaurantsysteminformation.dto.TokenDTO;
-import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableService;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
-import akatsuki.restaurantsysteminformation.room.dto.RoomCreateDTO;
 import akatsuki.restaurantsysteminformation.user.dto.UserTableDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +33,7 @@ class UserControllerIntegrationTest {
 
     @BeforeEach
     public void login() {
-        if(headers == null) {
+        if (headers == null) {
             ResponseEntity<TokenDTO> responseEntity =
                     restTemplate.postForEntity("/api/authenticate",
                             new LoginDTO("bradpitt", "bradpitt"),

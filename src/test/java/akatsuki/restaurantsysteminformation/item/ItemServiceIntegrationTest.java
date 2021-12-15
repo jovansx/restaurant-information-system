@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -55,11 +56,6 @@ class ItemServiceIntegrationTest {
         Assertions.assertTrue(foundItem.isOriginal());
     }
 
-    @Test
-    void getAllActive_ActiveItemsExist_ReturnedList() {
-        List<Item> foundList = itemService.getAllActive();
-        Assertions.assertEquals(5, foundList.size());
-    }
 
     @Test
     void getAllActiveByCategory_ActiveItemsWithEqualCategoryExist_ReturnedList() {

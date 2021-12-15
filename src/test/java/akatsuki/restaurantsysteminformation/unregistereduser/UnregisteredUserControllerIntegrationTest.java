@@ -33,7 +33,7 @@ class UnregisteredUserControllerIntegrationTest {
 
     @BeforeEach
     public void login() {
-        if(headers == null) {
+        if (headers == null) {
             ResponseEntity<TokenDTO> responseEntity =
                     restTemplate.postForEntity("/api/authenticate",
                             new LoginDTO("bradpitt", "bradpitt"),
@@ -79,7 +79,7 @@ class UnregisteredUserControllerIntegrationTest {
     @Test
     void create_Valid_SavedObject() {
         int size = unregisteredUserService.getAll().size();
-        ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX , HttpMethod.POST,
+        ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX, HttpMethod.POST,
                 new HttpEntity<>(new UnregisteredUserDTO("Jelena", "Stojanovic", "sekica@gmail.com",
                         "0691212237", 1000, UserType.WAITER, "7878"), headers), String.class);
 
@@ -102,7 +102,7 @@ class UnregisteredUserControllerIntegrationTest {
 
     @Test
     void create_InvalidUserType_ExceptionThrown() {
-        ResponseEntity<String> responseEntity = restTemplate.exchange(URL_PREFIX,  HttpMethod.POST, new HttpEntity<>(new UnregisteredUserDTO("Jelena", "Stojanovic",
+        ResponseEntity<String> responseEntity = restTemplate.exchange(URL_PREFIX, HttpMethod.POST, new HttpEntity<>(new UnregisteredUserDTO("Jelena", "Stojanovic",
                 "sekica@gmail.com", "0691212237", 1000, UserType.MANAGER, "1111"), this.headers), String.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
@@ -124,7 +124,7 @@ class UnregisteredUserControllerIntegrationTest {
     @Test
     void update_InvalidPin_ExceptionThrown() {
         ResponseEntity<Void> res = restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT, new HttpEntity<>(new UnregisteredUserDTO("John", "Cena",
-                        "johncena@gmail.com", "0611111111", 1000, UserType.WAITER, "1112"), this.headers), Void.class);
+                "johncena@gmail.com", "0611111111", 1000, UserType.WAITER, "1112"), this.headers), Void.class);
 
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
@@ -148,8 +148,8 @@ class UnregisteredUserControllerIntegrationTest {
     @Test
     void update_InvalidUserType_ExceptionThrown() {
         ResponseEntity<Void> res = restTemplate.exchange(URL_PREFIX + "/1", HttpMethod.PUT,
-                        new HttpEntity<>(new UnregisteredUserDTO("John", "Cena", "johncena@gmail.com",
-                                "0611111111", 1000, UserType.MANAGER, "1111"), this.headers), Void.class);
+                new HttpEntity<>(new UnregisteredUserDTO("John", "Cena", "johncena@gmail.com",
+                        "0611111111", 1000, UserType.MANAGER, "1111"), this.headers), Void.class);
 
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }

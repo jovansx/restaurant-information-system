@@ -3,7 +3,6 @@ package akatsuki.restaurantsysteminformation.sockets;
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
-import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
@@ -279,7 +278,7 @@ public class DishItemStreamControllerIntegrationTest {
     @Test
     public void delete_Valid_DeletedObject() throws Exception {
 
-        DishItem dishItem = dishItemService.getOne(1L);
+        DishItem dishItem = dishItemService.findOneActiveAndFetchItemAndChef(1L);
         session.send("/app/dish-item/delete/1", null);
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);

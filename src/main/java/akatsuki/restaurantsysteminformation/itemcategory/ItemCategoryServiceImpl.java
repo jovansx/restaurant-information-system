@@ -48,19 +48,6 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
     }
 
     @Override
-    public ItemCategory update(ItemCategory category, long id) {
-        ItemCategory foundCategory = getOne(id);
-        String formattedName = firstLetterUppercase(category.getName());
-        if (foundCategory.getName().equals(formattedName))
-            throw new ItemCategoryNameException("The Name of chosen category is already set to " + formattedName + ".");
-        if (itemCategoryRepository.findByName(formattedName) != null)
-            throw new ItemCategoryNameException("Cannot update to name " + formattedName + ".It already exists in the database.");
-        foundCategory.setName(formattedName);
-        itemCategoryRepository.save(foundCategory);
-        return foundCategory;
-    }
-
-    @Override
     public ItemCategory delete(long id) {
         ItemCategory category = getOne(id);
         List<Item> items = itemService.getAllWithAll();
@@ -70,11 +57,6 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
         });
         itemCategoryRepository.deleteById(id);
         return category;
-    }
-
-    @Override
-    public void save(ItemCategory itemCategory) {
-        itemCategoryRepository.save(itemCategory);
     }
 
     @Override

@@ -11,11 +11,7 @@ public interface ItemCategoryService {
 
     ItemCategory create(ItemCategory category);
 
-    ItemCategory update(ItemCategory category, long id);
-
     ItemCategory delete(long id);
-
-    void save(ItemCategory itemCategory);
 
     String firstLetterUppercase(String name);
 }

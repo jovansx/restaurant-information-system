@@ -8,10 +8,9 @@ public interface DrinkItemService {
 
     DrinkItem update(DrinkItemUpdateDTO drinkItem, long id);
 
-    DrinkItem delete(DrinkItem drinkItem);
-
     void delete(long id);
 
     DrinkItem findByIdAndFetchItem(long id);
+
     DrinkItem getOne(long id);
 }

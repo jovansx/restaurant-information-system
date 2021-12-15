@@ -15,7 +15,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,15 +29,6 @@ public class UnregisteredUserController {
     @GetMapping("/{id}")
     public UnregisteredUserRepresentationDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new UnregisteredUserRepresentationDTO(unregisteredUserService.getOne(id));
-    }
-
-    //    TODO proveri da li se koristi
-    @GetMapping
-    public List<UnregisteredUserRepresentationDTO> getAll() {
-        List<UnregisteredUserRepresentationDTO> usersDTO = new ArrayList<>();
-        List<UnregisteredUser> users = unregisteredUserService.getAll();
-        users.forEach(user -> usersDTO.add(new UnregisteredUserRepresentationDTO(user)));
-        return usersDTO;
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGER', 'SYSTEM_ADMIN')")

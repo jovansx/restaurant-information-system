@@ -20,12 +20,10 @@ import java.util.Objects;
 class RegisteredUserControllerIntegrationTest {
 
     private static final String URL_PREFIX = "/api/registered-user";
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     @Autowired
     RegisteredUserService registeredUserService;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     @Test
     public void getOne_ValidId_ReturnedObject() {

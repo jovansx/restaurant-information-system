@@ -139,32 +139,11 @@ class OrderServiceIntegrationTest {
     }
 
     @Test
-    public void getOneWithDishes_InvalidId_ExceptionThrown() {
-        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneWithDishes(1000L));
-    }
-
-    @Test
-    public void getOneWithDrinks_InvalidId_ExceptionThrown() {
-        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneWithDrinks(1000L));
-    }
-
-    @Test
     public void getAllWithAll_FetchOrders_ReturnedList() {
         List<Order> orders = orderService.getAllWithAll();
         Assertions.assertEquals(10, orders.size());
     }
 
-    @Test
-    public void getAllActive_FetchActiveOrders_ReturnedList() {
-        List<Order> orders = orderService.getAllActive();
-        Assertions.assertEquals(8, orders.size());
-    }
-
-    @Test
-    public void getOneByRestaurantTableId_ValidId_ReturnedObject() {
-        Order foundOrder = orderService.getOneByRestaurantTableId(1L);
-        Assertions.assertNotNull(foundOrder);
-    }
 
     @Test
     public void getOneByOrderItem_DishItem_ReturnedObject() {

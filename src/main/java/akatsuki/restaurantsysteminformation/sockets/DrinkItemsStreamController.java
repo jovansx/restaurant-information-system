@@ -32,7 +32,7 @@ public class DrinkItemsStreamController {
     public SocketResponseDTO create(@RequestBody @Valid DrinkItemsCreateDTO drinkItemsDTO) {
         drinkItemsService.create(drinkItemsDTO);
         SocketResponseDTO socketResponseDTO;
-        if(drinkItemsDTO.getOrderCreateDTO() != null) {
+        if (drinkItemsDTO.getOrderCreateDTO() != null) {
             socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "ORDER_CREATED");
         } else {
             socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "");

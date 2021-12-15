@@ -23,12 +23,6 @@ import java.util.stream.Collectors;
 public class RoomController {
     private final RoomService roomService;
 
-    //  TODO proveri da li se koristi
-    @GetMapping("/{id}")
-    public RoomWithTablesDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new RoomWithTablesDTO(roomService.getOne(id));
-    }
-
     @GetMapping
     public List<RoomWithTablesDTO> getAll() {
         return roomService.getAll().stream().map(RoomWithTablesDTO::new).collect(Collectors.toList());

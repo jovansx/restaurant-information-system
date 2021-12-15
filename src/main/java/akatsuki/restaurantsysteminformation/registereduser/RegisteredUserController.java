@@ -22,17 +22,10 @@ import java.util.stream.Collectors;
 public class RegisteredUserController {
     private final RegisteredUserService registeredUserService;
 
-    //TODO: verovatno pada test jer sam promenio tip povratne vrednosti
     @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'ADMIN')")
     @GetMapping("/{id}")
     public RegisteredUserDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new RegisteredUserDetailsDTO(registeredUserService.getOne(id));
-    }
-
-    //    TODO Vidi da li se koristi
-    @GetMapping
-    public List<RegisteredUser> getAll() {
-        return registeredUserService.getAll();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -56,13 +49,13 @@ public class RegisteredUserController {
     }
 
     @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'ADMIN')")
-    //TODO: naknadno dodato
     @PutMapping("/change-password/{id}")
     public void changePassword(@RequestBody @Valid RegisteredUserChangePasswordDTO registeredUserDTO,
-                       @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+                               @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.changePassword(registeredUserDTO, id);
     }
 
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'ADMIN')")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         registeredUserService.delete(id);

@@ -20,29 +20,18 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/not-active/{id}")
     public ItemDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return new ItemDetailsDTO(itemService.getOne(id));
     }
 
-    //    TODO NE KORISTI SE KOD MENE
-    @GetMapping("/{id}")
-    public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new ItemDetailsDTO(itemService.getOneActive(id));
-    }
-
-    //    TODO NE KORISTI SE KOD MENE
-    @GetMapping
-    public List<ItemDetailsDTO> getAllActive() {
-        return itemService.getAllActive().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
-    }
-
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/menu")
     public List<ItemBasicInfoDTO> getAllForMenuInsight() {
         return itemService.getAllForMenuInsight().stream().map(ItemBasicInfoDTO::new).collect(Collectors.toList());
     }
 
-    //    TODO Ovo koristi jelena
     @GetMapping("/category/{category}")
     @ResponseStatus(HttpStatus.OK)
     public List<ItemForMenuDTO> getAllByCategory(@PathVariable @NotEmpty(message = "It cannot be empty.") String category) {
