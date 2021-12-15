@@ -42,79 +42,6 @@ public class OrderStreamControllerIntegrationTest {
     }
 
     @Test
-    public void create_Valid_SavedObject() throws Exception {
-        int size = orderService.getAllWithAll().size();
-
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-        OrderCreateDTO dto = new OrderCreateDTO(1L, 1L);
-
-        session.send("/app/order/create", dto);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        List<Order> orders = orderService.getAllWithAll();
-
-        assertNotNull(returnDTO);
-        assertEquals(size + 1, orders.size());
-        assertTrue(returnDTO.isSuccessfullyFinished());
-
-        orderService.delete(orders.get(orders.size() - 1).getId());
-    }
-
-    @Test
-    public void create_InvalidWaiterId_ExceptionThrown() throws Exception {
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-        OrderCreateDTO dto = new OrderCreateDTO(2L, 1L);
-
-        session.send("/app/order/create", dto);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
-    public void create_UnregisteredUserIdDoesNotExist_ExceptionThrown() throws Exception {
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-        OrderCreateDTO dto = new OrderCreateDTO(55L, 1L);
-
-        session.send("/app/order/create", dto);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
     public void discard_Valid_DiscardObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
@@ -277,55 +204,6 @@ public class OrderStreamControllerIntegrationTest {
 
         assertNotNull(returnDTO);
         assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
-    public void delete_HaveItems_ExceptionThrown() throws Exception {
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-
-        session.send("/app/order/delete/1", null);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
-    public void delete_Valid_DeletedObject() throws Exception {
-        Order order = orderService.create(new OrderCreateDTO(1L, 1L));
-
-        int size = orderService.getAllWithAll().size();
-
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-
-        session.send("/app/order/delete/" + order.getId(), null);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        List<Order> orders = orderService.getAllWithAll();
-
-        assertNotNull(returnDTO);
-        assertEquals(size - 1, orders.size());
-        assertTrue(returnDTO.isSuccessfullyFinished());
     }
 
 }
