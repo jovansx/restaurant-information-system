@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemCategoryServiceTest {
@@ -44,7 +44,7 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    public void getOne_NegativeId_ExceptionThrown() {
+    public void getOne_InvalidId_ExceptionThrown() {
         Mockito.when(itemCategoryRepositoryMock.findById(8000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemCategoryService.getOne(8000L));
     }
@@ -74,16 +74,17 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    void getAll_ItemCategoriesDontExist_ReturnedNull() {
-        Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(null);
+    void getAll_ItemCategoriesDontExist_ReturnedEmpty() {
+        Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(new ArrayList<>());
         List<ItemCategory> foundList = itemCategoryService.getAll();
-        assertNull(foundList);
+        assertNotNull(foundList);
+        assertEquals(0, foundList.size());
     }
 
     @Test
     public void create_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory(1L, ItemType.DISH, "DESSERT");
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(2L, ItemType.DISH, "Soup"));
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "   DESsERT    ");
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(1L, ItemType.DISH, "Soup"));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
@@ -94,9 +95,9 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    public void create_InvalidEntity_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory(1L, ItemType.DISH, "SOUP");
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(2L, ItemType.DISH, "Soup"));
+    public void create_NameAlreadyExists_ExceptionThrown() {
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "SOUP");
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(1L, ItemType.DISH, "Soup"));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 

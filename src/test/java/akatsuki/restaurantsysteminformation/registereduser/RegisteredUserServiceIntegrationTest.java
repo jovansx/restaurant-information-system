@@ -1,10 +1,11 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
 import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserDeleteException;
-import akatsuki.restaurantsysteminformation.user.UserRepository;
+import akatsuki.restaurantsysteminformation.registereduser.exception.RegisteredUserPasswordException;
 import akatsuki.restaurantsysteminformation.user.exception.UserExistsException;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
@@ -12,8 +13,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,7 +28,7 @@ class RegisteredUserServiceIntegrationTest {
     RegisteredUserServiceImpl registeredUserService;
 
     @Autowired
-    UserRepository userRepository;
+    PasswordEncoder encoder;
 
     @Test
     public void getOne_ValidId_ReturnedObject() {
@@ -34,6 +39,18 @@ class RegisteredUserServiceIntegrationTest {
     @Test
     public void getOne_InvalidId_ExceptionThrown() {
         Assertions.assertThrows(UserNotFoundException.class, () -> registeredUserService.getOne(8000L));
+    }
+
+    @Test
+    void getAll_RegisteredUsersExist_ReturnedList() {
+        List<RegisteredUser> foundList = registeredUserService.getAll();
+        Assertions.assertEquals(3, foundList.size());
+    }
+
+    @Test
+    void getAllSystemAdmins_SystemAdminsExist_ReturnedList() {
+        List<RegisteredUser> foundList = registeredUserService.getAllSystemAdmins();
+        Assertions.assertEquals(1, foundList.size());
     }
 
     @Test
@@ -92,6 +109,19 @@ class RegisteredUserServiceIntegrationTest {
         RegisteredUserDetailsDTO user = new RegisteredUserDetailsDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0611111114", 0, UserType.SYSTEM_ADMIN, "michael123");
         Assertions.assertThrows(UserExistsException.class, () -> registeredUserService.update(user, 11L));
+    }
+
+    @Test
+    public void changePassword_ValidDTO_SavedObject() {
+        RegisteredUserChangePasswordDTO dto = new RegisteredUserChangePasswordDTO("liamneeson", "liamneesonstronger");
+        RegisteredUser changedUser = registeredUserService.changePassword(dto, 11);
+        assertTrue(encoder.matches("liamneesonstronger", changedUser.getPassword()));
+    }
+
+    @Test
+    public void changePassword_PasswordsNotMatches_ValidDTO_SavedObject() {
+        RegisteredUserChangePasswordDTO dto = new RegisteredUserChangePasswordDTO("liamneeson2", "liamneesonstronger");
+        Assertions.assertThrows(RegisteredUserPasswordException.class, () -> registeredUserService.changePassword(dto, 11L));
     }
 
     @Test
