@@ -45,8 +45,6 @@ public class OrderStreamControllerIntegrationTest {
     public void discard_Valid_DiscardObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
-        int size = orderService.getAllWithAll().size();
-
         BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
@@ -62,11 +60,12 @@ public class OrderStreamControllerIntegrationTest {
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<Order> orders = orderService.getAllWithAll();
+        order = orderService.getOneWithAll(order.getId());
 
         assertNotNull(returnDTO);
-        assertEquals(size - 1, orders.size());
+        assertTrue(order.isDiscarded());
         assertTrue(returnDTO.isSuccessfullyFinished());
+        assertEquals("Order with id " + order.getId() + " is successfully discarded!", returnDTO.getMessage());
 
         orderService.delete(order.getId());
     }
@@ -138,8 +137,6 @@ public class OrderStreamControllerIntegrationTest {
     public void charge_Valid_DiscardObject() throws Exception {
         Order order = orderService.create(new OrderCreateDTO(1L, 1L));
 
-        int size = orderService.getAllWithAll().size();
-
         BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
@@ -155,11 +152,12 @@ public class OrderStreamControllerIntegrationTest {
 
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-        List<Order> orders = orderService.getAllWithAll();
+        order = orderService.getOneWithAll(order.getId());
 
         assertNotNull(returnDTO);
-        assertEquals(size - 1, orders.size());
+        assertFalse(order.isActive());
         assertTrue(returnDTO.isSuccessfullyFinished());
+        assertEquals("Order with id " + order.getId() + " is successfully charged!", returnDTO.getMessage());
 
         orderService.delete(order.getId());
     }
