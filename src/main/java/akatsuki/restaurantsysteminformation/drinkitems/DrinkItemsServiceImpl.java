@@ -202,9 +202,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private void checkDrinksForUpdate(List<DrinkItemUpdateDTO> drinkItemsDTOList) {
         drinkItemsDTOList.forEach(drinkItem -> {
             if (drinkItem.getId() != -1) {
-                Item item = drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
-                if (item.getType() != ItemType.DRINK)
-                    throw new ItemNotFoundException("Not correct type of drink item!");
+                drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
             }
         });
     }

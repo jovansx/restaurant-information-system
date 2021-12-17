@@ -20,7 +20,7 @@ public class DrinkItemServiceImpl implements DrinkItemService {
     public DrinkItem findByIdAndFetchItem(long id) {
         Optional<DrinkItem> item = drinkItemRepository.findByIdAndFetchItem(id);
         if (item.isEmpty()) {
-            throw new DrinkItemNotFoundException("Drink item with the id" + id + "not found in the database.");
+            throw new DrinkItemNotFoundException("Drink item with the id " + id + " not found in the database.");
         }
         return item.get();
     }
