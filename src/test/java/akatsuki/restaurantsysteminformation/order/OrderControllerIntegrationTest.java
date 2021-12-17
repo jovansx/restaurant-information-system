@@ -1,6 +1,8 @@
 package akatsuki.restaurantsysteminformation.order;
 
 import akatsuki.restaurantsysteminformation.order.dto.OrderBasicInfoDTO;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,49 +24,31 @@ class OrderControllerIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void getOneWithAll_InvalidId_ExceptionThrown() {
-        ResponseEntity<OrderBasicInfoDTO> res = restTemplate.getForEntity(URL_PREFIX + "/1000", OrderBasicInfoDTO.class);
+    public void getOneByRestaurantTableId_ValidId_ReturnedObject() {
+        ResponseEntity<OrderDTO> res = restTemplate.getForEntity(URL_PREFIX + "/1" + "/1111", OrderDTO.class);
 
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+
+        Assertions.assertNotNull(res.getBody());
+        OrderDTO orderDTO = res.getBody();
+        Assertions.assertEquals(1, orderDTO.getId());
+        Assertions.assertEquals(8.0, orderDTO.getTotalPrice());
+        Assertions.assertEquals("2021-01-31 00:00:00", orderDTO.getCreatedAt());
+        Assertions.assertEquals("John Cena", orderDTO.getWaiter());
+        Assertions.assertEquals(4, orderDTO.getDishItemList().size());
+        Assertions.assertEquals(5, orderDTO.getDrinkItemsList().size());
+    }
+
+    @Test
+    public void getOneByRestaurantTableId_InvalidRestaurantTableId_ExceptionThrown() {
+        ResponseEntity<OrderDTO> res = restTemplate.getForEntity(URL_PREFIX + "/8000" + "/1111", OrderDTO.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
     @Test
-    public void getOneWithAll_ValidId_ObjectReturned() {
-        ResponseEntity<OrderBasicInfoDTO> res = restTemplate.getForEntity(URL_PREFIX + "/1", OrderBasicInfoDTO.class);
-
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
-
-        Assertions.assertNotNull(res.getBody());
-        OrderBasicInfoDTO order = res.getBody();
-        Assertions.assertEquals(8, order.getTotalPrice());
-        Assertions.assertEquals(1, order.getWaiter().getId());
-        Assertions.assertEquals(4, order.getDishItemList().size());
-        Assertions.assertEquals(5, order.getDrinkItemsList().size());
-    }
-
-    @Test
-    public void getOneByRestaurantTableId_ValidId_ReturnedObject() {
-        ResponseEntity<OrderBasicInfoDTO> res = restTemplate.getForEntity(URL_PREFIX + "/1", OrderBasicInfoDTO.class);
-
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
-
-        Assertions.assertNotNull(res.getBody());
-        OrderBasicInfoDTO order = res.getBody();
-        Assertions.assertEquals(1, order.getId());
-    }
-
-    @Test
-    public void getAll_FetchOrders_ReturnedList() {
-        ResponseEntity<OrderBasicInfoDTO[]> res = restTemplate.getForEntity(URL_PREFIX, OrderBasicInfoDTO[].class);
-        List<OrderBasicInfoDTO> list = Arrays.asList(Objects.requireNonNull(res.getBody()));
-        Assertions.assertEquals(10, list.size());
-    }
-
-    @Test
-    public void getAllActive_FetchOrders_ReturnedList() {
-        ResponseEntity<OrderBasicInfoDTO[]> res = restTemplate.getForEntity(URL_PREFIX + "/active", OrderBasicInfoDTO[].class);
-        List<OrderBasicInfoDTO> list = Arrays.asList(Objects.requireNonNull(res.getBody()));
-        Assertions.assertEquals(8, list.size());
+    public void getOneByRestaurantTableId_InvalidPinCode_ExceptionThrown() {
+        ResponseEntity<OrderDTO> res = restTemplate.getForEntity(URL_PREFIX + "/1" + "/1113", OrderDTO.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
 }
