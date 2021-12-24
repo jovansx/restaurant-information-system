@@ -31,6 +31,13 @@ public class OrderDTO {
     }
 
     public OrderDTO() {
+        this.id = 0;
+        this.totalPrice = 0;
+        this.createdAt = "";
+        this.waiter = null;
+        this.waiterId = 0;
+        this.dishItemList = new ArrayList<>();
+        this.drinkItemsList = new ArrayList<>();
     }
 
     public long getWaiterId() {

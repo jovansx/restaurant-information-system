@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DrinkItemCreateDTO {
     private int amount;
-    private Long itemId;
+    private long itemId;
 }

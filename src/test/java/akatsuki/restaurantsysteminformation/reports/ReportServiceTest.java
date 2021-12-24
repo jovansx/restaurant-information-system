@@ -9,7 +9,6 @@ import akatsuki.restaurantsysteminformation.salary.Salary;
 import akatsuki.restaurantsysteminformation.user.User;
 import akatsuki.restaurantsysteminformation.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,7 +34,6 @@ class ReportServiceTest {
     OrderRepository orderRepositoryMock;
 
     @Test
-    @DisplayName("When there are objects in the database, values .")
     void getMonthlyReport_Valid_ReturnedValidReportObject() {
         User user = new RegisteredUser();
         List<Salary> salaries = new ArrayList<>();

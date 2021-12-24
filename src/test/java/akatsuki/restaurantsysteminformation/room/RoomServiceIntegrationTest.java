@@ -2,12 +2,14 @@ package akatsuki.restaurantsysteminformation.room;
 
 import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
-import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableCreateDTO;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTable;
 import akatsuki.restaurantsysteminformation.restauranttable.dto.RestaurantTableDTO;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotAvailableException;
-import akatsuki.restaurantsysteminformation.room.dto.RoomUpdateDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomLayoutDTO;
+import akatsuki.restaurantsysteminformation.room.dto.RoomTablesUpdateDTO;
 import akatsuki.restaurantsysteminformation.room.exception.RoomDeletionFailedException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomExistsException;
+import akatsuki.restaurantsysteminformation.room.exception.RoomLayoutUpdateException;
 import akatsuki.restaurantsysteminformation.room.exception.RoomNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,11 +41,19 @@ class RoomServiceIntegrationTest {
     }
 
     @Test
+    void getAll_Valid_ReturnedList() {
+        List<Room> rooms = roomService.getAll();
+        Assertions.assertNotNull(rooms);
+        Assertions.assertEquals(3, rooms.size());
+    }
+
+    @Test
     public void create_ValidObject_SavedObject() {
         Room room = new Room();
         room.setName("name1");
         Room createdRoom = roomService.create(room);
         Assertions.assertNotNull(createdRoom);
+        Assertions.assertEquals("name1", createdRoom.getName());
     }
 
     @Test
@@ -50,23 +62,10 @@ class RoomServiceIntegrationTest {
         room.setName("Room 1");
         Assertions.assertThrows(RoomExistsException.class, () -> roomService.create(room));
     }
-//
-//    @Test
-//    public void update_ValidObject_ObjectIsUpdated() {
-//        List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
-//        newTables.add(new RestaurantTableCreateDTO("T3", TableState.FREE, TableShape.SQUARE, 0, 0));
-//        List<RestaurantTableDTO> updateTables = new ArrayList<>();
-//        List<Long> deleteTables = new ArrayList<>();
-//
-//        RoomUpdateDTO roomUpdateDTO = new RoomUpdateDTO(newTables, updateTables, deleteTables, "Room number 1");
-//
-//        Room updatedRoom = roomService.updateByRoomDTO(roomUpdateDTO, 1L);
-//        Assertions.assertNotNull(updatedRoom);
-//    }
 
     @Test
     public void delete_ValidId_ObjectRemoved() {
-        Room room = roomService.delete(2L);
+        Room room = roomService.delete(3L);
         Assertions.assertNotNull(room);
     }
 
@@ -75,21 +74,84 @@ class RoomServiceIntegrationTest {
         Assertions.assertThrows(RoomDeletionFailedException.class, () -> roomService.delete(1L));
     }
 
-//    @Test
-//    public void updateByRoomDTO_RoomNameExist_ExceptionThrown() {
-//        RoomUpdateDTO roomUpdateDTO = new RoomUpdateDTO(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), "Room 2");
-//        Assertions.assertThrows(RoomExistsException.class, () -> roomService.updateByRoomDTO(roomUpdateDTO, 1L));
-//    }
+    @Test
+    public void updateName_ValidName_ObjectUpdated() {
+        Room room = roomService.updateName("Room number 1", 1);
+        Assertions.assertNotNull(room);
+        Assertions.assertEquals("Room number 1", room.getName());
+    }
 
-//    @Test
-//    public void updateByRoomDTO_TableNotInRoom_ExceptionThrown() {
-//        List<RestaurantTableCreateDTO> newTables = new ArrayList<>();
-//        List<RestaurantTableDTO> updateTables = new ArrayList<>();
-//        updateTables.add(new RestaurantTableDTO("T5", TableState.FREE, TableShape.SQUARE, 1L, 0, 0));
-//        List<Long> deleteTables = new ArrayList<>();
-//
-//        RoomUpdateDTO roomUpdateDTO = new RoomUpdateDTO(newTables, updateTables, deleteTables, "Room number 2");
-//        Assertions.assertThrows(RestaurantTableNotAvailableException.class, () -> roomService.updateByRoomDTO(roomUpdateDTO, 2L));
-//    }
+    @Test
+    public void updateName_NameAlreadyExist_ExceptionThrown() {
+        Assertions.assertThrows(RoomExistsException.class, () -> roomService.updateName("Room 2", 1));
+    }
+
+    @Test
+    public void updateLayout_NewValidLayout_ObjectUpdated() {
+        Room room = roomService.updateLayout(new RoomLayoutDTO(5, 5), 1);
+        Assertions.assertNotNull(room);
+        Assertions.assertEquals(5, room.getColumns());
+        Assertions.assertEquals(5, room.getRows());
+    }
+
+    @Test
+    public void updateLayout_TableOutOfNewLayout_ExceptionThrown() {
+        Assertions.assertThrows(RoomLayoutUpdateException.class, () -> roomService.updateLayout(new RoomLayoutDTO(1, 1), 1));
+    }
+
+    @Test
+    public void updateTables_ValidTables_ObjectUpdated() {
+        RestaurantTableDTO restaurantTableDTO1 = new RestaurantTableDTO();
+        restaurantTableDTO1.setId(1);
+        restaurantTableDTO1.setName("Table 1");
+        restaurantTableDTO1.setShape(TableShape.CIRCLE);
+        restaurantTableDTO1.setRow(1);
+
+        RestaurantTableDTO restaurantTableDTO2 = new RestaurantTableDTO();
+        restaurantTableDTO2.setId(0);
+        restaurantTableDTO2.setName("Table 3");
+        restaurantTableDTO2.setShape(TableShape.CIRCLE);
+        restaurantTableDTO2.setState(TableState.FREE);
+        restaurantTableDTO2.setColumn(0);
+
+        RestaurantTableDTO restaurantTableDTO3 = new RestaurantTableDTO();
+        restaurantTableDTO3.setId(0);
+        restaurantTableDTO3.setName("T2");
+        restaurantTableDTO3.setShape(TableShape.CIRCLE);
+        restaurantTableDTO3.setState(TableState.FREE);
+        restaurantTableDTO3.setColumn(0);
+
+        RoomTablesUpdateDTO roomUpdateDTO = new RoomTablesUpdateDTO(Arrays.asList(restaurantTableDTO1, restaurantTableDTO2, restaurantTableDTO3));
+
+        Room room = roomService.updateTables(roomUpdateDTO, 1L);
+        List<RestaurantTable> tables = room.getRestaurantTables();
+
+        RestaurantTable table = tables.stream().filter(t -> t.getName().equals(restaurantTableDTO1.getName())).collect(Collectors.toList()).get(0);
+        RestaurantTable table2 = tables.stream().filter(t -> t.getName().equals(restaurantTableDTO2.getName())).collect(Collectors.toList()).get(0);
+        RestaurantTable table3 = tables.stream().filter(t -> t.getName().equals(restaurantTableDTO3.getName())).collect(Collectors.toList()).get(0);
+
+        Assertions.assertNotNull(room);
+        Assertions.assertEquals(1, table.getRow());
+        Assertions.assertEquals(TableShape.CIRCLE, table.getShape());
+
+        Assertions.assertNotEquals(0, table2.getId());
+        Assertions.assertEquals(TableShape.CIRCLE, table2.getShape());
+        Assertions.assertEquals(TableState.FREE, table2.getState());
+        Assertions.assertEquals(0, table2.getColumn());
+
+        Assertions.assertNotEquals(0, table3.getId());
+        Assertions.assertEquals(TableShape.CIRCLE, table3.getShape());
+        Assertions.assertEquals(TableState.FREE, table3.getState());
+        Assertions.assertEquals(0, table3.getColumn());
+    }
+
+    @Test
+    public void updateTables_TableNotInRoom_ExceptionThrown() {
+        RestaurantTableDTO table = new RestaurantTableDTO();
+        table.setId(3L);
+
+        RoomTablesUpdateDTO roomUpdateDTO = new RoomTablesUpdateDTO(Collections.singletonList(table));
+        Assertions.assertThrows(RestaurantTableNotAvailableException.class, () -> roomService.updateTables(roomUpdateDTO, 1L));
+    }
 
 }

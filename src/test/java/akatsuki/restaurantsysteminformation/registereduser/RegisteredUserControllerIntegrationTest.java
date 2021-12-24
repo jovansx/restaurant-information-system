@@ -1,16 +1,22 @@
 package akatsuki.restaurantsysteminformation.registereduser;
 
+import akatsuki.restaurantsysteminformation.dto.LoginDTO;
+import akatsuki.restaurantsysteminformation.dto.TokenDTO;
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
+import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
+import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
+import akatsuki.restaurantsysteminformation.user.dto.UserTableDTO;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,15 +28,33 @@ class RegisteredUserControllerIntegrationTest {
     private static final String URL_PREFIX = "/api/registered-user";
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    RegisteredUserService registeredUserService;
 
     @Autowired
-    RegisteredUserService registeredUserService;
+    PasswordEncoder encoder;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    private HttpHeaders headers;
+
+    @BeforeEach
+    public void login() {
+        if (headers == null) {
+            ResponseEntity<TokenDTO> responseEntity =
+                    restTemplate.postForEntity("/api/authenticate",
+                            new LoginDTO("michaeldouglas", "michaeldouglas"),
+                            TokenDTO.class);
+            String accessToken = Objects.requireNonNull(responseEntity.getBody()).getToken();
+            this.headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + accessToken);
+        }
+    }
 
     @Test
     public void getOne_ValidId_ReturnedObject() {
-        ResponseEntity<RegisteredUser> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/10", RegisteredUser.class);
-        RegisteredUser dto = responseEntity.getBody();
+        ResponseEntity<RegisteredUserDetailsDTO> responseEntity = restTemplate.exchange(URL_PREFIX + "/10", HttpMethod.GET, new HttpEntity<>(headers), RegisteredUserDetailsDTO.class);
+        RegisteredUserDetailsDTO dto = responseEntity.getBody();
 
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(dto);
@@ -39,15 +63,15 @@ class RegisteredUserControllerIntegrationTest {
 
     @Test
     public void getOne_InvalidId_ExceptionThrown() {
-        ResponseEntity<RegisteredUser> responseEntity = restTemplate.getForEntity(URL_PREFIX + "/8000", RegisteredUser.class);
+        ResponseEntity<RegisteredUserDetailsDTO> responseEntity = restTemplate.exchange(URL_PREFIX + "/8000", HttpMethod.GET, new HttpEntity<>(headers), RegisteredUserDetailsDTO.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
-    public void getAll_Valid_ObjectsReturned() {
-        ResponseEntity<RegisteredUser[]> responseEntity = restTemplate.getForEntity(URL_PREFIX, RegisteredUser[].class);
-        List<RegisteredUser> list = Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
-        Assertions.assertEquals(3, list.size());
+    public void getAllSystemAdminsForRowInTable_Valid_ObjectsReturned() {
+        ResponseEntity<UserTableDTO[]> responseEntity = restTemplate.exchange(URL_PREFIX + "/system-admin/table", HttpMethod.GET, new HttpEntity<>(headers), UserTableDTO[].class);
+        List<UserTableDTO> list = Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+        Assertions.assertEquals(1, list.size());
     }
 
     @Test
@@ -55,7 +79,8 @@ class RegisteredUserControllerIntegrationTest {
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", 13, UserType.MANAGER, "michael", "lock");
         int size = registeredUserService.getAll().size();
-        ResponseEntity<String> res = restTemplate.postForEntity(URL_PREFIX, user, String.class);
+        HttpEntity<RegisteredUserDTO> entity = new HttpEntity<>(user, headers);
+        ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX, HttpMethod.POST, entity, String.class);
 
         Assertions.assertNotNull(res.getBody());
         Assertions.assertEquals(HttpStatus.CREATED, res.getStatusCode());
@@ -72,24 +97,27 @@ class RegisteredUserControllerIntegrationTest {
     void create_AlreadyExistUsername_ExceptionThrown() {
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", 12, UserType.MANAGER, "bradpitt", "lock");
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
-        Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        HttpEntity<RegisteredUserDTO> entity = new HttpEntity<>(user, headers);
+        ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX, HttpMethod.POST, entity, String.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
     @Test
     void create_InvalidPhoneNumber_ExceptionThrown() {
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "064567882", 12, UserType.MANAGER, "bradpitt", "lock");
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        HttpEntity<RegisteredUserDTO> entity = new HttpEntity<>(user, headers);
+        ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX, HttpMethod.POST, entity, String.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
 
     @Test
     void create_InvalidUserType_ExceptionThrown() {
         RegisteredUserDTO user = new RegisteredUserDTO("Michael", "Lock", "michaellock@gmail.com",
                 "0645678822", 12, UserType.ADMIN, "michael123", "lock");
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL_PREFIX, user, String.class);
-        Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        HttpEntity<RegisteredUserDTO> entity = new HttpEntity<>(user, headers);
+        ResponseEntity<String> res = restTemplate.exchange(URL_PREFIX, HttpMethod.POST, entity, String.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
     @Test
@@ -100,7 +128,7 @@ class RegisteredUserControllerIntegrationTest {
 
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
-                        new HttpEntity<>(user),
+                        new HttpEntity<>(user, headers),
                         Void.class);
 
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
@@ -118,7 +146,7 @@ class RegisteredUserControllerIntegrationTest {
                 "0645678822", 11, UserType.MANAGER, "michael123", "lock");
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/10", HttpMethod.PUT,
-                        new HttpEntity<>(user),
+                        new HttpEntity<>(user, headers),
                         Void.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
@@ -130,7 +158,7 @@ class RegisteredUserControllerIntegrationTest {
 
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
-                        new HttpEntity<>(user),
+                        new HttpEntity<>(user, headers),
                         Void.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
@@ -141,7 +169,7 @@ class RegisteredUserControllerIntegrationTest {
                 "0645678822", 12, UserType.SYSTEM_ADMIN, "michael123", "lock");
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
-                        new HttpEntity<>(user),
+                        new HttpEntity<>(user, headers),
                         Void.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
@@ -152,8 +180,39 @@ class RegisteredUserControllerIntegrationTest {
                 "0611111114", 12, UserType.SYSTEM_ADMIN, "michael123", "lock");
         ResponseEntity<Void> res =
                 restTemplate.exchange(URL_PREFIX + "/11", HttpMethod.PUT,
-                        new HttpEntity<>(user),
+                        new HttpEntity<>(user, headers),
                         Void.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
+    }
+
+    @Test
+    public void changePassword_ValidEntityAndId_SavedObject() {
+        RegisteredUser original = registeredUserService.getOne(11L);
+        RegisteredUserChangePasswordDTO dto = new RegisteredUserChangePasswordDTO("liamneeson", "liamneesonstronger");
+
+        ResponseEntity<Void> res =
+                restTemplate.exchange(URL_PREFIX + "/change-password/11", HttpMethod.PUT,
+                        new HttpEntity<>(dto, headers),
+                        Void.class);
+
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+
+        RegisteredUser foundUser = registeredUserService.getOne(11L);
+        Assertions.assertTrue(encoder.matches("liamneesonstronger", foundUser.getPassword()));
+
+        foundUser = original;
+        registeredUserService.save(foundUser);
+    }
+
+    @Test
+    public void changePassword_PasswordsNotMatches_ExceptionThrown() {
+        RegisteredUserChangePasswordDTO dto = new RegisteredUserChangePasswordDTO("liamneeson2", "liamneesonstronger");
+
+        ResponseEntity<Void> res =
+                restTemplate.exchange(URL_PREFIX + "/change-password/11", HttpMethod.PUT,
+                        new HttpEntity<>(dto, headers),
+                        Void.class);
+
         Assertions.assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
     }
 
@@ -163,7 +222,7 @@ class RegisteredUserControllerIntegrationTest {
         int size = registeredUserService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + user.getId(),
-                HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
+                HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
 
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertEquals(size - 1, registeredUserService.getAll().size());
@@ -172,7 +231,7 @@ class RegisteredUserControllerIntegrationTest {
     @Test
     public void delete_InvalidType_ExceptionThrown() {
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/10",
-                HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
+                HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
     }
 }

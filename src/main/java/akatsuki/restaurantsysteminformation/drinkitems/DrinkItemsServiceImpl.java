@@ -3,8 +3,9 @@ package akatsuki.restaurantsysteminformation.drinkitems;
 import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
 import akatsuki.restaurantsysteminformation.drinkitem.DrinkItemService;
-import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
+import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemUpdateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsUpdateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsInvalidStateException;
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotContainedException;
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
@@ -39,22 +40,10 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private final RestaurantTableService restaurantTableService;
 
     @Override
-    public DrinkItems getOne(long id) {
-        return drinkItemsRepository.findById(id).orElseThrow(
-                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
-        );
-    }
-
-    @Override
     public DrinkItems findOneWithItems(long id) {
         return drinkItemsRepository.findOneWithItems(id).orElseThrow(
                 () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
         );
-    }
-
-    @Override
-    public List<DrinkItems> getAll() {
-        return drinkItemsRepository.findAll();
     }
 
     @Override
@@ -80,8 +69,14 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public DrinkItems create(DrinkItemsCreateDTO drinkItemsDTO) {
-        Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
-        List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
+        Order order;
+        if (drinkItemsDTO.getOrderId() == 0) {
+            order = orderService.create(drinkItemsDTO.getOrderCreateDTO());
+        } else {
+            order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
+        }
+
+        List<DrinkItemUpdateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItems();
         checkDrinks(drinkItemsDTOList);
 
         List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
@@ -95,10 +90,11 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
 
     @Override
-    public DrinkItems update(DrinkItemsCreateDTO drinkItemsDTO, long id) {
+    public DrinkItems update(DrinkItemsUpdateDTO drinkItemsDTO, long id) {
+
         Order order = orderService.getOneWithAll((long) drinkItemsDTO.getOrderId());
-        List<DrinkItemCreateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItemList();
-        checkDrinks(drinkItemsDTOList);
+        List<DrinkItemUpdateDTO> drinkItemsDTOList = drinkItemsDTO.getDrinkItems();
+        checkDrinksForUpdate(drinkItemsDTOList);
 
         DrinkItems drinkItems = findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(id);
         boolean listIsInOrder = order.getDrinks().contains(drinkItems);
@@ -109,16 +105,37 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         if (!itemState.equals(ItemState.ON_HOLD))
             throw new DrinkItemsInvalidStateException("Cannot change drink items list, because its state is " + itemState.name().toLowerCase() + ". Allowed state to change is 'on_hold'.");
 
-        List<DrinkItem> ref = new ArrayList<>(drinkItems.getDrinkItemList());
-        drinkItems.getDrinkItemList().clear();
-        drinkItemsRepository.save(drinkItems);
-        for (DrinkItem drinkItem : ref)
-            drinkItemService.delete(drinkItem);
-        List<DrinkItem> drinkItemsOfList = getDrinks(drinkItemsDTOList);
-        drinkItems.setDrinkItemList(drinkItemsOfList);
+        List<DrinkItem> drinkItemsNew = new ArrayList<>();
+
+        for (DrinkItemUpdateDTO drinkItemUpdateDTO : drinkItemsDTOList) {
+            if (drinkItemUpdateDTO.getStatus() == 0) {
+                //create
+                DrinkItem newDrinkItem = drinkItemService.create(drinkItemUpdateDTO);
+                drinkItemsNew.add(newDrinkItem);
+            } else if (drinkItemUpdateDTO.getStatus() == 1) {
+                //update
+                DrinkItem updatedDrinkItem = drinkItemService.update(drinkItemUpdateDTO, drinkItemUpdateDTO.getId());
+                drinkItemsNew.add(updatedDrinkItem);
+            } else if (drinkItemUpdateDTO.getStatus() == 2) {
+                //delete
+                drinkItemService.delete(drinkItemUpdateDTO.getId());
+            } else {
+                DrinkItem existingDrinkItem = drinkItemService.getOne(drinkItemUpdateDTO.getId());
+                drinkItemsNew.add(existingDrinkItem);
+            }
+        }
+
+        drinkItems.setDrinkItemList(drinkItemsNew);
         drinkItems.setNotes(drinkItemsDTO.getNotes());
         drinkItemsRepository.save(drinkItems);
-
+        int index = 0;
+        for (DrinkItems diInOrder : order.getDrinks()) {
+            if (diInOrder.getId() == id) {
+                break;
+            }
+            index++;
+        }
+        order.getDrinks().set(index, drinkItems);
         orderService.updateTotalPriceAndSave(order);
         return drinkItems;
     }
@@ -169,7 +186,8 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
 
     @Override
     public void deleteById(long id) {
-        DrinkItems drinkItems = getOne(id);
+        DrinkItems drinkItems = drinkItemsRepository.findById(id).orElseThrow(
+                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database."));
         Order order = orderService.getOneByOrderItem(drinkItems);
         order.getDrinks().remove(drinkItems);
         orderService.updateTotalPriceAndSave(order);
@@ -181,22 +199,35 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
         return drinkItemsRepository.findAllByActiveIsTrueAndBartender(user).isEmpty();
     }
 
+    private void checkDrinksForUpdate(List<DrinkItemUpdateDTO> drinkItemsDTOList) {
+        drinkItemsDTOList.forEach(drinkItem -> {
+            if (drinkItem.getId() != -1) {
+                Item item = drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
+                if (item.getType() != ItemType.DRINK)
+                    throw new ItemNotFoundException("Not correct type of drink item!");
+            }
+        });
+    }
 
-    private void checkDrinks(List<DrinkItemCreateDTO> drinkItems) {
+
+    private void checkDrinks(List<DrinkItemUpdateDTO> drinkItems) {
         drinkItems.forEach(drinkItem -> {
+//            Item item = drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
             Item item = itemService.getOne(drinkItem.getItemId());
             if (item.getType() != ItemType.DRINK)
                 throw new ItemNotFoundException("Not correct type of drink item!");
         });
     }
 
-    private List<DrinkItem> getDrinks(List<DrinkItemCreateDTO> drinkItemsDTOList) {
+    private List<DrinkItem> getDrinks(List<DrinkItemUpdateDTO> drinkItemsDTOList) {
         List<DrinkItem> drinkItemsOfList = new ArrayList<>();
 
-        for (DrinkItemCreateDTO drinkItemDTO : drinkItemsDTOList) {
-            Item item = itemService.getOne(drinkItemDTO.getItemId());
-            DrinkItem drinkItem = new DrinkItem(drinkItemDTO.getAmount(), item);
-            DrinkItem savedDrinkItem = drinkItemService.create(drinkItem);
+        for (DrinkItemUpdateDTO drinkItemDTO : drinkItemsDTOList) {
+            itemService.getOne(drinkItemDTO.getItemId());
+            DrinkItemUpdateDTO drinkItemUpdateDTO = new DrinkItemUpdateDTO();
+            drinkItemUpdateDTO.setAmount(drinkItemDTO.getAmount());
+            drinkItemUpdateDTO.setItemId(drinkItemDTO.getItemId());
+            DrinkItem savedDrinkItem = drinkItemService.create(drinkItemUpdateDTO);
             drinkItemsOfList.add(savedDrinkItem);
         }
         return drinkItemsOfList;

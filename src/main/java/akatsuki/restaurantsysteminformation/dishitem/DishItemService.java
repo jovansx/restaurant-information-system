@@ -1,15 +1,12 @@
 package akatsuki.restaurantsysteminformation.dishitem;
 
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
+import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemUpdateDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import java.util.List;
 
 public interface DishItemService {
-
-    DishItem getOne(long id);
-
-    List<DishItem> getAll();
 
     DishItem findOneActiveAndFetchItemAndChef(long id);
 
@@ -17,7 +14,7 @@ public interface DishItemService {
 
     DishItem create(DishItemCreateDTO dishItem);
 
-    DishItem update(DishItemCreateDTO dishItemCreateDTO, long id);
+    DishItem update(DishItemUpdateDTO dishItemDTO, long id);
 
     DishItem changeStateOfDishItems(long itemId, long userId);
 

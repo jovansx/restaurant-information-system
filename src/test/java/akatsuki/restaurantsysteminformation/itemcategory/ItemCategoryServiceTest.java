@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemCategoryServiceTest {
@@ -35,7 +35,7 @@ class ItemCategoryServiceTest {
 
     @Test
     public void getOne_ValidId_ReturnedObject() {
-        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(itemCategory));
         ItemCategory foundItemCategory = itemCategoryService.getOne(1L);
@@ -44,14 +44,14 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    public void getOne_NegativeId_ExceptionThrown() {
+    public void getOne_InvalidId_ExceptionThrown() {
         Mockito.when(itemCategoryRepositoryMock.findById(8000L)).thenReturn(Optional.empty());
         Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemCategoryService.getOne(8000L));
     }
 
     @Test
     public void getByName_ValidItemCategoryName_ReturnedObject() {
-        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
         Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(existingItemCategory);
         ItemCategory foundItemCategory = itemCategoryService.getByName("Dessert");
         Assertions.assertEquals(foundItemCategory, existingItemCategory);
@@ -66,7 +66,7 @@ class ItemCategoryServiceTest {
 
     @Test
     void getAll_ItemCategoriesExist_ReturnedList() {
-        List<ItemCategory> list = Collections.singletonList(new ItemCategory("Dessert", CategoryType.DISH));
+        List<ItemCategory> list = Collections.singletonList(new ItemCategory(1L, ItemType.DISH, "Dessert"));
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(list);
 
         List<ItemCategory> foundList = itemCategoryService.getAll();
@@ -74,16 +74,17 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    void getAll_ItemCategoriesDontExist_ReturnedNull() {
-        Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(null);
+    void getAll_ItemCategoriesDontExist_ReturnedEmpty() {
+        Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(new ArrayList<>());
         List<ItemCategory> foundList = itemCategoryService.getAll();
-        assertNull(foundList);
+        assertNotNull(foundList);
+        assertEquals(0, foundList.size());
     }
 
     @Test
     public void create_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory("Soup", CategoryType.DISH));
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "   DESsERT    ");
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(1L, ItemType.DISH, "Soup"));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
@@ -94,58 +95,21 @@ class ItemCategoryServiceTest {
     }
 
     @Test
-    public void create_InvalidEntity_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Soup", CategoryType.DISH);
-        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory("Soup", CategoryType.DISH));
+    public void create_NameAlreadyExists_ExceptionThrown() {
+        ItemCategory itemCategory = new ItemCategory(2L, ItemType.DISH, "SOUP");
+        List<ItemCategory> itemCategories = Collections.singletonList(new ItemCategory(1L, ItemType.DISH, "Soup"));
 
         Mockito.when(itemCategoryRepositoryMock.findAll()).thenReturn(itemCategories);
 
         Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.create(itemCategory));
     }
 
-
-    @Test
-    public void update_ValidEntityAndId_SavedObject() {
-        ItemCategory existingItemCategory = new ItemCategory("Chocolate desert", CategoryType.DISH);
-        ItemCategory itemCategory = new ItemCategory( "Dessert", CategoryType.DISH);
-
-        Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
-        Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(null);
-
-        itemCategoryService.update(itemCategory, 1L);
-
-        Assertions.assertEquals(existingItemCategory.getName(), "Dessert");
-        Mockito.verify(itemCategoryRepositoryMock, Mockito.times(1)).save(existingItemCategory);
-    }
-
-    @Test
-    public void update_EntityNameIsTheSame_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
-        ItemCategory itemCategory = new ItemCategory("DESSERT  ", CategoryType.DISH);
-
-        Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
-
-        Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.update(itemCategory, 1L));
-    }
-
-    @Test
-    public void update_EntityNameAlreadyExist_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory("Barbeque", CategoryType.DISH);
-        ItemCategory itemCategory = new ItemCategory("DESSERT  ", CategoryType.DISH);
-        ItemCategory foundCategoryByName = new ItemCategory( "Dessert", CategoryType.DISH);
-
-        Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
-        Mockito.when(itemCategoryRepositoryMock.findByName("Dessert")).thenReturn(foundCategoryByName);
-
-        Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.update(itemCategory, 1L));
-    }
-
     @Test
     public void delete_ValidId_SavedObject() {
-        ItemCategory existingItemCategory = new ItemCategory( "Chocolate desert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Chocolate desert");
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
-        Mockito.when(itemServiceMock.getAllActive()).thenReturn(new ArrayList<>());
+        Mockito.when(itemServiceMock.getAllWithAll()).thenReturn(new ArrayList<>());
 
         itemCategoryService.delete(1L);
 
@@ -154,20 +118,14 @@ class ItemCategoryServiceTest {
 
     @Test
     public void delete_ItemHasCategory_ExceptionThrown() {
-        ItemCategory existingItemCategory = new ItemCategory("Dessert", CategoryType.DISH);
+        ItemCategory existingItemCategory = new ItemCategory(1L, ItemType.DISH, "Dessert");
         List<Item> items = new ArrayList<>();
         items.add(new Item("Kinder", "Creamy", null, true, false, ItemType.DISH, null, existingItemCategory, null));
 
         Mockito.when(itemCategoryRepositoryMock.findById(1L)).thenReturn(Optional.of(existingItemCategory));
-        Mockito.when(itemServiceMock.getAllActive()).thenReturn(items);
+        Mockito.when(itemServiceMock.getAllWithAll()).thenReturn(items);
 
         Assertions.assertThrows(ItemCategoryDeleteException.class, () -> itemCategoryService.delete(1L));
     }
 
-    @Test
-    public void save_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Chocolate desert", CategoryType.DISH);
-        itemCategoryService.save(itemCategory);
-        Mockito.verify(itemCategoryRepositoryMock, Mockito.times(1)).save(itemCategory);
-    }
 }

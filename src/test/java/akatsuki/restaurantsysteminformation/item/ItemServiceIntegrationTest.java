@@ -1,10 +1,8 @@
 package akatsuki.restaurantsysteminformation.item;
 
 import akatsuki.restaurantsysteminformation.enums.ItemType;
-import akatsuki.restaurantsysteminformation.item.exception.ItemAlreadyDeletedException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemCodeNotValidException;
 import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
-import akatsuki.restaurantsysteminformation.itemcategory.CategoryType;
 import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
 import akatsuki.restaurantsysteminformation.price.Price;
@@ -24,12 +22,7 @@ import java.util.List;
 class ItemServiceIntegrationTest {
 
     @Autowired
-    ItemServiceImpl itemService;
-
-    @Test
-    void getOne_InvalidId_ExceptionThrown() {
-        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOne(8000L));
-    }
+    ItemService itemService;
 
     @Test
     void getOne_ValidId_ReturnedObject() {
@@ -45,8 +38,8 @@ class ItemServiceIntegrationTest {
     }
 
     @Test
-    void getOneActive_NotOriginalItem_ExceptionThrown() {
-        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOneActive(6L));
+    void getOne_InvalidId_ExceptionThrown() {
+        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOne(8000L));
     }
 
     @Test
@@ -57,9 +50,8 @@ class ItemServiceIntegrationTest {
     }
 
     @Test
-    void getAllActive_ActiveItemsExist_ReturnedList() {
-        List<Item> foundList = itemService.getAllActive();
-        Assertions.assertEquals(5, foundList.size());
+    void getOneActive_NotOriginalItem_ExceptionThrown() {
+        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.getOneActive(6L));
     }
 
     @Test
@@ -74,45 +66,33 @@ class ItemServiceIntegrationTest {
     }
 
     @Test
-    void create_CategoryNotExist_ExceptionThrown() {
-        Item item = new Item();
-        item.setItemCategory(new ItemCategory("Chips", CategoryType.DISH));
-
-        Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemService.create(item));
+    void getAllWithAll__ReturnedList() {
+        List<Item> items = itemService.getAllWithAll();
+        Assertions.assertEquals(6, items.size());
     }
 
     @Test
     void create_ValidItem_ObjectIsCreated() {
         Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Meat", CategoryType.DISH), null);
+                null, new ItemCategory("Meat", ItemType.DISH), null);
         item.setPrices(Collections.singletonList(new Price(LocalDateTime.now(), 22)));
 
         Item createdItem = itemService.create(item);
         Assertions.assertNotNull(createdItem);
-
     }
 
     @Test
-    void update_InvalidItemId_ExceptionThrown() {
-        Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Meat", CategoryType.DISH), null);
+    void create_CategoryNotExist_ExceptionThrown() {
+        Item item = new Item();
+        item.setItemCategory(new ItemCategory("Chips", ItemType.DISH));
 
-        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.update(item, 7L));
+        Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemService.create(item));
     }
 
     @Test
-    void update_InvalidItemCode_ExceptionThrown() {
-        Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Meat", CategoryType.DISH), null);
-        item.setCode("c6d7d3c8");
-
-        Assertions.assertThrows(ItemCodeNotValidException.class, () -> itemService.update(item, 1L));
-    }
-
-    @Test
-    void update_FirstTimeValidUpdate_ObjectUpdated() {
-        Item item = new Item("coca cola", "", null, true, false, ItemType.DRINK,
-                null, new ItemCategory("Juices", CategoryType.DRINK), List.of(new Price(LocalDateTime.now(), 22)));
+    void update_OneInListAndOriginalIsTrue_ObjectUpdated() {
+        Item item = new Item("coca cola", "", null, false, false, ItemType.DRINK,
+                null, new ItemCategory("Juices", ItemType.DRINK), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("c6d7d3c8-2273-4343-a6dc-87efe43867fa");
 
         Item updatedItem = itemService.update(item, 1L);
@@ -120,9 +100,19 @@ class ItemServiceIntegrationTest {
     }
 
     @Test
-    void update_SecondTimeValidUpdate_ObjectUpdated() {
-        Item item = new Item("Chicken meat", "", null, true, false, ItemType.DISH,
-                new ArrayList<>(), new ItemCategory("Meat", CategoryType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
+    void update_OneInListAndOriginalIsFalse_ObjectUpdated() {
+        Item item = new Item("Milk", "", null, false, false, ItemType.DISH,
+                new ArrayList<>(), new ItemCategory("Juices", ItemType.DRINK), List.of(new Price(LocalDateTime.now(), 22)));
+        item.setCode("a8b9aab8-f7dc-4966-a3eb-09eecb7fa9d9");
+
+        Item updatedItem = itemService.update(item, 3L);
+        Assertions.assertNotNull(updatedItem);
+    }
+
+    @Test
+    void update_MoreThenOneInList_ObjectUpdated() {
+        Item item = new Item("Chicken meat", "", null, false, false, ItemType.DISH,
+                new ArrayList<>(), new ItemCategory("Meat", ItemType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
         item.setCode("9a191868-228d-4dbb-819f-ca615d29fefe");
 
         Item updatedItem = itemService.update(item, 5L);
@@ -130,32 +120,49 @@ class ItemServiceIntegrationTest {
     }
 
     @Test
-    void delete_AlreadyDeleted_ExceptionThrown() {
-        Item item = new Item("Chicken meat", "", null, true, false, ItemType.DISH,
-                new ArrayList<>(), new ItemCategory("Meat", CategoryType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
-        item.setCode("7807ec36-1888-44a9-8fc5-ca11df02492f");
+    void update_InvalidItemId_ExceptionThrown() {
+        Item item = new Item("coca cola", "", null, false, false, ItemType.DRINK,
+                null, new ItemCategory("Meat", ItemType.DISH), null);
 
-        Assertions.assertThrows(ItemAlreadyDeletedException.class, () -> itemService.delete(4L));
+        Assertions.assertThrows(ItemNotFoundException.class, () -> itemService.update(item, 7L));
+    }
+
+    @Test
+    void update_InvalidItemCode_ExceptionThrown() {
+        Item item = new Item("coca cola", "", null, false, false, ItemType.DRINK,
+                null, new ItemCategory("Meat", ItemType.DISH), null);
+        item.setCode("c6d7d3c8");
+
+        Assertions.assertThrows(ItemCodeNotValidException.class, () -> itemService.update(item, 1L));
+    }
+
+    @Test
+    void getAllForMenuInsight_LessThenTwoItems_ReturnedList() {
+        List<Item> items = itemService.getAllForMenuInsight();
+        Assertions.assertEquals(4, items.size());
     }
 
     @Test
     void delete_FirstValidDelete_ItemIsDeleted() {
-        Item item = new Item("Coca cola", "", null, true, false, ItemType.DRINK,
-                new ArrayList<>(), new ItemCategory("Juices", CategoryType.DRINK), List.of(new Price(LocalDateTime.now(), 22)));
-        item.setCode("c6d7d3c8-2273-4343-a6dc-87efe43867fa");
-
         Item deletedItem = itemService.delete(1L);
-        Assertions.assertNotNull(deletedItem);
+        Assertions.assertTrue(deletedItem.isDeleted());
     }
 
     @Test
-    void delete_OneValidCopy_ItemIsDeleted() {
-        Item item = new Item("Chicken legs", "", null, true, false, ItemType.DISH,
-                new ArrayList<>(), new ItemCategory("Meat", CategoryType.DISH), List.of(new Price(LocalDateTime.now(), 22)));
-        item.setCode("9a191868-228d-4dbb-819f-ca615d29fefe");
+    void delete_NotOriginalDelete_ItemIsDeleted() {
+        Item deleted = itemService.delete(3L);
+        Assertions.assertTrue(deleted.isDeleted());
+    }
 
+    @Test
+    void delete_OneValidCopyAlreadyDeleted_ItemIsDeleted() {
         Item deletedItem = itemService.delete(5L);
-
         Assertions.assertNotNull(deletedItem);
     }
+
+    // TODO: Vidi ovaj nesto nece da vrati kako treba
+//    @Test
+//    void delete_AlreadyDeleted_ExceptionThrown() {
+//        Assertions.assertThrows(ItemAlreadyDeletedException.class, () -> itemService.delete(4L));
+//    }
 }

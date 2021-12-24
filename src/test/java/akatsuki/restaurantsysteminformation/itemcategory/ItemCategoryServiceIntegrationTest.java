@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.itemcategory;
 
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryDeleteException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNameException;
 import akatsuki.restaurantsysteminformation.itemcategory.exception.ItemCategoryNotFoundException;
@@ -27,7 +28,7 @@ class ItemCategoryServiceIntegrationTest {
     }
 
     @Test
-    public void getOne_NegativeId_ExceptionThrown() {
+    public void getOne_InvalidId_ExceptionThrown() {
         Assertions.assertThrows(ItemCategoryNotFoundException.class, () -> itemCategoryService.getOne(8000L));
     }
 
@@ -46,39 +47,20 @@ class ItemCategoryServiceIntegrationTest {
     @Test
     void getAll_ItemCategoriesExist_ReturnedList() {
         List<ItemCategory> foundList = itemCategoryService.getAll();
-        Assertions.assertEquals(foundList.size(), 5);
+        Assertions.assertEquals(5, foundList.size());
     }
 
     @Test
     public void create_ValidEntity_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("DESSERT", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory("DESSERT", ItemType.DISH);
         ItemCategory createdItemCategory = itemCategoryService.create(itemCategory);
         Assertions.assertNotNull(createdItemCategory);
     }
 
     @Test
     public void create_InvalidEntity_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Sandwich", CategoryType.DISH);
+        ItemCategory itemCategory = new ItemCategory("Sandwich", ItemType.DISH);
         Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.create(itemCategory));
-    }
-
-    @Test
-    public void update_ValidEntityAndId_SavedObject() {
-        ItemCategory itemCategory = new ItemCategory("Dessert", CategoryType.DISH);
-        ItemCategory updatedItemCategory = itemCategoryService.update(itemCategory, 1L);
-        Assertions.assertEquals("Dessert", updatedItemCategory.getName());
-    }
-
-    @Test
-    public void update_EntityNameIsTheSame_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Juices  ", CategoryType.DRINK);
-        Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.update(itemCategory, 1L));
-    }
-
-    @Test
-    public void update_EntityNameAlreadyExist_ExceptionThrown() {
-        ItemCategory itemCategory = new ItemCategory("Cocktails  ", CategoryType.DRINK);
-        Assertions.assertThrows(ItemCategoryNameException.class, () -> itemCategoryService.update(itemCategory, 1L));
     }
 
     @Test

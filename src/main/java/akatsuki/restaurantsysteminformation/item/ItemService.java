@@ -9,9 +9,11 @@ public interface ItemService {
 
     Item getOneActive(Long id);
 
-    List<Item> getAllActive();
-
     List<Item> getAll();
+
+    List<Item> getAllWithAll();
+
+    List<Item> getAllForMenuInsight();
 
     List<Item> getAllActiveByCategory(String category);
 

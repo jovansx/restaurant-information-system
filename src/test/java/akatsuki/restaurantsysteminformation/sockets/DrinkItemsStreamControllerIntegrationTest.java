@@ -1,12 +1,9 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
-import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemCreateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsActionRequestDTO;
-import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
-import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,143 +56,143 @@ public class DrinkItemsStreamControllerIntegrationTest {
         session.subscribe("/topic/drink-items", new MyStompFrameHandler(blockingQueue));
     }
 
-    @Test
-    public void create_Valid_SavedObject() throws Exception {
+//    @Test
+//    public void create_Valid_SavedObject() throws Exception {
+//
+//        int size = drinkItemsService.getAll().size();
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//
+//        session.send("/app/drink-items/create", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        List<DrinkItems> drinkItems = drinkItemsService.getAll();
+//
+//        assertNotNull(returnDTO);
+//        assertEquals(size + 1, drinkItems.size());
+//        assertTrue(returnDTO.isSuccessfullyFinished());
+//
+//        drinkItemsService.deleteById(drinkItems.get(drinkItems.size() - 1).getId());
+//    }
 
-        int size = drinkItemsService.getAll().size();
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//    @Test
+//    public void create_InvalidOrderId_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(44, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//
+//        session.send("/app/drink-items/create", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertEquals("Order with the id 44 is not found in the database.", returnDTO.getMessage());
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//    }
 
-        session.send("/app/drink-items/create", dto);
+//    @Test
+//    public void create_InvalidItemId_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 4L)), null);
+//
+//        session.send("/app/drink-items/create", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertEquals("Not correct type of drink item!", returnDTO.getMessage());
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//    }
 
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//    @Test
+//    public void update_Valid_UpdatedObject() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//
+//        session.send("/app/drink-items/update/6", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertTrue(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Drink items with 6 are successfully updated!", returnDTO.getMessage());
+//
+//        dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(3, 1L)), null);
+//        drinkItemsService.update(dto, 6);
+//
+//        Order order = orderService.getOneWithAll(1L);
+//        order.setTotalPrice(8);
+//        orderService.save(order);
+//    }
 
-        List<DrinkItems> drinkItems = drinkItemsService.getAll();
+//    @Test
+//    public void update_OrderNotContainingItem_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(2, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//
+//        session.send("/app/drink-items/update/6", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Drink items list with id 6 is not contained within order drinks.", returnDTO.getMessage());
+//    }
 
-        assertNotNull(returnDTO);
-        assertEquals(size + 1, drinkItems.size());
-        assertTrue(returnDTO.isSuccessfullyFinished());
+//    @Test
+//    public void update_InvalidType_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//
+//        session.send("/app/drink-items/update/1", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Drink items with the id 1 are not found in the database.", returnDTO.getMessage());
+//    }
 
-        drinkItemsService.deleteById(drinkItems.get(drinkItems.size() - 1).getId());
-    }
+//    @Test
+//    public void update_InvalidDrinkItemsState_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
+//
+//        session.send("/app/drink-items/update/8", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Cannot change drink items list, because its state is ready. Allowed state to change is 'on_hold'.", returnDTO.getMessage());
+//    }
 
-    @Test
-    public void create_InvalidOrderId_ExceptionThrown() throws Exception {
+//    @Test
+//    public void update_InvalidItemId_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 4L)), null);
+//
+//        session.send("/app/drink-items/update/6", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Not correct type of drink item!", returnDTO.getMessage());
+//    }
 
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(44, List.of(new DrinkItemCreateDTO(5, 1L)), null);
-
-        session.send("/app/drink-items/create", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertEquals("Order with the id 44 is not found in the database.", returnDTO.getMessage());
-        assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
-    public void create_InvalidItemId_ExceptionThrown() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 4L)), null);
-
-        session.send("/app/drink-items/create", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertEquals("Not correct type of drink item!", returnDTO.getMessage());
-        assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
-    public void update_Valid_UpdatedObject() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
-
-        session.send("/app/drink-items/update/6", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertTrue(returnDTO.isSuccessfullyFinished());
-        assertEquals("Drink items with 6 are successfully updated!", returnDTO.getMessage());
-
-        dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(3, 1L)), null);
-        drinkItemsService.update(dto, 6);
-
-        Order order = orderService.getOneWithAll(1L);
-        order.setTotalPrice(8);
-        orderService.save(order);
-    }
-
-    @Test
-    public void update_OrderNotContainingItem_ExceptionThrown() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(2, List.of(new DrinkItemCreateDTO(5, 1L)), null);
-
-        session.send("/app/drink-items/update/6", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-        assertEquals("Drink items list with id 6 is not contained within order drinks.", returnDTO.getMessage());
-    }
-
-    @Test
-    public void update_InvalidType_ExceptionThrown() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
-
-        session.send("/app/drink-items/update/1", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-        assertEquals("Drink items with the id 1 are not found in the database.", returnDTO.getMessage());
-    }
-
-    @Test
-    public void update_InvalidDrinkItemsState_ExceptionThrown() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 1L)), null);
-
-        session.send("/app/drink-items/update/8", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-        assertEquals("Cannot change drink items list, because its state is ready. Allowed state to change is 'on_hold'.", returnDTO.getMessage());
-    }
-
-    @Test
-    public void update_InvalidItemId_ExceptionThrown() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, List.of(new DrinkItemCreateDTO(5, 4L)), null);
-
-        session.send("/app/drink-items/update/6", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-        assertEquals("Not correct type of drink item!", returnDTO.getMessage());
-    }
-
-    @Test
-    public void update_InvalidOrderId_ExceptionThrown() throws Exception {
-
-        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(44, List.of(new DrinkItemCreateDTO(5, 4L)), null);
-
-        session.send("/app/drink-items/update/6", dto);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertFalse(returnDTO.isSuccessfullyFinished());
-        assertEquals("Order with the id 44 is not found in the database.", returnDTO.getMessage());
-    }
+//    @Test
+//    public void update_InvalidOrderId_ExceptionThrown() throws Exception {
+//
+//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(44, List.of(new DrinkItemCreateDTO(5, 4L)), null);
+//
+//        session.send("/app/drink-items/update/6", dto);
+//
+//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+//
+//        assertNotNull(returnDTO);
+//        assertFalse(returnDTO.isSuccessfullyFinished());
+//        assertEquals("Order with the id 44 is not found in the database.", returnDTO.getMessage());
+//    }
 
     @Test
     public void changeStateOfDrinkItems_OnHoldToPreparation_SavedObject() throws Exception {

@@ -59,17 +59,17 @@ values (1, 1),
        (11, 11),
        (11, 12);
 
-insert into item_category (name)
-values ('Juices'),
-       ('Cocktails'),
-       ('Sandwich'),
-       ('Meat'),
-       ('Soup');
+insert into item_category (name, type)
+values ('Juices', 1),
+       ('Cocktails', 1),
+       ('Sandwich', 0),
+       ('Meat', 0),
+       ('Soup', 0);
 
 insert into item (code, description, icon_base_64, name, original, type, item_category_id, deleted)
 values ('c6d7d3c8-2273-4343-a6dc-87efe43867fa', 'Very good apple juice!', null, 'Apple juice', true, 1, 1, false),
        ('a324175f-742d-4211-93ea-0b5280412306', 'Very good orange juice!', null, 'Orange juice', true, 1, 1, false),
-       ('a8b9aab8-f7dc-4966-a3eb-09eecb7fa9d9', 'Very good cocktail!', null, 'Sex on the beach', true, 1, 2, false),
+       ('a8b9aab8-f7dc-4966-a3eb-09eecb7fa9d9', 'Very good cocktail!', null, 'Sex on the beach', false, 1, 2, false),
        ('7807ec36-1888-44a9-8fc5-ca11df02492f', 'Very good chicken sandwich!', null, 'Chicken sandwich', true, 0, 3,
         false),
        ('9a191868-228d-4dbb-819f-ca615d29fefe', 'Very good chicken breast', null, 'Chicken breast', true, 0, 4, false),
@@ -177,13 +177,19 @@ values (1, 5),
        (1, 8),
        (1, 9);
 
-insert into restaurant_table (is_deleted, name, shape, state, order_id)
-values (false, 'T1', 0, 1, 1),
-       (false, 'T2', 0, 0, null);
+insert into restaurant_table (is_deleted, name, shape, state, order_id, rows, columns)
+values (false, 'T1', 0, 1, 1, 0, 0),
+       (false, 'T2', 0, 0, null, 1, 1),
+       (false, 'T3', 0, 0, null, 1, 1),
+       (false, 'T4', 0, 0, null, 1, 1);
 
-insert into room (is_deleted, name)
-values (false, 'Room 1'),
-       (false, 'Room 2');
+insert into room (is_deleted, name, rows, columns)
+values (false, 'Room 1', 4, 4),
+       (false, 'Room 2', 2, 2),
+       (false, 'Room 7', 2, 2);
 
 insert into room_restaurant_tables (room_id, restaurant_tables_id)
-values (1, 1);
+values (1, 1),
+       (1, 2),
+       (3, 3),
+       (1, 4);

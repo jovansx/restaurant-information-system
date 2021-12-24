@@ -13,6 +13,9 @@ public interface DishItemRepository extends JpaRepository<DishItem, Long> {
 
     Optional<DishItem> findByIdAndActiveIsTrue(Long id);
 
+    @Query("select d from DishItem d join fetch d.item i where d.id = (:id)")
+    Optional<DishItem> findByIdAndFetchItem(long id);
+
     @Query("select d from DishItem d join fetch d.item i left join fetch d.chef b where d.id = (:id) and d.active = true " +
             "and not d.state = 4")
     Optional<DishItem> findOneActiveAndFetchItemAndChefAndStateIsNotDelivered(Long id);

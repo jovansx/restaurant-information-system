@@ -14,18 +14,9 @@ public class DrinkItemServiceIntegrationTest {
     @Autowired
     DrinkItemServiceImpl drinkItemService;
 
-    @Test
-    public void create_ValidObject_SavedObject() {
-        DrinkItem drinkItem = drinkItemService.create(new DrinkItem());
-        Assertions.assertNotNull(drinkItem);
-    }
-
-    @Test
-    public void delete_ValidObject_SavedObject() {
-        DrinkItem drinkItem = new DrinkItem();
-        drinkItem.setId(1L);
-
-        DrinkItem deletedDrinkItem = drinkItemService.delete(drinkItem);
-        Assertions.assertNotNull(deletedDrinkItem);
-    }
+//    @Test
+//    public void create_ValidObject_SavedObject() {
+//        DrinkItem drinkItem = drinkItemService.create(new DrinkItem());
+//        Assertions.assertNotNull(drinkItem);
+//    }
 }

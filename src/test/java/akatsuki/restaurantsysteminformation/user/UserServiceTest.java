@@ -36,4 +36,5 @@ class UserServiceTest {
         Mockito.when(userRepositoryMock.findByPhoneNumber("069112233")).thenReturn(Optional.of(user));
         Assertions.assertThrows(UserExistsException.class, () -> userService.checkPhoneNumberExistence("069112233"));
     }
+
 }

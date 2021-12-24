@@ -43,16 +43,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room update(Room room, long id) {
-        Room foundRoom = getOne(id);
-
-        foundRoom.setName(room.getName());
-        foundRoom.setRestaurantTables(room.getRestaurantTables());
-
-        return roomRepository.save(foundRoom);
-    }
-
-    @Override
     public Room delete(long id) {
         Room room = getOne(id);
         room.setDeleted(true);
@@ -65,7 +55,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room updateByRoomDTO(RoomTablesUpdateDTO roomDTO, long id) {
+    public Room updateTables(RoomTablesUpdateDTO roomDTO, long id) {
         Room room = getOne(id);
 
         List<RestaurantTableDTO> adding = new ArrayList<>();
@@ -89,7 +79,7 @@ public class RoomServiceImpl implements RoomService {
             deleting = deleting.stream().filter(tb -> !tb.getName().equals(t.getName())).collect(Collectors.toList());
         }
 
-        List<RestaurantTable> tables = createNewTables(adding);
+        List<RestaurantTable> tables = createNewTables(adding, id);
         List<RestaurantTable> updatedTables = updateTables(editing, id);
         tables.addAll(updatedTables);
 
@@ -102,15 +92,15 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void updateName(String newName, long id) {
+    public Room updateName(String newName, long id) {
         checkNameExistence(newName, id);
         Room foundRoom = getOne(id);
         foundRoom.setName(newName);
-        roomRepository.save(foundRoom);
+        return roomRepository.save(foundRoom);
     }
 
     @Override
-    public void updateLayout(RoomLayoutDTO layoutDTO, long id) {
+    public Room updateLayout(RoomLayoutDTO layoutDTO, long id) {
         Room foundRoom = getOne(id);
 
         boolean tableNotContainedInNewLayout = false;
@@ -127,7 +117,7 @@ public class RoomServiceImpl implements RoomService {
 
         foundRoom.setRows(layoutDTO.getRows());
         foundRoom.setColumns(layoutDTO.getColumns());
-        roomRepository.save(foundRoom);
+        return roomRepository.save(foundRoom);
     }
 
     @Override
@@ -135,18 +125,10 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(room);
     }
 
-    private void checkTableInRoom(long tableId, long id) {
-        Room room = getOne(id);
-        RestaurantTable table = restaurantTableService.getOne(tableId);
-
-        if (!room.getRestaurantTables().contains(table))
-            throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
-    }
-
-    private List<RestaurantTable> createNewTables(List<RestaurantTableDTO> newTablesDTO) {
+    private List<RestaurantTable> createNewTables(List<RestaurantTableDTO> newTablesDTO, Long roomId) {
         List<RestaurantTable> tables = new ArrayList<>();
         newTablesDTO.forEach(tableDTO -> {
-            RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO), 1L);
+            RestaurantTable table = restaurantTableService.create(new RestaurantTable(tableDTO), roomId);
             tables.add(table);
         });
         return tables;
@@ -169,6 +151,14 @@ public class RoomServiceImpl implements RoomService {
 
         if (room.isPresent() && room.get().getId() != id)
             throw new RoomExistsException("Room with the name " + name + " already exists in the database.");
+    }
+
+    private void checkTableInRoom(long tableId, long id) {
+        Room room = getOne(id);
+        RestaurantTable table = restaurantTableService.getOne(tableId);
+
+        if (!room.getRestaurantTables().contains(table))
+            throw new RestaurantTableNotAvailableException("Restaurant table with the id " + table.getId() + " is not available in the room " + room.getName());
     }
 
 }

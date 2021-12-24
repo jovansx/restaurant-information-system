@@ -1,11 +1,9 @@
 package akatsuki.restaurantsysteminformation.item;
 
-import akatsuki.restaurantsysteminformation.item.dto.ItemCreateDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemDetailsDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemForMenuDTO;
-import akatsuki.restaurantsysteminformation.item.dto.ItemUpdateDTO;
+import akatsuki.restaurantsysteminformation.item.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +20,16 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
 
-    @GetMapping("/{id}")
-    public ItemDetailsDTO getOneActive(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
-        return new ItemDetailsDTO(itemService.getOneActive(id));
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    @GetMapping("/not-active/{id}")
+    public ItemDetailsDTO getOne(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
+        return new ItemDetailsDTO(itemService.getOne(id));
     }
 
-    @GetMapping
-    public List<ItemDetailsDTO> getAllActive() {
-        return itemService.getAllActive().stream().map(ItemDetailsDTO::new).collect(Collectors.toList());
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    @GetMapping("/menu")
+    public List<ItemBasicInfoDTO> getAllForMenuInsight() {
+        return itemService.getAllForMenuInsight().stream().map(ItemBasicInfoDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/category/{category}")
@@ -38,28 +38,33 @@ public class ItemController {
         return itemService.getAllActiveByCategory(category).stream().map(ItemForMenuDTO::new).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody @Valid ItemCreateDTO itemDTO) {
         return itemService.create(new Item(itemDTO)).getId().toString();
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PutMapping("/{id}")
     public String update(@RequestBody @Valid ItemUpdateDTO itemDTO,
                          @PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return itemService.update(new Item(itemDTO), id).getId().toString();
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @DeleteMapping("/{id}")
     public String delete(@PathVariable @Positive(message = "Id has to be a positive value.") long id) {
         return itemService.delete(id).getId().toString();
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PostMapping("/save-changes")
     public void saveChanges() {
         this.itemService.saveChanges();
     }
 
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PostMapping("/discard-changes")
     public void discardChanges() {
         this.itemService.discardChanges();

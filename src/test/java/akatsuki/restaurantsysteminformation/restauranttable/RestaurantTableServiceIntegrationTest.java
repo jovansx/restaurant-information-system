@@ -2,6 +2,8 @@ package akatsuki.restaurantsysteminformation.restauranttable;
 
 import akatsuki.restaurantsysteminformation.enums.TableShape;
 import akatsuki.restaurantsysteminformation.enums.TableState;
+import akatsuki.restaurantsysteminformation.order.Order;
+import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
@@ -20,10 +22,14 @@ class RestaurantTableServiceIntegrationTest {
     @Autowired
     RestaurantTableServiceImpl restaurantTableService;
 
+    @Autowired
+    OrderService orderService;
+
     @Test
     void getOne_ValidId_ObjectIsReturned() {
         RestaurantTable foundTable = restaurantTableService.getOne(1L);
         Assertions.assertNotNull(foundTable);
+        Assertions.assertEquals("T1", foundTable.getName());
     }
 
     @Test
@@ -46,7 +52,7 @@ class RestaurantTableServiceIntegrationTest {
     @Test
     void getAll_ObjectsExist_ReturnedAsList() {
         List<RestaurantTable> list = restaurantTableService.getAll();
-        Assertions.assertEquals(list.size(), 2);
+        Assertions.assertEquals(4, list.size());
     }
 
     @Test
@@ -64,10 +70,13 @@ class RestaurantTableServiceIntegrationTest {
 
     @Test
     public void update_ValidObject_ObjectIsUpdated() {
-        RestaurantTable table = new RestaurantTable("T2", TableState.FREE, TableShape.CIRCLE, false, null, 0, 0);
+        RestaurantTable table = new RestaurantTable("T45", TableState.FREE, TableShape.CIRCLE, false, null, 8, 8);
         RestaurantTable restaurantTable = restaurantTableService.update(table, 2L, 1L);
         Assertions.assertNotNull(restaurantTable);
-        Assertions.assertEquals(restaurantTable.getShape(), TableShape.CIRCLE);
+        Assertions.assertEquals("T45", restaurantTable.getName());
+        Assertions.assertEquals(TableShape.CIRCLE, restaurantTable.getShape());
+        Assertions.assertEquals(8, restaurantTable.getColumn());
+        Assertions.assertEquals(8, restaurantTable.getRow());
     }
 
     @Test
@@ -77,20 +86,35 @@ class RestaurantTableServiceIntegrationTest {
     }
 
     @Test
+    public void changeStateOfTableWithOrder_InvalidOrder_ExceptionThrown() {
+        Order order = orderService.getOneWithAll(10L);
+        Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN));
+    }
+
+    @Test
+    public void changeStateOfTableWithOrder_ValidStateAndOrder_ObjectUpdated() {
+        Order order = orderService.getOneWithAll(1L);
+        RestaurantTable table = restaurantTableService.changeStateOfTableWithOrder(order, TableState.FREE);
+
+        Assertions.assertNotNull(table);
+        Assertions.assertNull(table.getActiveOrder());
+        Assertions.assertEquals(TableState.FREE, table.getState());
+    }
+
+    @Test
     public void delete_ValidId_ObjectRemoved() {
         RestaurantTable table = restaurantTableService.delete(2L);
         Assertions.assertNotNull(table);
     }
 
-    @Test
-    public void getActiveOrderIdByTableId_InvalidState_ExceptionThrown() {
-        Assertions.assertThrows(RestaurantTableStateNotValidException.class, () -> restaurantTableService.getActiveOrderIdByTableId(2L));
-    }
 
     @Test
-    public void getActiveOrderIdByTableId_ValidId_IdReturned() {
-        Long foundId = restaurantTableService.getActiveOrderIdByTableId(1L);
-        Assertions.assertNotNull(foundId);
+    public void setOrderToTable_ValidId_ObjectUpdated() {
+        Order order = orderService.getOneWithAll(2L);
+        RestaurantTable table = restaurantTableService.setOrderToTable(1L, order);
+        Assertions.assertNotNull(table);
+        Assertions.assertEquals(order, table.getActiveOrder());
+        Assertions.assertEquals(TableState.TAKEN, table.getState());
     }
 
 }

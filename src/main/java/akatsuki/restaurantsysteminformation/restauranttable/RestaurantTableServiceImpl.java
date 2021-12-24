@@ -4,7 +4,6 @@ import akatsuki.restaurantsysteminformation.enums.TableState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
-import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class RestaurantTableServiceImpl implements RestaurantTableService {
-    private final RestaurantTableRepository restaurantTableRepository;
+    @Autowired
+    private RestaurantTableRepository restaurantTableRepository;
     private RoomService roomService;
 
     @Autowired
@@ -39,13 +38,6 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     }
 
     @Override
-    public RestaurantTable getOneByNameWithOrder(String name) {
-        return restaurantTableRepository.findByNameAndFetchOrder(name).orElseThrow(
-                () -> new RestaurantTableNotFoundException("Restaurant table the name " + name + " is not found in the database.")
-        );
-    }
-
-    @Override
     public List<RestaurantTable> getAll() {
         return restaurantTableRepository.findAll();
     }
@@ -59,33 +51,34 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     @Override
     public RestaurantTable update(RestaurantTable restaurantTable, long id, long roomId) {
         RestaurantTable table = getOne(id);
-
         checkNameExistence(restaurantTable.getName(), id, roomId);
 
         table.setName(restaurantTable.getName());
         table.setShape(restaurantTable.getShape());
+        table.setColumn(restaurantTable.getColumn());
+        table.setRow(restaurantTable.getRow());
 
         return restaurantTableRepository.save(table);
     }
 
     @Override
-    public void changeStateOfTableWithOrder(Order order, TableState state) {
+    public RestaurantTable changeStateOfTableWithOrder(Order order, TableState state) {
         RestaurantTable table = restaurantTableRepository.findByActiveOrder(order).orElseThrow(
                 () -> new RestaurantTableNotFoundException("Restaurant table with order id " + order.getId() + " is not found in the database."));
         table.setState(state);
 
-        if(state.equals(TableState.FREE))
+        if (state.equals(TableState.FREE))
             table.setActiveOrder(null);
 
-        restaurantTableRepository.save(table);
+        return restaurantTableRepository.save(table);
     }
 
     @Override
-    public void setOrderToTable(Long tableId, Order order) {
+    public RestaurantTable setOrderToTable(Long tableId, Order order) {
         RestaurantTable table = getOne(tableId);
         table.setActiveOrder(order);
         table.setState(TableState.TAKEN);
-        restaurantTableRepository.save(table);
+        return restaurantTableRepository.save(table);
     }
 
     @Override
@@ -95,18 +88,13 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
         return restaurantTableRepository.save(table);
     }
 
-    @Override
-    public Long getActiveOrderIdByTableId(long id) {
-        RestaurantTable table = getOneWithOrder(id);
-        if (table.getState().equals(TableState.FREE) || table.getActiveOrder() == null)
-            throw new RestaurantTableStateNotValidException("Restaurant table the id " + id + " is not taken.");
-        return table.getActiveOrder().getId();
-    }
+    private void checkNameExistence(String name, long id, long roomId) {
+        RestaurantTable table = getTableByNameIfHeIsContainedInRoom(name, roomId);
+        if (id == -1 && table != null)
+            throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
 
-    @Override
-    public Long getOrderByTableName(String name) {
-        RestaurantTable table = getOneByNameWithOrder(name);
-        return table.getActiveOrder() == null ? null : table.getActiveOrder().getId();
+        if (table != null && table.getId() != id)
+            throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
     }
 
     private RestaurantTable getTableByNameIfHeIsContainedInRoom(String name, long roomId) {
@@ -118,14 +106,5 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
             }
         }
         return table;
-    }
-
-    private void checkNameExistence(String name, long id, long roomId) {
-        RestaurantTable table = getTableByNameIfHeIsContainedInRoom(name, roomId);
-        if (id == -1 && table != null)
-            throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
-
-        if (table != null && table.getId() != id)
-            throw new RestaurantTableExistsException("Restaurant table with the name " + name + " already exists in the database.");
     }
 }

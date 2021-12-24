@@ -1,7 +1,10 @@
 package akatsuki.restaurantsysteminformation.reports.dto;
 
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@NoArgsConstructor
 public class ReportDTO {
     private List<ReportItemDTO> reportItems;
 

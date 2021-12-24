@@ -1,17 +1,14 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsUpdateDTO;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 
 import java.util.List;
 
 public interface DrinkItemsService {
 
-    DrinkItems getOne(long id);
-
     DrinkItems findOneWithItems(long id);
-
-    List<DrinkItems> getAll();
 
     DrinkItems findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(long id);
 
@@ -21,7 +18,7 @@ public interface DrinkItemsService {
 
     DrinkItems create(DrinkItemsCreateDTO drinkItemsDTO);
 
-    DrinkItems update(DrinkItemsCreateDTO drinkItemsDTO, long id);
+    DrinkItems update(DrinkItemsUpdateDTO drinkItemsDTO, long id);
 
     DrinkItems changeStateOfDrinkItems(long itemId, long userId);
 
