@@ -3,10 +3,16 @@ package akatsuki.restaurantsysteminformation.sockets;
 import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
+import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
+import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemUpdateDTO;
+import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidStateException;
+import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
+import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,143 +63,121 @@ public class DishItemStreamControllerIntegrationTest {
         session.subscribe("/topic/dish-item", new MyStompFrameHandler(blockingQueue));
     }
 
-//    @Test
-//    public void create_Valid_SavedObject() throws Exception {
-//
-//        int size = dishItemService.getAll().size();
-//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 2L);
-//
-//        session.send("/app/dish-item/create", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        List<DishItem> dishItems = dishItemService.getAll();
-//
-//        assertNotNull(returnDTO);
-//        assertEquals(size + 1, dishItems.size());
-//        assertTrue(returnDTO.isSuccessfullyFinished());
-//
-//        dishItemService.deleteById(dishItems.get(dishItems.size() - 1).getId());
-//    }
+    @Test
+    public void create_Valid_SavedObject() throws Exception {
 
-//    @Test
-//    public void create_InvalidOrderId_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 44L);
-//
-//        session.send("/app/dish-item/create", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertEquals("Order with the id 44 is not found in the database.", returnDTO.getMessage());
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//    }
+        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 2L, null);
 
-//    @Test
-//    public void create_InvalidItemId_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(1L, 2, null, 2L);
-//
-//        session.send("/app/dish-item/create", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertEquals("Item type is not DISH.", returnDTO.getMessage());
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//    }
+        session.send("/app/dish-item/create", dto);
 
-//    @Test
-//    public void update_Valid_UpdatedObject() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
-//
-//        session.send("/app/dish-item/update/1", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertTrue(returnDTO.isSuccessfullyFinished());
-//        assertEquals("Dish item with 1 is successfully updated!", returnDTO.getMessage());
-//
-//        dto = new DishItemCreateDTO(4L, 1, null, 1L);
-//        dishItemService.update(dto, 1);
-//
-//        Order order = orderService.getOneWithAll(1L);
-//        order.setTotalPrice(8);
-//        orderService.save(order);
-//    }
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
-//    @Test
-//    public void update_OrderNotContainingItem_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
-//
-//        session.send("/app/dish-item/update/5", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//        assertEquals("Dish item order id is not equal to 1. Order cannot be changed.", returnDTO.getMessage());
-//    }
-//
-//    @Test
-//    public void update_InvalidType_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(2L, 5, null, 1L);
-//
-//        session.send("/app/dish-item/update/1", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//        assertEquals("Item type is not DISH.", returnDTO.getMessage());
-//    }
-//
-//    @Test
-//    public void update_InvalidDishState_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 1L);
-//
-//        session.send("/app/dish-item/update/2", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//        assertEquals("Cannot change dish item, because its state is preparation.", returnDTO.getMessage());
-//    }
-//
-//    @Test
-//    public void update_InvalidItemId_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(44L, 5, null, 1L);
-//
-//        session.send("/app/dish-item/update/1", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//        assertEquals("Item with the id 44 is not found in the database.", returnDTO.getMessage());
-//    }
-//
-//    @Test
-//    public void update_InvalidOrderId_ExceptionThrown() throws Exception {
-//
-//        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 5, null, 100L);
-//
-//        session.send("/app/dish-item/update/1", dto);
-//
-//        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-//
-//        assertNotNull(returnDTO);
-//        assertFalse(returnDTO.isSuccessfullyFinished());
-//        assertEquals("Order with the id 100 is not found in the database.", returnDTO.getMessage());
-//    }
+        assertNotNull(returnDTO);
+        assertTrue(returnDTO.isSuccessfullyFinished());
+
+        dishItemService.deleteById(returnDTO.getId());
+    }
+
+    @Test
+    public void create_InvalidOrderId_ExceptionThrown() throws Exception {
+
+        DishItemCreateDTO dto = new DishItemCreateDTO(4L, 2, null, 8000L, null);
+
+        session.send("/app/dish-item/create", dto);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertEquals("Order with the id 8000 is not found in the database.", returnDTO.getMessage());
+        assertFalse(returnDTO.isSuccessfullyFinished());
+    }
+
+    @Test
+    public void create_InvalidItemId_ExceptionThrown() throws Exception {
+
+        DishItemCreateDTO dto = new DishItemCreateDTO(1L, 2, null, 2L, null);
+
+        session.send("/app/dish-item/create", dto);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertEquals("Item type is not DISH.", returnDTO.getMessage());
+        assertFalse(returnDTO.isSuccessfullyFinished());
+    }
+
+    // TODO napravi i za kreiran order
+
+    @Test
+    public void update_Valid_UpdatedObject() throws Exception {
+
+        DishItemUpdateDTO dto = new DishItemUpdateDTO(1L, 7, "New note.", 1L);
+
+        session.send("/app/dish-item/update/1", dto);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertTrue(returnDTO.isSuccessfullyFinished());
+        assertEquals("Dish item with 1 is successfully updated!", returnDTO.getMessage());
+
+        dto = new DishItemUpdateDTO(4L, 1, null, 1L);
+        dishItemService.update(dto, 1);
+
+        Order order = orderService.getOneWithAll(1L);
+        order.setTotalPrice(8);
+        orderService.save(order);
+    }
+
+    @Test
+    public void update_ItemNotExist_ExceptionThrown() throws Exception {
+        DishItemUpdateDTO dto = new DishItemUpdateDTO(15L, 10, "New note.", 1L);
+        session.send("/app/dish-item/update/15", dto);
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("Dish item with the id 15 is not found in the database.", returnDTO.getMessage());
+    }
+
+    @Test
+    public void update_InvalidDishItem_ExceptionThrown() throws Exception {
+        DishItemUpdateDTO dto = new DishItemUpdateDTO(1L, 10, "New note.", 2L);
+
+        session.send("/app/dish-item/update/1", dto);
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("Dish item order id is not equal to 2. Order cannot be changed.", returnDTO.getMessage());
+    }
+
+    @Test
+    public void update_InvalidItemState_ExceptionThrown() throws Exception {
+        DishItemUpdateDTO dto = new DishItemUpdateDTO(2L, 10, "New note.", 1L);
+
+        session.send("/app/dish-item/update/2", dto);
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("Cannot change dish item, because its state is preparation.", returnDTO.getMessage());
+    }
+
+
+    @Test
+    public void update_InvalidOrderId_ExceptionThrown() throws Exception {
+
+        DishItemUpdateDTO dto = new DishItemUpdateDTO(4L, 5, null, 100L);
+
+        session.send("/app/dish-item/update/4", dto);
+
+        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
+
+        assertNotNull(returnDTO);
+        assertFalse(returnDTO.isSuccessfullyFinished());
+        assertEquals("Order with the id 100 is not found in the database.", returnDTO.getMessage());
+    }
 
     @Test
     public void changeStateOfDishItem_OnHoldToPreparation_SavedObject() throws Exception {

@@ -1,5 +1,6 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
+import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
@@ -29,12 +30,12 @@ public class DishItemStreamController {
     @MessageMapping({"/dish-item/create"})
     @SendTo("/topic/dish-item")
     public SocketResponseDTO create(@RequestBody @Valid DishItemCreateDTO dishItemCreateDTO) {
-        dishItemService.create(dishItemCreateDTO);
+        DishItem dishItem = dishItemService.create(dishItemCreateDTO);
         SocketResponseDTO socketResponseDTO;
         if (dishItemCreateDTO.getOrderCreateDTO() != null) {
-            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "ORDER_CREATED");
+            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "ORDER_CREATED", dishItem.getId());
         } else {
-            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "");
+            socketResponseDTO = new SocketResponseDTO(true, "Dish item is successfully created!", "", dishItem.getId());
         }
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
@@ -44,8 +45,8 @@ public class DishItemStreamController {
     @SendTo("/topic/dish-item")
     public SocketResponseDTO update(@RequestBody @Valid DishItemUpdateDTO dishItemDTO,
                                     @DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
-        dishItemService.update(dishItemDTO, id);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item with " + id + " is successfully updated!", "");
+        DishItem dishItem = dishItemService.update(dishItemDTO, id);
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item with " + id + " is successfully updated!", "", dishItem.getId());
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -54,7 +55,7 @@ public class DishItemStreamController {
     @SendTo("/topic/dish-item")
     public SocketResponseDTO changeStateOfDishItem(@RequestBody @Valid DishItemActionRequestDTO dto) {
         dishItemService.changeStateOfDishItems(dto.getItemId(), dto.getUserId());
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully changed!", "");
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully changed!", "", 0);
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -62,8 +63,8 @@ public class DishItemStreamController {
     @MessageMapping({"/dish-item/delete/{id}"})
     @SendTo("/topic/dish-item")
     public SocketResponseDTO delete(@DestinationVariable @Positive(message = "Id has to be a positive value.") long id) {
-        dishItemService.delete(id);
-        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully deleted!", "");
+        DishItem dishItem = dishItemService.delete(id);
+        SocketResponseDTO socketResponseDTO = new SocketResponseDTO(true, "Dish item state is successfully deleted!", "", dishItem.getId());
         this.template.convertAndSend("/topic/order", socketResponseDTO);
         return socketResponseDTO;
     }
@@ -71,6 +72,6 @@ public class DishItemStreamController {
     @MessageExceptionHandler
     @SendTo("/topic/dish-item")
     public SocketResponseDTO handleException(RuntimeException exception) {
-        return new SocketResponseDTO(false, exception.getLocalizedMessage(), "");
+        return new SocketResponseDTO(false, exception.getLocalizedMessage(), "", 0);
     }
 }
