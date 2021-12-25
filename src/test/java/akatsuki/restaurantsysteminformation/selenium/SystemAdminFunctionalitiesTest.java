@@ -5,6 +5,7 @@ import akatsuki.restaurantsysteminformation.seleniumpages.SystemAdminWorkersPage
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 
@@ -12,8 +13,11 @@ import org.openqa.selenium.support.PageFactory;
 public class SystemAdminFunctionalitiesTest {
 
     private static WebDriver browser;
+
     private static LoginPage loginPage;
     private static SystemAdminWorkersPage systemPage;
+
+    private final String MAT_FORM_FIELD_TO_INPUT = "div/div[1]/div/input";
 
     @BeforeAll
     public static void setup() {
@@ -103,7 +107,7 @@ public class SystemAdminFunctionalitiesTest {
         Assertions.assertEquals("John", systemPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
         Assertions.assertEquals("0611111111", systemPage.getPhoneNumberInput().getAttribute("value"));
 
-        systemPage.clickButton(0);  // Enable editing
+        systemPage.getButtons().get(0).click();  // Enable editing
         Assertions.assertTrue(systemPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
         Assertions.assertTrue(systemPage.getPhoneNumberInput().isEnabled());
         systemPage.setFirstNameInput("Pera zdera"); // Enter new values
@@ -122,6 +126,80 @@ public class SystemAdminFunctionalitiesTest {
         Assertions.assertFalse(systemPage.getPhoneNumberInput().isEnabled());
         Assertions.assertEquals("John Cena", systemPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
         Assertions.assertEquals("0611111111", systemPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+    }
+
+    @Test
+    public void successfulAddingAndDeletingOfManager() {
+        systemPage.ensureAddButtonIsDisplayed();
+        Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
+
+        systemPage.getAddBtn().click();
+
+        systemPage.ensureAddButtonsAreDisplayed();
+        systemPage.getAddButtons().get(0).click();
+
+        systemPage.ensureDialogFieldsAreDisplayed();
+        systemPage.getDialogFields().get(0).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Leon");
+        systemPage.getDialogFields().get(1).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("List");
+        systemPage.getDialogFields().get(2).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("leon@gmail.com");
+        systemPage.getDialogFields().get(3).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("leon_stronger");
+        systemPage.getDialogFields().get(4).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Leon_stronger123");
+        systemPage.getDialogFields().get(5).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Leon_stronger123");
+        systemPage.getDialogFields().get(6).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("40000");
+        systemPage.getDialogFields().get(7).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("0645533454");
+
+        systemPage.ensureDialogButtonsAreDisplayed();
+        systemPage.getDialogButtons().get(1).click();
+
+        systemPage.ensureRowsAreDisplayed(10);
+        Assertions.assertEquals(10, systemPage.getTableRows().size());
+
+        for(WebElement el: systemPage.getTableRows()) {
+            if (el.findElement(By.xpath("td[2]")).getText().equals("Leon List")) {
+                el.findElement(By.xpath("td[5]/button")).click();
+                break;
+            }
+        }
+
+        systemPage.ensureRowsAreDisplayed(9);
+        Assertions.assertEquals(9, systemPage.getTableRows().size());
+
+    }
+
+    @Test
+    public void successfulAddingAndDeletingOfEmployee() {
+        systemPage.ensureAddButtonIsDisplayed();
+        Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
+
+        systemPage.getAddBtn().click();
+
+        systemPage.ensureAddButtonsAreDisplayed();
+        systemPage.getAddButtons().get(1).click();
+
+        systemPage.ensureDialogFieldsAreDisplayed();
+        systemPage.getDialogFields().get(0).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Mia");
+        systemPage.getDialogFields().get(1).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("List");
+        systemPage.getDialogFields().get(2).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("mia@gmail.com");
+        systemPage.getDialogFields().get(3).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("7777");
+        systemPage.getDialogFields().get(5).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("35000");
+        systemPage.getDialogFields().get(6).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("0646633454");
+
+        systemPage.ensureDialogButtonsAreDisplayed();
+        systemPage.getDialogButtons().get(1).click();
+
+        systemPage.ensureRowsAreDisplayed(10);
+        Assertions.assertEquals(10, systemPage.getTableRows().size());
+
+        for(WebElement el: systemPage.getTableRows()) {
+            if (el.findElement(By.xpath("td[2]")).getText().equals("Mia List")) {
+                el.findElement(By.xpath("td[5]/button")).click();
+                break;
+            }
+        }
+
+        systemPage.ensureRowsAreDisplayed(9);
+        Assertions.assertEquals(9, systemPage.getTableRows().size());
+
     }
 
     @AfterAll
