@@ -204,6 +204,6 @@ public class SystemAdminFunctionalitiesTest {
 
     @AfterAll
     public static void tearDown() {
-//        browser.quit();
+        browser.quit();
     }
 }
