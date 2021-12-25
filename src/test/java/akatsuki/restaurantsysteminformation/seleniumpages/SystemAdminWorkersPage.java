@@ -24,6 +24,9 @@ public class SystemAdminWorkersPage {
     @FindBy(xpath = "//form/mat-form-field[1]/div/div[1]/div/input")
     private WebElement firstNameInput;
 
+    @FindBy(xpath = "//form/mat-form-field[last()]/div/div[1]/div/input")
+    private WebElement phoneNumberInput;
+
     @FindBy(xpath = "/html/body/app-root/app-workers/div/mat-card/form/div/button")    // Cancel -> Edit -> Save (3)
     private List<WebElement> buttons;
 
@@ -34,6 +37,11 @@ public class SystemAdminWorkersPage {
     public void setFirstNameInput(String firstName) {
         firstNameInput.clear();
         firstNameInput.sendKeys(firstName);
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        phoneNumberInput.clear();
+        phoneNumberInput.sendKeys(phoneNumber);
     }
 
     public void clickSelectedRow(int index) {
