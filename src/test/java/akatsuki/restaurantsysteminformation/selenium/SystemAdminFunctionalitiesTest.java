@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -20,11 +21,12 @@ public class SystemAdminFunctionalitiesTest {
     @BeforeAll
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
 
-        browser = new ChromeDriver();
+        browser = new ChromeDriver(options);
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/login");
-
         loginPage = PageFactory.initElements(browser, LoginPage.class);
         systemPage = PageFactory.initElements(browser, SystemAdminWorkersPage.class);
 
