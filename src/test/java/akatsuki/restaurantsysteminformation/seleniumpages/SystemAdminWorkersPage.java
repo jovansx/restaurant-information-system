@@ -45,6 +45,12 @@ public class SystemAdminWorkersPage {
     @FindBy(xpath = "//mat-dialog-actions/button")     // Cancel Save
     private List<WebElement> dialogButtons;
 
+    @FindBy(css = ".password-btn")
+    private WebElement changePasswordBtn;
+
+    @FindBy(xpath = "//app-change-password-dialog/mat-dialog-content/form/mat-form-field")     // Cancel Save
+    private List<WebElement> passwordDialogInputs;  // Old password, New password, Repeat password
+
     public SystemAdminWorkersPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -76,9 +82,24 @@ public class SystemAdminWorkersPage {
                 .until(ExpectedConditions.visibilityOf(addBtn));
     }
 
+    public void ensureChangePasswordButtonIsDisplayed() {
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
+                .until(ExpectedConditions.visibilityOf(changePasswordBtn));
+    }
+
     public void ensureAddButtonsAreDisplayed() {
         (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.visibilityOfAllElements(addButtons));
+    }
+
+    public void ensurePasswordDialogInputsAreDisplayed() {
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
+                .until(ExpectedConditions.visibilityOfAllElements(passwordDialogInputs));
+    }
+
+    public void ensurePasswordDialogInputsAreNotDisplayed() {
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
+                .until(ExpectedConditions.invisibilityOfAllElements(passwordDialogInputs));
     }
 
     public void ensureDialogFieldsAreDisplayed() {

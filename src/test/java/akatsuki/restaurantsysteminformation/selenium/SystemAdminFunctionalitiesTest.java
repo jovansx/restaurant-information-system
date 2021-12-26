@@ -1,9 +1,11 @@
 package akatsuki.restaurantsysteminformation.selenium;
 
 import akatsuki.restaurantsysteminformation.seleniumpages.LoginPage;
+import akatsuki.restaurantsysteminformation.seleniumpages.SystemAdminMenuPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.SystemAdminWorkersPage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,18 +19,21 @@ public class SystemAdminFunctionalitiesTest {
 
     private static LoginPage loginPage;
     private static SystemAdminWorkersPage systemPage;
+    private static SystemAdminMenuPage menuPage;
 
     @BeforeAll
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
-        ChromeOptions options = new ChromeOptions();
-        options.setHeadless(true);
+//        ChromeOptions options = new ChromeOptions();
+//        options.setHeadless(true);
 
-        browser = new ChromeDriver(options);
+        browser = new ChromeDriver();
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/login");
+
         loginPage = PageFactory.initElements(browser, LoginPage.class);
         systemPage = PageFactory.initElements(browser, SystemAdminWorkersPage.class);
+        menuPage = PageFactory.initElements(browser, SystemAdminMenuPage.class);
 
     }
 
@@ -63,6 +68,7 @@ public class SystemAdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(3)
     public void successfulEditing() throws InterruptedException {
         Assertions.assertEquals(9, systemPage.getTableRows().size());
         Assertions.assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
@@ -100,6 +106,7 @@ public class SystemAdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(4)
     public void failEditing_BadPhoneNumber() {
         Assertions.assertEquals(9, systemPage.getTableRows().size());
         Assertions.assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
@@ -129,6 +136,7 @@ public class SystemAdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(5)
     public void successfulAddingAndDeletingOfManager() {
         systemPage.ensureAddButtonIsDisplayed();
         Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
@@ -167,6 +175,7 @@ public class SystemAdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(6)
     public void successfulAddingAndDeletingOfEmployee() {
         systemPage.ensureAddButtonIsDisplayed();
         Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
@@ -203,6 +212,7 @@ public class SystemAdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(7)
     public void deletionFails() {
         systemPage.ensureRowsAreDisplayed(9);
         Assertions.assertEquals(9, systemPage.getTableRows().size());
@@ -213,8 +223,155 @@ public class SystemAdminFunctionalitiesTest {
 
     }
 
+    @Test
+    @Order(8)
+    public void successfulChangePassword() {
+        systemPage.ensureRowsAreDisplayed(9);
+        Assertions.assertEquals(9, systemPage.getTableRows().size());
+
+        systemPage.clickSelectedRow(8);
+
+        systemPage.ensureChangePasswordButtonIsDisplayed();
+        systemPage.getChangePasswordBtn().click();
+
+        systemPage.ensurePasswordDialogInputsAreDisplayed();
+        systemPage.getPasswordDialogInputs().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liamneeson");
+        systemPage.getPasswordDialogInputs().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liam123");
+        systemPage.getPasswordDialogInputs().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liam123");
+
+        systemPage.ensureDialogButtonsAreDisplayed();
+        systemPage.getDialogButtons().get(1).click();
+
+        systemPage.ensurePasswordDialogInputsAreNotDisplayed();
+
+        systemPage.ensureChangePasswordButtonIsDisplayed();
+        systemPage.getChangePasswordBtn().click();
+
+        systemPage.ensurePasswordDialogInputsAreDisplayed();
+        systemPage.getPasswordDialogInputs().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liam123");
+        systemPage.getPasswordDialogInputs().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liamneeson");
+        systemPage.getPasswordDialogInputs().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liamneeson");
+
+        systemPage.ensureDialogButtonsAreDisplayed();
+        systemPage.getDialogButtons().get(1).click();
+
+        systemPage.ensurePasswordDialogInputsAreNotDisplayed();
+
+    }
+
+    @Test
+    @Order(9)
+    public void deleteItemFromMenuAndDiscardChanges() {
+
+        browser.navigate().to("http://localhost:4200/home/system-admin/menu");
+
+        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+        menuPage.ensureCardsAreDisplayed(1, 2); // 1 dish item
+
+        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
+        Assertions.assertEquals(1, menuPage.getDishesCards().size());
+
+        menuPage.getDrinkCards().get(0).findElement(By.className("clear-button")).click();    // Click on delete button of card
+
+        menuPage.ensureCardsAreDisplayed(4, 1); // 4 drink items
+        Assertions.assertEquals(4, menuPage.getDrinkCards().size());
+
+        menuPage.getDiscardBtn().click();
+
+        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+        menuPage.ensureCardsAreDisplayed(2, 2); // 1 dish item
+
+        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
+        Assertions.assertEquals(2, menuPage.getDishesCards().size());
+
+    }
+
+    @Test
+    @Order(10)
+    public void deleteItemFromMenuAndSaveChanges() {
+
+        menuPage.ensureCardsAreDisplayed(2, 2); // 2 dish items
+
+        Assertions.assertEquals(2, menuPage.getDishesCards().size());
+
+        menuPage.getDishesCards().get(0).findElement(By.xpath("button[2]")).click();    // Click on delete button of card
+        menuPage.ensureCardsAreDisplayed(1, 2); // 4 drink items
+
+        Assertions.assertEquals(1, menuPage.getDishesCards().size());
+
+        menuPage.getSaveBtn().click();
+        menuPage.ensureCardsAreDisplayed(1, 2); // 1 dish item
+
+        Assertions.assertEquals(1, menuPage.getDishesCards().size());
+
+    }
+
+    @Test
+    @Order(11)   // Ako nekad pukne verovatno jer nije sacekao da upise vrednost u select, dodaj da spava sekund
+    public void addDrinkItem() {
+
+        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+
+        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
+
+        menuPage.ensureAddButtonIsDisplayed();
+        menuPage.getAddBtn().click();
+
+        menuPage.ensureItemNameInputIsDisplayed();
+        menuPage.setItemName("Cokoladni napitak");
+        menuPage.ensureItemCategorySelectIsDisplayed();
+        menuPage.setItemCategory("Juices");
+        menuPage.ensureTextIsPresentInCategorySelect();
+        menuPage.ensureItemPriceInputIsDisplayed();
+        menuPage.setPrice("500");
+
+        menuPage.ensureDialogButtonsAreDisplayed();
+        Assertions.assertEquals(2, menuPage.getDialogButtons().size());
+
+        menuPage.ensureSaveButtonIsClickable();
+        menuPage.getDialogButtons().get(1).click();
+
+        menuPage.ensureDialogButtonsAreNotDisplayed();
+        menuPage.ensureCardsAreDisplayed(6, 1); // 6 drink items
+        Assertions.assertEquals(6, menuPage.getDrinkCards().size());
+
+        menuPage.getDiscardBtn().click();
+
+    }
+
+    @Test
+    @Order(12)
+    public void editDrinkItem() {
+
+        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+
+        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
+
+        Assertions.assertEquals("Apple juice", menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
+        menuPage.getDrinkCards().get(0).findElement(By.xpath("button[1]")).click();    // Click on edit button of card
+
+        menuPage.ensureItemNameInputIsDisplayed();
+        menuPage.setItemName("Sok od jabuke");
+        menuPage.ensureItemPriceInputIsDisplayed();
+        menuPage.setPrice("500");
+
+        menuPage.ensureDialogButtonsAreDisplayed();
+        Assertions.assertEquals(2, menuPage.getDialogButtons().size());
+
+        menuPage.ensureSaveButtonIsClickable();
+        menuPage.getDialogButtons().get(1).click();
+
+        menuPage.ensureDialogButtonsAreNotDisplayed();
+        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
+        Assertions.assertEquals("Sok od jabuke", menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
+
+        menuPage.getDiscardBtn().click();
+
+    }
+
     @AfterAll
     public static void tearDown() {
-        browser.quit();
+//        browser.quit();
     }
 }
