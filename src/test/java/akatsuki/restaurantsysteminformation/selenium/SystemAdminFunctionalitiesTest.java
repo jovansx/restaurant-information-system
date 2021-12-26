@@ -202,6 +202,17 @@ public class SystemAdminFunctionalitiesTest {
 
     }
 
+    @Test
+    public void deletionFails() {
+        systemPage.ensureRowsAreDisplayed(9);
+        Assertions.assertEquals(9, systemPage.getTableRows().size());
+
+        systemPage.getTableRows().get(1).findElement(By.xpath("td[5]/button")).click();
+
+        Assertions.assertEquals(9, systemPage.getTableRows().size());
+
+    }
+
     @AfterAll
     public static void tearDown() {
         browser.quit();

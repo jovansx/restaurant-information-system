@@ -2,10 +2,10 @@ package akatsuki.restaurantsysteminformation.selenium;
 
 import akatsuki.restaurantsysteminformation.seleniumpages.LoginPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.ManagerEmployeesPage;
-import akatsuki.restaurantsysteminformation.seleniumpages.SystemAdminWorkersPage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 
@@ -17,7 +17,7 @@ public class ManagerFunctionalitiesTest {
     private static LoginPage loginPage;
     private static ManagerEmployeesPage managerPage;
 
-//    private final String MAT_FORM_FIELD_TO_INPUT = "div/div[1]/div/input";
+    private final String MAT_FORM_FIELD_TO_INPUT = "div/div[1]/div/input";
 
     @BeforeAll
     public static void setup() {
@@ -97,5 +97,80 @@ public class ManagerFunctionalitiesTest {
         Thread.sleep(1000);
         Assertions.assertEquals("Eloner Muskila", managerPage.getTableRows().get(5).findElement(By.xpath("td[2]")).getText());
         Assertions.assertEquals("0611111119", managerPage.getTableRows().get(5).findElement(By.xpath("td[3]")).getText());
+    }
+
+    @Test
+    public void failEditing_BadFirstName() {
+        Assertions.assertEquals(8, managerPage.getTableRows().size());
+        Assertions.assertFalse(managerPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Assertions.assertFalse(managerPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("John", managerPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        Assertions.assertEquals("0611111111", managerPage.getPhoneNumberInput().getAttribute("value"));
+
+        managerPage.getButtons().get(0).click();  // Enable editing
+        Assertions.assertTrue(managerPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Assertions.assertTrue(managerPage.getPhoneNumberInput().isEnabled());
+        managerPage.setFirstNameInput("dasdjakjsdkasdkasdklajskdaksdklasdklaskldlfsdgsdfsdfsd"); // Enter new value for first name
+        Assertions.assertEquals("dasdjakjsdkasdkasdklajskdaksdklasdklaskldlfsdgsdfsdfsd", managerPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
+
+        managerPage.clickButton(1);  // Click on save button
+        Assertions.assertTrue(managerPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
+        Assertions.assertTrue(managerPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("John Cena", managerPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new value is not saved
+
+        managerPage.clickButton(0);  // Click on cancel button
+        Assertions.assertFalse(managerPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Assertions.assertFalse(managerPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("John Cena", managerPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
+        Assertions.assertEquals("0611111111", managerPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+    }
+
+    @Test
+    public void successfulAddingAndDeletingOfEmployee() {
+        managerPage.ensureAddButtonIsDisplayed();
+        Assertions.assertTrue(managerPage.getAddBtn().isDisplayed());
+
+        managerPage.getAddBtn().click();
+
+        managerPage.ensureDialogFieldsAreDisplayed();
+        managerPage.getDialogFields().get(0).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Luka");
+        managerPage.getDialogFields().get(1).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("List");
+        managerPage.getDialogFields().get(2).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("luka@gmail.com");
+        managerPage.getDialogFields().get(3).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("8888");
+        managerPage.getDialogFields().get(5).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("35000");
+        managerPage.getDialogFields().get(6).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("0648883454");
+
+        managerPage.ensureDialogButtonsAreDisplayed();
+        managerPage.getDialogButtons().get(1).click();
+
+        managerPage.ensureRowsAreDisplayed(9);
+        Assertions.assertEquals(9, managerPage.getTableRows().size());
+
+        for (WebElement el : managerPage.getTableRows()) {
+            if (el.findElement(By.xpath("td[2]")).getText().equals("Luka List")) {
+                el.findElement(By.xpath("td[5]/button")).click();
+                break;
+            }
+        }
+
+        managerPage.ensureRowsAreDisplayed(8);
+        Assertions.assertEquals(8, managerPage.getTableRows().size());
+
+    }
+
+    @Test
+    public void deletionFails() {
+        managerPage.ensureRowsAreDisplayed(8);
+        Assertions.assertEquals(8, managerPage.getTableRows().size());
+
+        managerPage.getTableRows().get(1).findElement(By.xpath("td[5]/button")).click();
+
+        Assertions.assertEquals(8, managerPage.getTableRows().size());
+
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        browser.quit();
     }
 }

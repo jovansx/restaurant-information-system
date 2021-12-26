@@ -33,9 +33,6 @@ public class ManagerEmployeesPage {
     @FindBy(css = ".add-button")
     private WebElement addBtn;
 
-    @FindBy(xpath = "//*[@id='mat-menu-panel-0']/div/button")     // Manager button, Employee button
-    private List<WebElement> addButtons;
-
     @FindBy(xpath = "//mat-dialog-content/form/mat-form-field")     // List of mat-form-field, 8 when manager dialog is opened and 7 when employee dialog is opened
     private List<WebElement> dialogFields;
 
@@ -71,11 +68,6 @@ public class ManagerEmployeesPage {
     public void ensureAddButtonIsDisplayed() {
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.visibilityOf(addBtn));
-    }
-
-    public void ensureAddButtonsAreDisplayed() {
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.visibilityOfAllElements(addButtons));
     }
 
     public void ensureDialogFieldsAreDisplayed() {
