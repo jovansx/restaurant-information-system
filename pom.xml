@@ -18,6 +18,7 @@
 		<validation.version>2.5.6</validation.version>
 		<jsonwebtoken.version>0.9.1</jsonwebtoken.version>
 		<mockito.version>4.0.0</mockito.version>
+		<selenium.version>4.1.1</selenium.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -86,6 +87,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium.version}</version>
 		</dependency>
     </dependencies>
 
