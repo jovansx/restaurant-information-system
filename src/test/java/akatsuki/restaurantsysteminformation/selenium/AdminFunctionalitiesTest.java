@@ -2,23 +2,20 @@ package akatsuki.restaurantsysteminformation.selenium;
 
 import akatsuki.restaurantsysteminformation.seleniumpages.AdminAdministratorsPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.LoginPage;
-import akatsuki.restaurantsysteminformation.seleniumpages.ManagerEmployeesPage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 public class AdminFunctionalitiesTest {
 
     private static WebDriver browser;
 
     private static LoginPage loginPage;
     private static AdminAdministratorsPage adminPage;
-
-    private final String MAT_FORM_FIELD_TO_INPUT = "div/div[1]/div/input";
 
     @BeforeAll
     public static void setup() {
@@ -121,6 +118,41 @@ public class AdminFunctionalitiesTest {
         Assertions.assertFalse(adminPage.getPhoneNumberInput().isEnabled());
         Assertions.assertEquals("Liam Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
         Assertions.assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+    }
+
+    @Test
+    public void successfulAddingAndDeletingOfSystemAdmin() {
+        adminPage.ensureAddButtonIsDisplayed();
+        Assertions.assertTrue(adminPage.getAddBtn().isDisplayed());
+
+        adminPage.getAddBtn().click();
+
+        adminPage.ensureDialogFieldsAreDisplayed();
+        adminPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Lucian");
+        adminPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
+        adminPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian@gmail.com");
+        adminPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger");
+        adminPage.getDialogFields().get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
+        adminPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
+        adminPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("40000");
+        adminPage.getDialogFields().get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0645666666");
+
+        adminPage.ensureDialogButtonsAreDisplayed();
+        adminPage.getDialogButtons().get(1).click();
+
+        adminPage.ensureRowsAreDisplayed(2);
+        Assertions.assertEquals(2, adminPage.getTableRows().size());
+
+        for (WebElement el : adminPage.getTableRows()) {
+            if (el.findElement(By.xpath("td[2]")).getText().equals("Lucian List")) {
+                el.findElement(By.xpath("td[5]/button")).click();
+                break;
+            }
+        }
+
+        adminPage.ensureRowsAreDisplayed(1);
+        Assertions.assertEquals(1, adminPage.getTableRows().size());
+
     }
 
     @AfterAll

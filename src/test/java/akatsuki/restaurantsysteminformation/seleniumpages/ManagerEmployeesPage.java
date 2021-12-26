@@ -10,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 @Data
@@ -54,34 +55,34 @@ public class ManagerEmployeesPage {
     }
 
     public void clickSelectedRow(int index) {
-        WebElement row = (new WebDriverWait(driver, 10))
+        WebElement row = (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.elementToBeClickable(tableRows.get(index)));
         row.click();
     }
 
     public void clickButton(int index) {
-        WebElement button = (new WebDriverWait(driver, 10))
+        WebElement button = (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.elementToBeClickable(buttons.get(index)));
         button.click();
     }
 
     public void ensureAddButtonIsDisplayed() {
-        (new WebDriverWait(driver, 10))
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.visibilityOf(addBtn));
     }
 
     public void ensureDialogFieldsAreDisplayed() {
-        (new WebDriverWait(driver, 10))
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.visibilityOfAllElements(dialogFields));
     }
 
     public void ensureDialogButtonsAreDisplayed() {
-        (new WebDriverWait(driver, 10))
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.visibilityOfAllElements(dialogButtons));
     }
 
     public void ensureRowsAreDisplayed(int number) {
-        (new WebDriverWait(driver, 10))
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.numberOfElementsToBe(By.xpath("//table[1]/tbody/tr"), number));
     }
 }

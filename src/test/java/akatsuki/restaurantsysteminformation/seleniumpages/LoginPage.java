@@ -9,6 +9,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,17 +42,17 @@ public class LoginPage {
     }
 
     public void ensureIsDisplayedLoginBtn() {
-        (new WebDriverWait(driver, 10))
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.elementToBeClickable(loginBtn));
     }
 
     public void ensureIsNotDisplayedLoginBtn() {
-        (new WebDriverWait(driver, 10))
+        (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.invisibilityOf(loginBtn));
     }
 
     public void clickLoginButton() {
-        WebElement element = (new WebDriverWait(driver, 10))
+        WebElement element = (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.elementToBeClickable(loginBtn));
         element.click();
     }

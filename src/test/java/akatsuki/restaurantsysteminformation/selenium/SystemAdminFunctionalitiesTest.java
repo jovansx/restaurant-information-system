@@ -17,8 +17,6 @@ public class SystemAdminFunctionalitiesTest {
     private static LoginPage loginPage;
     private static SystemAdminWorkersPage systemPage;
 
-    private final String MAT_FORM_FIELD_TO_INPUT = "div/div[1]/div/input";
-
     @BeforeAll
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
@@ -139,14 +137,14 @@ public class SystemAdminFunctionalitiesTest {
         systemPage.getAddButtons().get(0).click();
 
         systemPage.ensureDialogFieldsAreDisplayed();
-        systemPage.getDialogFields().get(0).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Leon");
-        systemPage.getDialogFields().get(1).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("List");
-        systemPage.getDialogFields().get(2).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("leon@gmail.com");
-        systemPage.getDialogFields().get(3).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("leon_stronger");
-        systemPage.getDialogFields().get(4).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Leon_stronger123");
-        systemPage.getDialogFields().get(5).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Leon_stronger123");
-        systemPage.getDialogFields().get(6).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("40000");
-        systemPage.getDialogFields().get(7).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("0645533454");
+        systemPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon");
+        systemPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
+        systemPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("leon@gmail.com");
+        systemPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("leon_stronger");
+        systemPage.getDialogFields().get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon_stronger123");
+        systemPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon_stronger123");
+        systemPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("40000");
+        systemPage.getDialogFields().get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0645533454");
 
         systemPage.ensureDialogButtonsAreDisplayed();
         systemPage.getDialogButtons().get(1).click();
@@ -154,7 +152,7 @@ public class SystemAdminFunctionalitiesTest {
         systemPage.ensureRowsAreDisplayed(10);
         Assertions.assertEquals(10, systemPage.getTableRows().size());
 
-        for(WebElement el: systemPage.getTableRows()) {
+        for (WebElement el : systemPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Leon List")) {
                 el.findElement(By.xpath("td[5]/button")).click();
                 break;
@@ -177,12 +175,12 @@ public class SystemAdminFunctionalitiesTest {
         systemPage.getAddButtons().get(1).click();
 
         systemPage.ensureDialogFieldsAreDisplayed();
-        systemPage.getDialogFields().get(0).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Mia");
-        systemPage.getDialogFields().get(1).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("List");
-        systemPage.getDialogFields().get(2).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("mia@gmail.com");
-        systemPage.getDialogFields().get(3).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("7777");
-        systemPage.getDialogFields().get(5).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("35000");
-        systemPage.getDialogFields().get(6).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("0646633454");
+        systemPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Mia");
+        systemPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
+        systemPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("mia@gmail.com");
+        systemPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("7777");
+        systemPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("35000");
+        systemPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0646633454");
 
         systemPage.ensureDialogButtonsAreDisplayed();
         systemPage.getDialogButtons().get(1).click();
@@ -190,7 +188,7 @@ public class SystemAdminFunctionalitiesTest {
         systemPage.ensureRowsAreDisplayed(10);
         Assertions.assertEquals(10, systemPage.getTableRows().size());
 
-        for(WebElement el: systemPage.getTableRows()) {
+        for (WebElement el : systemPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Mia List")) {
                 el.findElement(By.xpath("td[5]/button")).click();
                 break;

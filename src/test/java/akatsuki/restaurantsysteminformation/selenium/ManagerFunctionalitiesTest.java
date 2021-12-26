@@ -17,8 +17,6 @@ public class ManagerFunctionalitiesTest {
     private static LoginPage loginPage;
     private static ManagerEmployeesPage managerPage;
 
-    private final String MAT_FORM_FIELD_TO_INPUT = "div/div[1]/div/input";
-
     @BeforeAll
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
@@ -133,12 +131,12 @@ public class ManagerFunctionalitiesTest {
         managerPage.getAddBtn().click();
 
         managerPage.ensureDialogFieldsAreDisplayed();
-        managerPage.getDialogFields().get(0).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("Luka");
-        managerPage.getDialogFields().get(1).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("List");
-        managerPage.getDialogFields().get(2).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("luka@gmail.com");
-        managerPage.getDialogFields().get(3).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("8888");
-        managerPage.getDialogFields().get(5).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("35000");
-        managerPage.getDialogFields().get(6).findElement(By.xpath(MAT_FORM_FIELD_TO_INPUT)).sendKeys("0648883454");
+        managerPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Luka");
+        managerPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
+        managerPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("luka@gmail.com");
+        managerPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("8888");
+        managerPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("35000");
+        managerPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0648883454");
 
         managerPage.ensureDialogButtonsAreDisplayed();
         managerPage.getDialogButtons().get(1).click();
