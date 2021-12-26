@@ -5,7 +5,6 @@ import akatsuki.restaurantsysteminformation.seleniumpages.SystemAdminMenuPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.SystemAdminWorkersPage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -24,10 +23,10 @@ public class SystemAdminFunctionalitiesTest {
     @BeforeAll
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
-//        ChromeOptions options = new ChromeOptions();
-//        options.setHeadless(true);
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
 
-        browser = new ChromeDriver();
+        browser = new ChromeDriver(options);
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/login");
 
@@ -137,7 +136,7 @@ public class SystemAdminFunctionalitiesTest {
 
     @Test
     @Order(5)
-    public void successfulAddingAndDeletingOfManager() {
+    public void successfulAddingAndDeletingOfManager() throws InterruptedException {
         systemPage.ensureAddButtonIsDisplayed();
         Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
 
@@ -147,6 +146,7 @@ public class SystemAdminFunctionalitiesTest {
         systemPage.getAddButtons().get(0).click();
 
         systemPage.ensureDialogFieldsAreDisplayed();
+        Thread.sleep(2000);
         systemPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon");
         systemPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
         systemPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("leon@gmail.com");
@@ -307,8 +307,8 @@ public class SystemAdminFunctionalitiesTest {
     }
 
     @Test
-    @Order(11)   // Ako nekad pukne verovatno jer nije sacekao da upise vrednost u select, dodaj da spava sekund
-    public void addDrinkItem() {
+    @Order(11)
+    public void addDrinkItem() throws InterruptedException {
 
         menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
 
@@ -322,6 +322,7 @@ public class SystemAdminFunctionalitiesTest {
         menuPage.ensureItemCategorySelectIsDisplayed();
         menuPage.setItemCategory("Juices");
         menuPage.ensureTextIsPresentInCategorySelect();
+        Thread.sleep(2000);
         menuPage.ensureItemPriceInputIsDisplayed();
         menuPage.setPrice("500");
 
@@ -372,6 +373,6 @@ public class SystemAdminFunctionalitiesTest {
 
     @AfterAll
     public static void tearDown() {
-//        browser.quit();
+        browser.quit();
     }
 }
