@@ -89,4 +89,9 @@ public class ChefFunctionalitiesTest {
         Assertions.assertEquals(1, chefPage.getRowsFromTable(1).size());
     }
 
+    @AfterAll
+    public static void tearDown() {
+        browser.quit();
+    }
+
 }

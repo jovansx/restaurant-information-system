@@ -86,4 +86,9 @@ public class BartenderFunctionalitiesTest {
         Assertions.assertEquals(1, bartenderPage.getRowsFromTable(1).size());
     }
 
+    @AfterAll
+    public static void tearDown() {
+        browser.quit();
+    }
+
 }
