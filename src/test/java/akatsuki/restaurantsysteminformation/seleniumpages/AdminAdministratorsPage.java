@@ -55,15 +55,15 @@ public class AdminAdministratorsPage {
         return firstNameInput;
     }
 
-    public WebElement getPhoneNumberInput() {
-        Utilities.visibilityWait(driver, phoneNumberInput, 10);
-        return phoneNumberInput;
-    }
-
     public void setFirstNameInput(String firstName) {
         Utilities.visibilityWait(driver, firstNameInput, 10);
         firstNameInput.clear();
         firstNameInput.sendKeys(firstName);
+    }
+
+    public WebElement getPhoneNumberInput() {
+        Utilities.visibilityWait(driver, phoneNumberInput, 10);
+        return phoneNumberInput;
     }
 
     public void setPhoneNumber(String phoneNumber) {
