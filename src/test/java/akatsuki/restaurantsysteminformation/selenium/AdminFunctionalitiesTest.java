@@ -2,6 +2,7 @@ package akatsuki.restaurantsysteminformation.selenium;
 
 import akatsuki.restaurantsysteminformation.seleniumpages.AdminAdministratorsPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.LoginPage;
+import akatsuki.restaurantsysteminformation.seleniumpages.Utilities;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +10,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AdminFunctionalitiesTest {
@@ -36,32 +40,22 @@ public class AdminFunctionalitiesTest {
     @Test
     @Order(1)
     public void badCredentials() {
-        loginPage.ensureIsDisplayedLoginBtn();
-        Assertions.assertEquals(browser.getTitle(), "RestaurantInformationSystemFrontend");
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/login", 10));
+        assertEquals(browser.getTitle(), "RestaurantInformationSystemFrontend");
 
-        loginPage.setUsernameInput("michaeldouglas");
-        loginPage.setPasswordInput("badpassword");
-        loginPage.clickLoginButton();
+        loginPage.login("michaeldouglas", "badpassword");
 
-        loginPage.ensureIsDisplayedLoginBtn();
-
-        Assertions.assertEquals("http://localhost:4200/login", browser.getCurrentUrl());
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/login", 10));
     }
 
     @Test
     @Order(2)
     public void successfulLogin() {
-        loginPage.ensureIsDisplayedLoginBtn();
-        Assertions.assertEquals(browser.getTitle(), "RestaurantInformationSystemFrontend");
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/login", 10));
 
-        loginPage.setUsernameInput("michaeldouglas");
-        loginPage.setPasswordInput("michaeldouglas");
-        loginPage.clickLoginButton();
+        loginPage.login("michaeldouglas", "michaeldouglas");
 
-        loginPage.ensureIsNotDisplayedLoginBtn(); // Ensure there's no login btn -> it means url has been changed
-
-        Assertions.assertEquals("http://localhost:4200/home/admin/restaurant-view", browser.getCurrentUrl());
-
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/admin/restaurant-view", 10));
         browser.navigate().to("http://localhost:4200/home/admin/administrators");
     }
 
