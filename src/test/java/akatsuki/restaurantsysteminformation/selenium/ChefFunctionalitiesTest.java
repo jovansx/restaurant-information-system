@@ -25,6 +25,11 @@ public class ChefFunctionalitiesTest {
         chefPage = PageFactory.initElements(browser, ChefPage.class);
     }
 
+    @AfterAll
+    public static void tearDown() {
+        browser.quit();
+    }
+
     @Order(1)
     @Test
     public void selectAndCloseItem_DetailsOfItemIsDisplayedAndThenClosed() {
@@ -87,11 +92,6 @@ public class ChefFunctionalitiesTest {
         chefPage.ensureItemFromPreparationToReadyIsMoved();
         Assertions.assertEquals(2, chefPage.getRowsFromTable(2).size());
         Assertions.assertEquals(1, chefPage.getRowsFromTable(1).size());
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        browser.quit();
     }
 
 }

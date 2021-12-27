@@ -25,6 +25,11 @@ public class BartenderFunctionalitiesTest {
         bartenderPage = PageFactory.initElements(browser, BartenderPage.class);
     }
 
+    @AfterAll
+    public static void tearDown() {
+        browser.quit();
+    }
+
     @Order(1)
     @Test
     public void selectAndCloseItem_DetailsOfItemIsDisplayedAndThenClosed() {
@@ -84,11 +89,6 @@ public class BartenderFunctionalitiesTest {
         bartenderPage.ensureItemFromPreparationToReadyIsMoved();
         Assertions.assertEquals(2, bartenderPage.getRowsFromTable(2).size());
         Assertions.assertEquals(1, bartenderPage.getRowsFromTable(1).size());
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        browser.quit();
     }
 
 }

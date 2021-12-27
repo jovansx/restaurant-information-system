@@ -61,4 +61,8 @@ public class Utilities {
             return false;
         }
     }
+
+    public static boolean invisibilityWait(WebDriver driver, WebElement element, int wait) {
+        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOf(element));
+    }
 }
