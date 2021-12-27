@@ -4,17 +4,15 @@ import akatsuki.restaurantsysteminformation.seleniumpages.LoginPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.ManagerEmployeesPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.Utilities;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -29,10 +27,10 @@ public class ManagerFunctionalitiesTest {
     @BeforeAll
     public void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
-//        ChromeOptions options = new ChromeOptions();
-//        options.setHeadless(true);
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
 
-        browser = new ChromeDriver();
+        browser = new ChromeDriver(options);
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/login");
 

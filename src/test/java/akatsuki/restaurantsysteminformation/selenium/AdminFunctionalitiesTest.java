@@ -11,8 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AdminFunctionalitiesTest {
@@ -57,88 +56,88 @@ public class AdminFunctionalitiesTest {
 
         assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/admin/restaurant-view", 10));
         browser.navigate().to("http://localhost:4200/home/admin/administrators");
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/admin/administrators", 10));
     }
 
     @Test
-    public void successfulEditing() throws InterruptedException {
-        Assertions.assertEquals(1, adminPage.getTableRows().size());
-        Assertions.assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(adminPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("Liam", adminPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
-        Assertions.assertEquals("0611111116", adminPage.getPhoneNumberInput().getAttribute("value"));
+    public void successfulEditing() {
+        assertEquals(1, adminPage.getTableRows(1).size());
+        Utilities.elementDisabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertFalse(adminPage.getPhoneNumberInput().isEnabled());
+        assertEquals("Liam", adminPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        assertEquals("0611111116", adminPage.getPhoneNumberInput().getAttribute("value"));
 
         adminPage.clickButton(0);  // Enable editing
-        Assertions.assertTrue(adminPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-        Assertions.assertTrue(adminPage.getPhoneNumberInput().isEnabled());
+        Utilities.elementEnabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertTrue(adminPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Utilities.elementEnabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertTrue(adminPage.getPhoneNumberInput().isEnabled());
         adminPage.setFirstNameInput("Liamor"); // Enter new values
         adminPage.setPhoneNumber("0645558888");
-        Assertions.assertEquals("Liamor", adminPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
-        Assertions.assertEquals("0645558888", adminPage.getPhoneNumberInput().getAttribute("value"));
+        assertEquals("Liamor", adminPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
+        assertEquals("0645558888", adminPage.getPhoneNumberInput().getAttribute("value"));
 
         adminPage.clickButton(1);  // Click on save button
-        Thread.sleep(1000);
-        Assertions.assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(adminPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("Liamor Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
-        Assertions.assertEquals("0645558888", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+        Utilities.elementDisabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertFalse(adminPage.getPhoneNumberInput().isEnabled());
+        assertEquals("Liamor Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
+        assertEquals("0645558888", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
 
         adminPage.clickButton(0);
         adminPage.setFirstNameInput("Liam");
         adminPage.setPhoneNumber("0611111116");
         adminPage.clickButton(1);
-        Thread.sleep(1000);
-        Assertions.assertEquals("Liam Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
-        Assertions.assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+        Utilities.numberOfElementsWait(browser, adminPage.getButtons(), 1, 10);
+        assertEquals("Liam Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
+        assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
     }
 
     @Test
     public void failEditing_BadFirstName() {
-        Assertions.assertEquals(1, adminPage.getTableRows().size());
-        Assertions.assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(adminPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("Liam", adminPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
-        Assertions.assertEquals("0611111116", adminPage.getPhoneNumberInput().getAttribute("value"));
+        assertEquals(1, adminPage.getTableRows(1).size());
+        Utilities.elementDisabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertFalse(adminPage.getPhoneNumberInput().isEnabled());
+        assertEquals("Liam", adminPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        assertEquals("0611111116", adminPage.getPhoneNumberInput().getAttribute("value"));
 
         adminPage.getButtons().get(0).click();  // Enable editing
-        Assertions.assertTrue(adminPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-        Assertions.assertTrue(adminPage.getPhoneNumberInput().isEnabled());
+        Utilities.elementEnabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertTrue(adminPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Utilities.elementEnabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertTrue(adminPage.getPhoneNumberInput().isEnabled());
         adminPage.setPhoneNumber("06933skl"); // Enter new value for phone number
-        Assertions.assertEquals("06933skl", adminPage.getPhoneNumberInput().getAttribute("value"));    // Check if new value is set to input
+        assertEquals("06933skl", adminPage.getPhoneNumberInput().getAttribute("value"));    // Check if new value is set to input
 
         adminPage.clickButton(1);  // Click on save button
-        Assertions.assertTrue(adminPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
-        Assertions.assertTrue(adminPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText()); // Check if new value is not saved
+        Utilities.elementEnabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertTrue(adminPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
+        Utilities.elementEnabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertTrue(adminPage.getPhoneNumberInput().isEnabled());
+        assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText()); // Check if new value is not saved
 
         adminPage.clickButton(0);  // Click on cancel button
-        Assertions.assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(adminPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("Liam Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
-        Assertions.assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+        Utilities.elementDisabledWait(browser, adminPage.getFirstNameInput(), 10);
+        assertFalse(adminPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, adminPage.getPhoneNumberInput(), 10);
+        assertFalse(adminPage.getPhoneNumberInput().isEnabled());
+        assertEquals("Liam Neeson", adminPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
+        assertEquals("0611111116", adminPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
     }
 
     @Test
     public void successfulAddingAndDeletingOfSystemAdmin() {
-        adminPage.ensureAddButtonIsDisplayed();
-        Assertions.assertTrue(adminPage.getAddBtn().isDisplayed());
+        adminPage.clickAddButton();
+        adminPage.setFields("Lucian", "List", "lucian@gmail.com", "lucian_stronger",
+                "lucian_stronger123", "lucian_stronger123", "40000", "0645666666");
+        adminPage.clickSaveButton();
 
-        adminPage.getAddBtn().click();
-
-        adminPage.ensureDialogFieldsAreDisplayed();
-        adminPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Lucian");
-        adminPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
-        adminPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian@gmail.com");
-        adminPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger");
-        adminPage.getDialogFields().get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
-        adminPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
-        adminPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("40000");
-        adminPage.getDialogFields().get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0645666666");
-
-        adminPage.ensureDialogButtonsAreDisplayed();
-        adminPage.getDialogButtons().get(1).click();
-
-        adminPage.ensureRowsAreDisplayed(2);
-        Assertions.assertEquals(2, adminPage.getTableRows().size());
+        assertEquals(2, adminPage.getTableRows(2).size());
 
         for (WebElement el : adminPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Lucian List")) {
@@ -147,8 +146,7 @@ public class AdminFunctionalitiesTest {
             }
         }
 
-        adminPage.ensureRowsAreDisplayed(1);
-        Assertions.assertEquals(1, adminPage.getTableRows().size());
+        assertEquals(1, adminPage.getTableRows(1).size());
 
     }
 
