@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 @Data
 @AllArgsConstructor
@@ -31,29 +27,25 @@ public class LoginPage {
         this.driver = driver;
     }
 
-    public void setUsernameInput(String username) {
+    public void login(String username, String password) {
+        setUsernameInput(username);
+        setPasswordInput(password);
+        clickLoginButton();
+    }
+
+    private void setUsernameInput(String username) {
+        Utilities.visibilityWait(driver, usernameInput, 10);
         usernameInput.clear();
         usernameInput.sendKeys(username);
     }
 
-    public void setPasswordInput(String password) {
+    private void setPasswordInput(String password) {
+        Utilities.visibilityWait(driver, passwordInput, 10);
         passwordInput.clear();
         passwordInput.sendKeys(password);
     }
 
-    public void ensureIsDisplayedLoginBtn() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.elementToBeClickable(loginBtn));
-    }
-
-    public void ensureIsNotDisplayedLoginBtn() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.invisibilityOf(loginBtn));
-    }
-
-    public void clickLoginButton() {
-        WebElement element = (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.elementToBeClickable(loginBtn));
-        element.click();
+    private void clickLoginButton() {
+        Utilities.clickableWait(driver, this.loginBtn, 10).click();
     }
 }

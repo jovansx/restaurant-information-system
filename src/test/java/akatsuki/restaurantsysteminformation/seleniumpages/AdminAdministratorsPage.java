@@ -34,7 +34,8 @@ public class AdminAdministratorsPage {
     @FindBy(css = ".add-button")
     private WebElement addBtn;
 
-    @FindBy(xpath = "//mat-dialog-content/form/mat-form-field")     // List of mat-form-field, 8 when manager dialog is opened and 7 when employee dialog is opened
+    @FindBy(xpath = "//mat-dialog-content/form/mat-form-field")
+    // List of mat-form-field, 8 when manager dialog is opened and 7 when employee dialog is opened
     private List<WebElement> dialogFields;
 
     @FindBy(xpath = "//mat-dialog-actions/button")     // Cancel Save
@@ -44,12 +45,29 @@ public class AdminAdministratorsPage {
         this.driver = driver;
     }
 
+    public List<WebElement> getTableRows(int number) {
+        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), number, 10);
+        return tableRows;
+    }
+
+    public WebElement getFirstNameInput() {
+        Utilities.visibilityWait(driver, firstNameInput, 10);
+        return firstNameInput;
+    }
+
+    public WebElement getPhoneNumberInput() {
+        Utilities.visibilityWait(driver, phoneNumberInput, 10);
+        return phoneNumberInput;
+    }
+
     public void setFirstNameInput(String firstName) {
+        Utilities.visibilityWait(driver, firstNameInput, 10);
         firstNameInput.clear();
         firstNameInput.sendKeys(firstName);
     }
 
     public void setPhoneNumber(String phoneNumber) {
+        Utilities.visibilityWait(driver, phoneNumberInput, 10);
         phoneNumberInput.clear();
         phoneNumberInput.sendKeys(phoneNumber);
     }
@@ -60,23 +78,24 @@ public class AdminAdministratorsPage {
         button.click();
     }
 
-    public void ensureAddButtonIsDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOf(addBtn));
+    public void clickAddButton() {
+        Utilities.clickableWait(driver, addBtn, 10).click();
     }
 
-    public void ensureDialogFieldsAreDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOfAllElements(dialogFields));
+    public void clickSaveButton() {
+        Utilities.clickableWait(driver, dialogButtons.get(1), 10).click();
     }
 
-    public void ensureDialogButtonsAreDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOfAllElements(dialogButtons));
-    }
+    public void setFields(String name, String lastName, String email, String username, String password1, String password2, String salary, String phoneNumber) {
+        Utilities.numberOfElementsWait(driver, dialogFields, 8, 10);
 
-    public void ensureRowsAreDisplayed(int number) {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.numberOfElementsToBe(By.xpath("//table[1]/tbody/tr"), number));
+        dialogFields.get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys(name);
+        dialogFields.get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys(lastName);
+        dialogFields.get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys(email);
+        dialogFields.get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys(username);
+        dialogFields.get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys(password1);
+        dialogFields.get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys(password2);
+        dialogFields.get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys(salary);
+        dialogFields.get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys(phoneNumber);
     }
 }
