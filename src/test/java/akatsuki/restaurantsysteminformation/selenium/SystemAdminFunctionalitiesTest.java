@@ -40,6 +40,11 @@ public class SystemAdminFunctionalitiesTest {
 
     }
 
+    @AfterAll
+    public static void tearDown() {
+        browser.quit();
+    }
+
     @Test
     @Order(1)
     public void badCredentials() {
@@ -364,10 +369,5 @@ public class SystemAdminFunctionalitiesTest {
 
         menuPage.getDiscardBtn().click();
 
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        browser.quit();
     }
 }
