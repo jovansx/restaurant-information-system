@@ -4,7 +4,9 @@ import akatsuki.restaurantsysteminformation.seleniumpages.AdminAdministratorsPag
 import akatsuki.restaurantsysteminformation.seleniumpages.AdminRestaurantViewPage;
 import akatsuki.restaurantsysteminformation.seleniumpages.LoginPage;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 
@@ -59,111 +61,108 @@ public class AdminFunctionalitiesTest {
 
         Assertions.assertEquals("http://localhost:4200/home/admin/restaurant-view", browser.getCurrentUrl());
 
-//        browser.navigate().to("http://localhost:4200/home/admin/administrators");
-        browser.navigate().to("http://localhost:4200/home/admin/restaurant-view");
-
+        browser.navigate().to("http://localhost:4200/home/admin/administrators");
     }
 
-//    @Test
-//    @Order(4)
-//    public void successfulEditing() throws InterruptedException {
-//        Assertions.assertEquals(1, adminSystemAdministratorsPage.getTableRows().size());
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        Assertions.assertEquals("Liam", adminSystemAdministratorsPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
-//        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));
-//
-//        adminSystemAdministratorsPage.clickButton(0);  // Enable editing
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        adminSystemAdministratorsPage.setFirstNameInput("Liamor"); // Enter new values
-//        adminSystemAdministratorsPage.setPhoneNumber("0645558888");
-//        Assertions.assertEquals("Liamor", adminSystemAdministratorsPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
-//        Assertions.assertEquals("0645558888", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));
-//
-//        adminSystemAdministratorsPage.clickButton(1);  // Click on save button
-//        Thread.sleep(1000);
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        Assertions.assertEquals("Liamor Neeson", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
-//        Assertions.assertEquals("0645558888", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
-//
-//        adminSystemAdministratorsPage.clickButton(0);
-//        adminSystemAdministratorsPage.setFirstNameInput("Liam");
-//        adminSystemAdministratorsPage.setPhoneNumber("0611111116");
-//        adminSystemAdministratorsPage.clickButton(1);
-//        Thread.sleep(1000);
-//        Assertions.assertEquals("Liam Neeson", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
-//        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
-//    }
-//
-//    @Test
-//    @Order(3)
-//    public void failEditing_BadFirstName() {
-//        Assertions.assertEquals(1, adminSystemAdministratorsPage.getTableRows().size());
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        Assertions.assertEquals("Liam", adminSystemAdministratorsPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
-//        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));
-//
-//        adminSystemAdministratorsPage.getButtons().get(0).click();  // Enable editing
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        adminSystemAdministratorsPage.setPhoneNumber("06933skl"); // Enter new value for phone number
-//        Assertions.assertEquals("06933skl", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));    // Check if new value is set to input
-//
-//        adminSystemAdministratorsPage.clickButton(1);  // Click on save button
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText()); // Check if new value is not saved
-//
-//        adminSystemAdministratorsPage.clickButton(0);  // Click on cancel button
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-//        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
-//        Assertions.assertEquals("Liam Neeson", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
-//        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
-//    }
-//
-//    @Test
-//    @Order(5)
-//    public void successfulAddingAndDeletingOfSystemAdmin() {
-//        adminSystemAdministratorsPage.ensureAddButtonIsDisplayed();
-//        Assertions.assertTrue(adminSystemAdministratorsPage.getAddBtn().isDisplayed());
-//
-//        adminSystemAdministratorsPage.getAddBtn().click();
-//
-//        adminSystemAdministratorsPage.ensureDialogFieldsAreDisplayed();
-//        adminSystemAdministratorsPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Lucian");
-//        adminSystemAdministratorsPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
-//        adminSystemAdministratorsPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian@gmail.com");
-//        adminSystemAdministratorsPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger");
-//        adminSystemAdministratorsPage.getDialogFields().get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
-//        adminSystemAdministratorsPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
-//        adminSystemAdministratorsPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("40000");
-//        adminSystemAdministratorsPage.getDialogFields().get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0645666666");
-//
-//        adminSystemAdministratorsPage.ensureDialogButtonsAreDisplayed();
-//        adminSystemAdministratorsPage.getDialogButtons().get(1).click();
-//
-//        adminSystemAdministratorsPage.ensureRowsAreDisplayed(2);
-//        Assertions.assertEquals(2, adminSystemAdministratorsPage.getTableRows().size());
-//
-//        for (WebElement el : adminSystemAdministratorsPage.getTableRows()) {
-//            if (el.findElement(By.xpath("td[2]")).getText().equals("Lucian List")) {
-//                el.findElement(By.xpath("td[5]/button")).click();
-//                break;
-//            }
-//        }
-//
-//        adminSystemAdministratorsPage.ensureRowsAreDisplayed(1);
-//        Assertions.assertEquals(1, adminSystemAdministratorsPage.getTableRows().size());
-//    }
+    @Test
+    @Order(4)
+    public void successfulEditing() throws InterruptedException {
+        Assertions.assertEquals(1, adminSystemAdministratorsPage.getTableRows().size());
+        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("Liam", adminSystemAdministratorsPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));
+
+        adminSystemAdministratorsPage.clickButton(0);  // Enable editing
+        Assertions.assertTrue(adminSystemAdministratorsPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Assertions.assertTrue(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        adminSystemAdministratorsPage.setFirstNameInput("Liamor"); // Enter new values
+        adminSystemAdministratorsPage.setPhoneNumber("0645558888");
+        Assertions.assertEquals("Liamor", adminSystemAdministratorsPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
+        Assertions.assertEquals("0645558888", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));
+
+        adminSystemAdministratorsPage.clickButton(1);  // Click on save button
+        Thread.sleep(1000);
+        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("Liamor Neeson", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
+        Assertions.assertEquals("0645558888", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+
+        adminSystemAdministratorsPage.clickButton(0);
+        adminSystemAdministratorsPage.setFirstNameInput("Liam");
+        adminSystemAdministratorsPage.setPhoneNumber("0611111116");
+        adminSystemAdministratorsPage.clickButton(1);
+        Thread.sleep(1000);
+        Assertions.assertEquals("Liam Neeson", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
+        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+    }
 
     @Test
-//    @Order(6)
-        @Order(3)
+    @Order(3)
+    public void failEditing_BadFirstName() {
+        Assertions.assertEquals(1, adminSystemAdministratorsPage.getTableRows().size());
+        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("Liam", adminSystemAdministratorsPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));
+
+        adminSystemAdministratorsPage.getButtons().get(0).click();  // Enable editing
+        Assertions.assertTrue(adminSystemAdministratorsPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Assertions.assertTrue(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        adminSystemAdministratorsPage.setPhoneNumber("06933skl"); // Enter new value for phone number
+        Assertions.assertEquals("06933skl", adminSystemAdministratorsPage.getPhoneNumberInput().getAttribute("value"));    // Check if new value is set to input
+
+        adminSystemAdministratorsPage.clickButton(1);  // Click on save button
+        Assertions.assertTrue(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
+        Assertions.assertTrue(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText()); // Check if new value is not saved
+
+        adminSystemAdministratorsPage.clickButton(0);  // Click on cancel button
+        Assertions.assertFalse(adminSystemAdministratorsPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Assertions.assertFalse(adminSystemAdministratorsPage.getPhoneNumberInput().isEnabled());
+        Assertions.assertEquals("Liam Neeson", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
+        Assertions.assertEquals("0611111116", adminSystemAdministratorsPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+    }
+
+    @Test
+    @Order(5)
+    public void successfulAddingAndDeletingOfSystemAdmin() {
+        adminSystemAdministratorsPage.ensureAddButtonIsDisplayed();
+        Assertions.assertTrue(adminSystemAdministratorsPage.getAddBtn().isDisplayed());
+
+        adminSystemAdministratorsPage.getAddBtn().click();
+
+        adminSystemAdministratorsPage.ensureDialogFieldsAreDisplayed();
+        adminSystemAdministratorsPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Lucian");
+        adminSystemAdministratorsPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
+        adminSystemAdministratorsPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian@gmail.com");
+        adminSystemAdministratorsPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger");
+        adminSystemAdministratorsPage.getDialogFields().get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
+        adminSystemAdministratorsPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("lucian_stronger123");
+        adminSystemAdministratorsPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("40000");
+        adminSystemAdministratorsPage.getDialogFields().get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0645666666");
+
+        adminSystemAdministratorsPage.ensureDialogButtonsAreDisplayed();
+        adminSystemAdministratorsPage.getDialogButtons().get(1).click();
+
+        adminSystemAdministratorsPage.ensureRowsAreDisplayed(2);
+        Assertions.assertEquals(2, adminSystemAdministratorsPage.getTableRows().size());
+
+        for (WebElement el : adminSystemAdministratorsPage.getTableRows()) {
+            if (el.findElement(By.xpath("td[2]")).getText().equals("Lucian List")) {
+                el.findElement(By.xpath("td[5]/button")).click();
+                break;
+            }
+        }
+
+        adminSystemAdministratorsPage.ensureRowsAreDisplayed(1);
+        Assertions.assertEquals(1, adminSystemAdministratorsPage.getTableRows().size());
+    }
+
+    @Test
+    @Order(6)
     public void checkingIfButtonsAreDisabled() {
-//        browser.navigate().to("http://localhost:4200/home/admin/restaurant-view");
+        browser.navigate().to("http://localhost:4200/home/admin/restaurant-view");
 
         Assertions.assertTrue(adminRestaurantViewPage.addRoomButton.isEnabled());
         Assertions.assertFalse(adminRestaurantViewPage.renameRoomButton.isEnabled());
@@ -177,8 +176,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(6)
-        @Order(4)
+    @Order(7)
     public void failingAddingRoom_RoomNameIsAlreadyUsed() {
         Assertions.assertEquals(2, adminRestaurantViewPage.rooms.size());
         adminRestaurantViewPage.addRoomButton.click();
@@ -191,8 +189,7 @@ public class AdminFunctionalitiesTest {
 
 
     @Test
-//    @Order(7)
-    @Order(5)
+    @Order(8)
     public void successfullyAddingRoom_RoomIsAdded() {
         Assertions.assertEquals(2, adminRestaurantViewPage.rooms.size());
         adminRestaurantViewPage.addRoomButton.click();
@@ -205,20 +202,17 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(9)
-    @Order(6)
+    @Order(9)
     public void successfullyDeletingRoom_RoomDeleted() {
         Assertions.assertEquals(3, adminRestaurantViewPage.rooms.size());
         adminRestaurantViewPage.secondTab.click();
         adminRestaurantViewPage.clickButtonUntilItIsClicked(adminRestaurantViewPage.deleteRoomButton);
-//        adminRestaurantViewPage.deleteRoomButton.click();
         adminRestaurantViewPage.ensureRoomIsDeleted();
         Assertions.assertEquals(2, adminRestaurantViewPage.rooms.size());
     }
 
     @Test
-//    @Order(9)
-    @Order(7)
+    @Order(10)
     public void failingRenameRoom_RoomNamAlreadyExist() {
         Assertions.assertEquals(2, adminRestaurantViewPage.rooms.size());
         adminRestaurantViewPage.secondTab.click();
@@ -233,8 +227,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(10)
-    @Order(8)
+    @Order(11)
     public void successfullyRenameRoom_RoomNameIsUpdated() {
         Assertions.assertEquals(2, adminRestaurantViewPage.rooms.size());
         adminRestaurantViewPage.clickButtonUntilItIsClicked(adminRestaurantViewPage.renameRoomButton);
@@ -248,8 +241,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(11)
-    @Order(9)
+    @Order(12)
     public void successfullyEnablingAndCancelingEditMode_EditModeEnabledAndCanceled() {
         Assertions.assertFalse(adminRestaurantViewPage.applyLayoutButton.isEnabled());
         Assertions.assertFalse(adminRestaurantViewPage.saveButton.isEnabled());
@@ -279,8 +271,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(12)
-    @Order(10)
+    @Order(13)
     public void successfullyEnablingAndAddingTableAndCancelingEditMode_EditModeEnabledAndCanceled() {
         adminRestaurantViewPage.editRoomButton.click();
         adminRestaurantViewPage.ensureButtonIsEnabled(adminRestaurantViewPage.saveButton);
@@ -309,8 +300,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(13)
-    @Order(11)
+    @Order(14)
     public void successfullyAddingTable_TableAddedToRoom() {
         adminRestaurantViewPage.editRoomButton.click();
         adminRestaurantViewPage.ensureButtonIsEnabled(adminRestaurantViewPage.saveButton);
@@ -340,8 +330,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(14)
-    @Order(12)
+    @Order(15)
     public void successfullyEditingTable_TableUpdated() {
         adminRestaurantViewPage.editRoomButton.click();
         adminRestaurantViewPage.ensureButtonIsEnabled(adminRestaurantViewPage.saveButton);
@@ -350,7 +339,6 @@ public class AdminFunctionalitiesTest {
         adminRestaurantViewPage.ensureTableDialogIsShown();
 
         Assertions.assertEquals("Circle", adminRestaurantViewPage.tableStateInput.getText());
-//        Assertions.assertEquals("T1", adminRestaurantViewPage.tableNameInput.getText());
 
         adminRestaurantViewPage.tableStateInput.click();
         adminRestaurantViewPage.ensureTableStateSelectIsShown();
@@ -371,8 +359,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(15)
-    @Order(13)
+    @Order(16)
     public void successfullyRemovingTable_TableDeleted() {
         adminRestaurantViewPage.editRoomButton.click();
         adminRestaurantViewPage.ensureButtonIsEnabled(adminRestaurantViewPage.saveButton);
@@ -397,8 +384,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
-//    @Order(16)
-    @Order(14)
+    @Order(17)
     public void successfullyChangingLayoutOfTable_TableLayoutUpdated() {
         adminRestaurantViewPage.editRoomButton.click();
         adminRestaurantViewPage.ensureButtonIsEnabled(adminRestaurantViewPage.saveButton);
