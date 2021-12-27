@@ -13,16 +13,17 @@ import org.openqa.selenium.support.PageFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AdminFunctionalitiesTest {
 
-    private static WebDriver browser;
+    private WebDriver browser;
 
-    private static LoginPage loginPage;
-    private static AdminAdministratorsPage adminPage;
+    private LoginPage loginPage;
+    private AdminAdministratorsPage adminPage;
 
     @BeforeAll
-    public static void setup() {
+    public void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
@@ -141,7 +142,7 @@ public class AdminFunctionalitiesTest {
 
         for (WebElement el : adminPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Lucian List")) {
-                el.findElement(By.xpath("td[5]/button")).click();
+                Utilities.clickableWait(browser, el.findElement(By.xpath("td[5]/button")), 10).click();
                 break;
             }
         }
@@ -151,7 +152,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @AfterAll
-    public static void tearDown() {
+    public void tearDown() {
         browser.quit();
     }
 }

@@ -1,7 +1,6 @@
 package akatsuki.restaurantsysteminformation.seleniumpages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -17,10 +16,6 @@ public class Utilities {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.urlToBe(url));
     }
 
-    public static boolean titleWait(WebDriver driver, String title, int wait) {
-        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.titleIs(title));
-    }
-
     public static void elementDisabledWait(WebDriver driver, WebElement element, int wait) {
         new WebDriverWait(driver, Duration.ofSeconds(wait)).until((ExpectedCondition<Boolean>) condition -> !element.isEnabled());
     }
@@ -33,8 +28,16 @@ public class Utilities {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.visibilityOf(element));
     }
 
-    public static List<WebElement> visibilityWait(WebDriver driver, By locator, int wait) {
-        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
+    public static void visibilityAllWait(WebDriver driver, List<WebElement> elements, int wait) {
+        new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.visibilityOfAllElements(elements));
+    }
+
+    public static void invisibilityWait(WebDriver driver, WebElement element, int wait) {
+        new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOf(element));
+    }
+
+    public static void invisibilityAllWait(WebDriver driver, List<WebElement> elements, int wait) {
+        new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOfAllElements(elements));
     }
 
     public static List<WebElement> numberOfElementsWait(WebDriver driver, By locator, int number, int wait) {
@@ -45,20 +48,11 @@ public class Utilities {
         new WebDriverWait(driver, Duration.ofSeconds(wait)).until((ExpectedCondition<Boolean>) condition -> elements.size() == number);
     }
 
-    public static WebElement presenceWait(WebDriver driver, By locator, int wait) {
-        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.presenceOfElementLocated(locator));
-    }
-
     public static WebElement clickableWait(WebDriver driver, WebElement element, int wait) {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.elementToBeClickable(element));
     }
 
-    public static boolean isPresent(WebDriver driver, By locator) {
-
-        try {
-            return driver.findElement(locator).isDisplayed();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+    public static void ensureTextIsPresentInElement(WebDriver driver, WebElement element, String text, int wait) {
+        new WebDriverWait(driver, 5).until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 }

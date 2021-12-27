@@ -73,10 +73,9 @@ public class AdminAdministratorsPage {
     }
 
     public void clickButton(int index) {
-        WebElement button = (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.elementToBeClickable(buttons.get(index)));
-        button.click();
+        Utilities.clickableWait(driver, buttons.get(index), 10).click();
     }
+
 
     public void clickAddButton() {
         Utilities.clickableWait(driver, addBtn, 10).click();

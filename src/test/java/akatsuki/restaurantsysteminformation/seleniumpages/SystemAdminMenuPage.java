@@ -21,7 +21,10 @@ public class SystemAdminMenuPage {
     private WebDriver driver;
 
     @FindBy(xpath = "//mat-card[1]/mat-card-actions/button")
-    private WebElement addBtn;
+    private WebElement addDrinkBtn;
+
+    @FindBy(xpath = "//mat-card[2]/mat-card-actions/button")
+    private WebElement addDishBtn;
 
     @FindBy(css = ".main-buttons-container > button:first-child")
     private WebElement discardBtn;
@@ -51,62 +54,76 @@ public class SystemAdminMenuPage {
         this.driver = driver;
     }
 
+    public List<WebElement> getDrinkItemsCards(int number) {
+        Utilities.numberOfElementsWait(driver, drinkCards, number, 10);
+        return drinkCards;
+    }
+
+    public List<WebElement> getDishItemsCards(int number) {
+        Utilities.numberOfElementsWait(driver, dishesCards, number, 10);
+        return dishesCards;
+    }
+
     public void setItemName(String itemName) {
+        Utilities.visibilityWait(driver, itemNameInput, 10);
         itemNameInput.clear();
         itemNameInput.sendKeys(itemName);
     }
 
     public void setItemCategory(String itemCategory) {
+        Utilities.clickableWait(driver, categorySelect, 10);
         categorySelect.sendKeys(itemCategory);
+        Utilities.ensureTextIsPresentInElement(driver, categorySelect, itemCategory, 10);
     }
 
     public void setPrice(String price) {
+        Utilities.visibilityWait(driver, priceInput, 10);
         priceInput.clear();
         priceInput.sendKeys(price);
     }
 
-    public void ensureSaveButtonIsClickable() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.elementToBeClickable(dialogButtons.get(1)));
+    public void clickAddDrinkButton() {
+        Utilities.clickableWait(driver, addDrinkBtn, 10).click();
     }
 
-    public void ensureAddButtonIsDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOf(addBtn));
+    public void clickAddDishButton() {
+        Utilities.clickableWait(driver, addDishBtn, 10).click();
     }
 
-    public void ensureCardsAreDisplayed(int number, int itemType) { // 1 - drinks, 2 - dishes
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.numberOfElementsToBe(By.xpath("//mat-card[" + itemType + "]/div/mat-card"), number));
+    public void clickDiscardButton() {
+        Utilities.clickableWait(driver, discardBtn, 10).click();
     }
 
-    public void ensureItemNameInputIsDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOf(itemNameInput));
+    public void clickSaveButton() {
+        Utilities.clickableWait(driver, saveBtn, 10).click();
+        Utilities.invisibilityAllWait(driver, dialogButtons, 10);
     }
 
-    public void ensureItemCategorySelectIsDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOf(categorySelect));
+    public void clickSaveDialogButton() {
+        Utilities.clickableWait(driver, dialogButtons.get(1), 10).click();
     }
 
-    public void ensureItemPriceInputIsDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOf(priceInput));
+    public void deleteDrink(int index) {
+        Utilities.visibilityWait(driver, drinkCards.get(index), 10);
+        Utilities.clickableWait(driver,
+                drinkCards.get(index).findElement(By.className("clear-button")), 10).click();
     }
 
-    public void ensureDialogButtonsAreDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.visibilityOfAllElements(dialogButtons));
+    public void deleteDish(int index) {
+        Utilities.visibilityWait(driver, dishesCards.get(index), 10);
+        Utilities.clickableWait(driver,
+                dishesCards.get(index).findElement(By.className("clear-button")), 10).click();
     }
 
-    public void ensureDialogButtonsAreNotDisplayed() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.invisibilityOfAllElements(dialogButtons));
+    public void editDrink(int index) {
+        Utilities.visibilityWait(driver, drinkCards.get(index), 10);
+        Utilities.clickableWait(driver,
+                drinkCards.get(index).findElement(By.xpath("button[1]")), 10).click();
     }
 
-    public void ensureTextIsPresentInCategorySelect() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.textToBePresentInElement(categorySelect, "Juices"));
+    public void editDish(int index) {
+        Utilities.visibilityWait(driver, dishesCards.get(index), 10);
+        Utilities.clickableWait(driver,
+                dishesCards.get(index).findElement(By.xpath("button[1]")), 10).click();
     }
 }

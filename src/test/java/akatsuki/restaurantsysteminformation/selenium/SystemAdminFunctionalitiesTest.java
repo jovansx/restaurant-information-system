@@ -12,20 +12,20 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SystemAdminFunctionalitiesTest {
 
-    private static WebDriver browser;
+    private WebDriver browser;
 
-    private static LoginPage loginPage;
-    private static SystemAdminWorkersPage systemPage;
-    private static SystemAdminMenuPage menuPage;
+    private LoginPage loginPage;
+    private SystemAdminWorkersPage systemPage;
+    private SystemAdminMenuPage menuPage;
 
     @BeforeAll
-    public static void setup() {
+    public void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
@@ -37,7 +37,6 @@ public class SystemAdminFunctionalitiesTest {
         loginPage = PageFactory.initElements(browser, LoginPage.class);
         systemPage = PageFactory.initElements(browser, SystemAdminWorkersPage.class);
         menuPage = PageFactory.initElements(browser, SystemAdminMenuPage.class);
-
     }
 
     @Test
@@ -63,311 +62,260 @@ public class SystemAdminFunctionalitiesTest {
 
     @Test
     @Order(3)
-    public void successfulEditing() throws InterruptedException {
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
-        Assertions.assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(systemPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("John", systemPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
-        Assertions.assertEquals("0611111111", systemPage.getPhoneNumberInput().getAttribute("value"));
+    public void successfulEditing() {
+        assertEquals(9, systemPage.getTableRows(9).size());
+        Utilities.elementDisabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertFalse(systemPage.getPhoneNumberInput().isEnabled());
+        assertEquals("John", systemPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        assertEquals("0611111111", systemPage.getPhoneNumberInput().getAttribute("value"));
 
         systemPage.clickSelectedRow(1); // Select second row
-        Assertions.assertEquals("Simon", systemPage.getFirstNameInput().getAttribute("value")); // Check inputs values set to chosen row
-        Assertions.assertEquals("0611111112", systemPage.getPhoneNumberInput().getAttribute("value"));
+        assertEquals("Simon", systemPage.getFirstNameInput().getAttribute("value")); // Check inputs values set to chosen row
+        assertEquals("0611111112", systemPage.getPhoneNumberInput().getAttribute("value"));
 
         systemPage.clickButton(0);  // Enable editing
-        Assertions.assertTrue(systemPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-        Assertions.assertTrue(systemPage.getPhoneNumberInput().isEnabled());
+        Utilities.elementEnabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertTrue(systemPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Utilities.elementEnabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertTrue(systemPage.getPhoneNumberInput().isEnabled());
         systemPage.setFirstNameInput("Pera zdera"); // Enter new values
         systemPage.setPhoneNumber("0622222222");
-        Assertions.assertEquals("Pera zdera", systemPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
-        Assertions.assertEquals("0622222222", systemPage.getPhoneNumberInput().getAttribute("value"));
+        assertEquals("Pera zdera", systemPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
+        assertEquals("0622222222", systemPage.getPhoneNumberInput().getAttribute("value"));
 
         systemPage.clickButton(1);  // Click on save button
-        Thread.sleep(1000);
-        Assertions.assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(systemPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("Pera zdera Baker", systemPage.getTableRows().get(1).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
-        Assertions.assertEquals("0622222222", systemPage.getTableRows().get(1).findElement(By.xpath("td[3]")).getText());
+        Utilities.elementDisabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertFalse(systemPage.getPhoneNumberInput().isEnabled());
+        assertEquals("Pera zdera Baker", systemPage.getTableRows().get(1).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
+        assertEquals("0622222222", systemPage.getTableRows().get(1).findElement(By.xpath("td[3]")).getText());
 
         systemPage.clickSelectedRow(1); // Return old values
         systemPage.clickButton(0);
         systemPage.setFirstNameInput("Simon");
         systemPage.setPhoneNumber("0611111112");
         systemPage.clickButton(1);
-        Thread.sleep(1000);
-        Assertions.assertEquals("Simon Baker", systemPage.getTableRows().get(1).findElement(By.xpath("td[2]")).getText());
-        Assertions.assertEquals("0611111112", systemPage.getTableRows().get(1).findElement(By.xpath("td[3]")).getText());
+        Utilities.numberOfElementsWait(browser, systemPage.getButtons(), 1, 10);
+        assertEquals("Simon Baker", systemPage.getTableRows().get(1).findElement(By.xpath("td[2]")).getText());
+        assertEquals("0611111112", systemPage.getTableRows().get(1).findElement(By.xpath("td[3]")).getText());
     }
 
     @Test
     @Order(4)
     public void failEditing_BadPhoneNumber() {
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
-        Assertions.assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(systemPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("John", systemPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
-        Assertions.assertEquals("0611111111", systemPage.getPhoneNumberInput().getAttribute("value"));
+        assertEquals(9, systemPage.getTableRows(9).size());
+        Utilities.elementDisabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertFalse(systemPage.getPhoneNumberInput().isEnabled());
+        assertEquals("John", systemPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
+        assertEquals("0611111111", systemPage.getPhoneNumberInput().getAttribute("value"));
 
-        systemPage.getButtons().get(0).click();  // Enable editing
-        Assertions.assertTrue(systemPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-        Assertions.assertTrue(systemPage.getPhoneNumberInput().isEnabled());
+        systemPage.clickButton(0);  // Enable editing
+        Utilities.elementEnabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertTrue(systemPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
+        Utilities.elementEnabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertTrue(systemPage.getPhoneNumberInput().isEnabled());
         systemPage.setFirstNameInput("Pera zdera"); // Enter new values
         systemPage.setPhoneNumber("0622sklj");
-        Assertions.assertEquals("Pera zdera", systemPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
-        Assertions.assertEquals("0622sklj", systemPage.getPhoneNumberInput().getAttribute("value"));
+        assertEquals("Pera zdera", systemPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
+        assertEquals("0622sklj", systemPage.getPhoneNumberInput().getAttribute("value"));
 
         systemPage.clickButton(1);  // Click on save button
-        Assertions.assertTrue(systemPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
-        Assertions.assertTrue(systemPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("John Cena", systemPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new values are not saved
-        Assertions.assertEquals("0611111111", systemPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+        Utilities.elementEnabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertTrue(systemPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
+        Utilities.elementEnabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertTrue(systemPage.getPhoneNumberInput().isEnabled());
+        assertEquals("John Cena", systemPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new values are not saved
+        assertEquals("0611111111", systemPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
 
         systemPage.clickButton(0);  // Click on cancel button
-        Assertions.assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Assertions.assertFalse(systemPage.getPhoneNumberInput().isEnabled());
-        Assertions.assertEquals("John Cena", systemPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
-        Assertions.assertEquals("0611111111", systemPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
+        Utilities.elementDisabledWait(browser, systemPage.getFirstNameInput(), 10);
+        assertFalse(systemPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
+        Utilities.elementDisabledWait(browser, systemPage.getPhoneNumberInput(), 10);
+        assertFalse(systemPage.getPhoneNumberInput().isEnabled());
+        assertEquals("John Cena", systemPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
+        assertEquals("0611111111", systemPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
     }
 
     @Test
     @Order(5)
-    public void successfulAddingAndDeletingOfManager() throws InterruptedException {
-        systemPage.ensureAddButtonIsDisplayed();
-        Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
+    public void successfulAddingAndDeletingOfManager() {
+        systemPage.clickAddButton();
+        systemPage.clickAddUser(0);     // 0 -> Manager
+        systemPage.setManagerFields("Leon", "List", "leon@gmail.com", "leon_stronger",
+                "leon_stronger123", "leon_stronger123", "40000", "0645533454");
+        systemPage.clickSaveButton();
 
-        systemPage.getAddBtn().click();
-
-        systemPage.ensureAddButtonsAreDisplayed();
-        systemPage.getAddButtons().get(0).click();
-
-        systemPage.ensureDialogFieldsAreDisplayed();
-        Thread.sleep(2000);
-        systemPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon");
-        systemPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
-        systemPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("leon@gmail.com");
-        systemPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("leon_stronger");
-        systemPage.getDialogFields().get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon_stronger123");
-        systemPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Leon_stronger123");
-        systemPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("40000");
-        systemPage.getDialogFields().get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0645533454");
-
-        systemPage.ensureDialogButtonsAreDisplayed();
-        systemPage.getDialogButtons().get(1).click();
-
-        systemPage.ensureRowsAreDisplayed(10);
-        Assertions.assertEquals(10, systemPage.getTableRows().size());
+        assertEquals(10, systemPage.getTableRows(10).size());
 
         for (WebElement el : systemPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Leon List")) {
-                el.findElement(By.xpath("td[5]/button")).click();
+                Utilities.clickableWait(browser, el.findElement(By.xpath("td[5]/button")), 10).click();
                 break;
             }
         }
 
-        systemPage.ensureRowsAreDisplayed(9);
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
-
+        assertEquals(9, systemPage.getTableRows(9).size());
     }
 
     @Test
     @Order(6)
     public void successfulAddingAndDeletingOfEmployee() {
-        systemPage.ensureAddButtonIsDisplayed();
-        Assertions.assertTrue(systemPage.getAddBtn().isDisplayed());
+        systemPage.clickAddButton();
+        systemPage.clickAddUser(1);     // 1 -> Employee
+        systemPage.setEmployeeFields("Mia", "List", "mia@gmail.com", "7777", "35000", "0646633454");
+        systemPage.clickSaveButton();
 
-        systemPage.getAddBtn().click();
-
-        systemPage.ensureAddButtonsAreDisplayed();
-        systemPage.getAddButtons().get(1).click();
-
-        systemPage.ensureDialogFieldsAreDisplayed();
-        systemPage.getDialogFields().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("Mia");
-        systemPage.getDialogFields().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("List");
-        systemPage.getDialogFields().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("mia@gmail.com");
-        systemPage.getDialogFields().get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys("7777");
-        systemPage.getDialogFields().get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys("35000");
-        systemPage.getDialogFields().get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys("0646633454");
-
-        systemPage.ensureDialogButtonsAreDisplayed();
-        systemPage.getDialogButtons().get(1).click();
-
-        systemPage.ensureRowsAreDisplayed(10);
-        Assertions.assertEquals(10, systemPage.getTableRows().size());
+        assertEquals(10, systemPage.getTableRows(10).size());
 
         for (WebElement el : systemPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Mia List")) {
-                el.findElement(By.xpath("td[5]/button")).click();
+                Utilities.clickableWait(browser, el.findElement(By.xpath("td[5]/button")), 10).click();
                 break;
             }
         }
 
-        systemPage.ensureRowsAreDisplayed(9);
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
-
+        assertEquals(9, systemPage.getTableRows(9).size());
     }
 
     @Test
     @Order(7)
     public void deletionFails() {
-        systemPage.ensureRowsAreDisplayed(9);
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
+        assertEquals(9, systemPage.getTableRows(9).size());
 
-        systemPage.getTableRows().get(1).findElement(By.xpath("td[5]/button")).click();
+        systemPage.deleteRow(1);
 
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
+        assertEquals(9, systemPage.getTableRows(9).size());
 
     }
 
     @Test
     @Order(8)
     public void successfulChangePassword() {
-        systemPage.ensureRowsAreDisplayed(9);
-        Assertions.assertEquals(9, systemPage.getTableRows().size());
+        assertEquals(9, systemPage.getTableRows(9).size());
 
         systemPage.clickSelectedRow(8);
-
-        systemPage.ensureChangePasswordButtonIsDisplayed();
-        systemPage.getChangePasswordBtn().click();
-
-        systemPage.ensurePasswordDialogInputsAreDisplayed();
-        systemPage.getPasswordDialogInputs().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liamneeson");
-        systemPage.getPasswordDialogInputs().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liam123");
-        systemPage.getPasswordDialogInputs().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liam123");
-
-        systemPage.ensureDialogButtonsAreDisplayed();
-        systemPage.getDialogButtons().get(1).click();
-
-        systemPage.ensurePasswordDialogInputsAreNotDisplayed();
-
-        systemPage.ensureChangePasswordButtonIsDisplayed();
-        systemPage.getChangePasswordBtn().click();
-
-        systemPage.ensurePasswordDialogInputsAreDisplayed();
-        systemPage.getPasswordDialogInputs().get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liam123");
-        systemPage.getPasswordDialogInputs().get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liamneeson");
-        systemPage.getPasswordDialogInputs().get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys("liamneeson");
-
-        systemPage.ensureDialogButtonsAreDisplayed();
-        systemPage.getDialogButtons().get(1).click();
-
-        systemPage.ensurePasswordDialogInputsAreNotDisplayed();
-
+        systemPage.clickPasswordButton();
+        systemPage.setPasswordFields("bradpitt", "brad123", "brad123");
+        systemPage.clickSaveButton();
+        systemPage.clickPasswordButton();
+        systemPage.setPasswordFields("brad123", "bradpitt", "bradpitt");
+        systemPage.clickSaveButton();
     }
 
     @Test
     @Order(9)
     public void deleteItemFromMenuAndDiscardChanges() {
-
         browser.navigate().to("http://localhost:4200/home/system-admin/menu");
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/system-admin/menu", 10));
 
-        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
-        menuPage.ensureCardsAreDisplayed(1, 2); // 1 dish item
+        assertEquals(5, menuPage.getDrinkItemsCards(5).size());
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
 
-        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
-        Assertions.assertEquals(1, menuPage.getDishesCards().size());
+        menuPage.deleteDrink(0);
 
-        menuPage.getDrinkCards().get(0).findElement(By.className("clear-button")).click();    // Click on delete button of card
+        assertEquals(4, menuPage.getDrinkItemsCards(4).size());
 
-        menuPage.ensureCardsAreDisplayed(4, 1); // 4 drink items
-        Assertions.assertEquals(4, menuPage.getDrinkCards().size());
+        menuPage.clickDiscardButton();
 
-        menuPage.getDiscardBtn().click();
-
-        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
-        menuPage.ensureCardsAreDisplayed(2, 2); // 1 dish item
-
-        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
-        Assertions.assertEquals(2, menuPage.getDishesCards().size());
-
+        assertEquals(5, menuPage.getDrinkItemsCards(5).size());
+        assertEquals(2, menuPage.getDishItemsCards(2).size());
     }
 
     @Test
     @Order(10)
     public void deleteItemFromMenuAndSaveChanges() {
+        assertEquals(2, menuPage.getDishItemsCards(2).size());
 
-        menuPage.ensureCardsAreDisplayed(2, 2); // 2 dish items
+        menuPage.deleteDish(0);
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
 
-        Assertions.assertEquals(2, menuPage.getDishesCards().size());
-
-        menuPage.getDishesCards().get(0).findElement(By.xpath("button[2]")).click();    // Click on delete button of card
-        menuPage.ensureCardsAreDisplayed(1, 2); // 4 drink items
-
-        Assertions.assertEquals(1, menuPage.getDishesCards().size());
-
-        menuPage.getSaveBtn().click();
-        menuPage.ensureCardsAreDisplayed(1, 2); // 1 dish item
-
-        Assertions.assertEquals(1, menuPage.getDishesCards().size());
-
+        menuPage.clickSaveButton();
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
     }
 
     @Test
     @Order(11)
-    public void addDrinkItem() throws InterruptedException {
+    public void addDrinkItem() {
+        assertEquals(5, menuPage.getDrinkItemsCards(5).size());
 
-        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+        menuPage.clickAddDrinkButton();
 
-        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
-
-        menuPage.ensureAddButtonIsDisplayed();
-        menuPage.getAddBtn().click();
-
-        menuPage.ensureItemNameInputIsDisplayed();
         menuPage.setItemName("Cokoladni napitak");
-        menuPage.ensureItemCategorySelectIsDisplayed();
         menuPage.setItemCategory("Juices");
-        menuPage.ensureTextIsPresentInCategorySelect();
-        Thread.sleep(2000);
-        menuPage.ensureItemPriceInputIsDisplayed();
         menuPage.setPrice("500");
 
-        menuPage.ensureDialogButtonsAreDisplayed();
-        Assertions.assertEquals(2, menuPage.getDialogButtons().size());
+        menuPage.clickSaveDialogButton();
+        assertEquals(6, menuPage.getDrinkItemsCards(6).size());
 
-        menuPage.ensureSaveButtonIsClickable();
-        menuPage.getDialogButtons().get(1).click();
-
-        menuPage.ensureDialogButtonsAreNotDisplayed();
-        menuPage.ensureCardsAreDisplayed(6, 1); // 6 drink items
-        Assertions.assertEquals(6, menuPage.getDrinkCards().size());
-
-        menuPage.getDiscardBtn().click();
-
+        menuPage.clickDiscardButton();
+        assertEquals(5, menuPage.getDrinkItemsCards(5).size());
     }
 
     @Test
     @Order(12)
     public void editDrinkItem() {
+        assertEquals(5, menuPage.getDrinkItemsCards(5).size());
 
-        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
+        assertEquals("Apple juice", menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
+        menuPage.editDrink(0);    // Click on edit button of card
 
-        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
-
-        Assertions.assertEquals("Apple juice", menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
-        menuPage.getDrinkCards().get(0).findElement(By.xpath("button[1]")).click();    // Click on edit button of card
-
-        menuPage.ensureItemNameInputIsDisplayed();
         menuPage.setItemName("Sok od jabuke");
-        menuPage.ensureItemPriceInputIsDisplayed();
         menuPage.setPrice("500");
 
-        menuPage.ensureDialogButtonsAreDisplayed();
-        Assertions.assertEquals(2, menuPage.getDialogButtons().size());
+        menuPage.clickSaveDialogButton();
 
-        menuPage.ensureSaveButtonIsClickable();
-        menuPage.getDialogButtons().get(1).click();
+        assertEquals(5, menuPage.getDrinkItemsCards(5).size());
+//        Utilities.ensureTextIsPresentInElement(browser, menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")), "Sok od jabuke", 10);
+//        assertEquals("Sok od jabuke", menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
 
-        menuPage.ensureDialogButtonsAreNotDisplayed();
-        menuPage.ensureCardsAreDisplayed(5, 1); // 5 drink items
-        Assertions.assertEquals(5, menuPage.getDrinkCards().size());
-        Assertions.assertEquals("Sok od jabuke", menuPage.getDrinkCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
+        menuPage.clickDiscardButton();
+    }
 
-        menuPage.getDiscardBtn().click();
+    @Test
+    @Order(13)
+    public void addDishItem() {
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
 
+        menuPage.clickAddDishButton();
+
+        menuPage.setItemName("Curece noge");
+        menuPage.setItemCategory("Meat");
+        menuPage.setPrice("1200");
+
+        menuPage.clickSaveDialogButton();
+        assertEquals(2, menuPage.getDishItemsCards(2).size());
+
+        menuPage.clickDiscardButton();
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
+    }
+
+    @Test
+    @Order(14)
+    public void editDishItem() {
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
+
+        assertEquals("Chicken breast", menuPage.getDishesCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
+        menuPage.editDish(0);    // Click on edit button of card
+
+        menuPage.setItemName("Curece noge");
+        menuPage.setPrice("1200");
+
+        menuPage.clickSaveDialogButton();
+
+        assertEquals(1, menuPage.getDishItemsCards(1).size());
+//        Utilities.ensureTextIsPresentInElement(browser, menuPage.getDishesCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")), "Curece noge", 10);
+//        assertEquals("Curece noge", menuPage.getDishesCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
+
+        menuPage.clickDiscardButton();
     }
 
     @AfterAll
-    public static void tearDown() {
+    public void tearDown() {
         browser.quit();
     }
 }
