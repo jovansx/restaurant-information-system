@@ -50,14 +50,12 @@ public class ChefFunctionalitiesTest {
     @Test
     public void failPreparing_WrongPin() {
         Assertions.assertThrows(NoSuchElementException.class, () -> chefPage.getDetailsDiv().isDisplayed());
-//        Assertions.assertEquals("Chicken sandwich", chefPage.getRowsFromTable(0).get(0).getText());
         chefPage.getRowsFromTable(0).get(0).click();
         Utilities.visibilityWait(browser, chefPage.getPrepareButton(), 10);
         Assertions.assertTrue(chefPage.getDetailsDiv().isDisplayed());
         chefPage.getPrepareButton().click();
         chefPage.enterPin("1112");
         chefPage.getPinButton().click();
-//        Assertions.assertEquals("Chicken sandwich", chefPage.getRowsFromTable(0).get(0).getText());
         chefPage.getDetailsCloseButton().click();
         Assertions.assertThrows(NoSuchElementException.class, () -> chefPage.getDetailsDiv().isDisplayed());
     }
@@ -68,7 +66,6 @@ public class ChefFunctionalitiesTest {
         Assertions.assertEquals(1, chefPage.getRowsFromTable(0).size());
         Assertions.assertEquals(1, chefPage.getRowsFromTable(1).size());
         Assertions.assertThrows(NoSuchElementException.class, () -> chefPage.getDetailsDiv().isDisplayed());
-//        Assertions.assertEquals("Chicken sandwich", chefPage.getRowsFromTable(0).get(0).getText());
         chefPage.getRowsFromTable(0).get(0).click();
         Utilities.visibilityWait(browser, chefPage.getPrepareButton(), 10);
         Assertions.assertTrue(chefPage.getDetailsDiv().isDisplayed());
