@@ -350,7 +350,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @AfterAll
-    public void tearDown() {
+    public static void tearDown() {
         browser.quit();
     }
 
