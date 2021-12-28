@@ -52,80 +52,85 @@ public class SystemAdminWorkersPage {
         this.driver = driver;
     }
 
-    public List<WebElement> getTableRows(int number) {
-        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), number, 10);
-        return tableRows;
+    public List<WebElement> getTableRows(int numberOfRows) {
+        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), numberOfRows, 10);
+        return Utilities.visibilityAllWait(driver, tableRows, 10);
     }
 
     public WebElement getFirstNameInput() {
-        Utilities.visibilityWait(driver, firstNameInput, 10);
-        return firstNameInput;
+        return Utilities.visibilityWait(driver, firstNameInput, 10);
     }
 
     public WebElement getPhoneNumberInput() {
-        Utilities.visibilityWait(driver, phoneNumberInput, 10);
-        return phoneNumberInput;
+        return Utilities.visibilityWait(driver, phoneNumberInput, 10);
     }
 
     public void setFirstNameInput(String firstName) {
-        Utilities.visibilityWait(driver, firstNameInput, 10);
-        firstNameInput.clear();
-        firstNameInput.sendKeys(firstName);
+        WebElement el = Utilities.visibilityWait(driver, firstNameInput, 10);
+        el.clear();
+        el.sendKeys(firstName);
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        Utilities.visibilityWait(driver, phoneNumberInput, 10);
-        phoneNumberInput.clear();
-        phoneNumberInput.sendKeys(phoneNumber);
-    }
-
-    public void setInput(WebElement element, String value) {
-        Utilities.visibilityWait(driver, element, 10);
-        element.clear();
-        element.sendKeys(value);
+        WebElement el = Utilities.visibilityWait(driver, phoneNumberInput, 10);
+        el.clear();
+        el.sendKeys(phoneNumber);
     }
 
     public void setManagerFields(String name, String lastName, String email, String username, String password1, String password2, String salary, String phoneNumber) {
-        Utilities.numberOfElementsWait(driver, dialogInputs, 8, 10);
-        Utilities.visibilityAllWait(driver, dialogInputs, 10);
+        List<WebElement> list = Utilities.visibilityAllWait(driver, dialogInputs, 5);
 
-        setInput(dialogInputs.get(0), name);
-        setInput(dialogInputs.get(1), lastName);
-        setInput(dialogInputs.get(2), email);
-        setInput(dialogInputs.get(3), username);
-        setInput(dialogInputs.get(4), password1);
-        setInput(dialogInputs.get(5), password2);
-        setInput(dialogInputs.get(6), salary);
-        setInput(dialogInputs.get(7), phoneNumber);
+        list.get(0).clear();
+        list.get(0).sendKeys(name);
+        list.get(1).clear();
+        list.get(1).sendKeys(lastName);
+        list.get(2).clear();
+        list.get(2).sendKeys(email);
+        list.get(3).clear();
+        list.get(3).sendKeys(username);
+        list.get(4).clear();
+        list.get(4).sendKeys(password1);
+        list.get(5).clear();
+        list.get(5).sendKeys(password2);
+        list.get(6).clear();
+        list.get(6).sendKeys(salary);
+        list.get(7).clear();
+        list.get(7).sendKeys(phoneNumber);
     }
 
     public void setEmployeeFields(String name, String lastName, String email, String pinCode, String salary, String phoneNumber) {
-        Utilities.numberOfElementsWait(driver, dialogInputs, 6, 10);
-        Utilities.visibilityAllWait(driver, dialogInputs, 10);
+        List<WebElement> list = Utilities.visibilityAllWait(driver, dialogInputs, 5);
 
-        setInput(dialogInputs.get(0), name);
-        setInput(dialogInputs.get(1), lastName);
-        setInput(dialogInputs.get(2), email);
-        setInput(dialogInputs.get(3), pinCode);
-        setInput(dialogInputs.get(4), salary);
-        setInput(dialogInputs.get(5), phoneNumber);
+        list.get(0).clear();
+        list.get(0).sendKeys(name);
+        list.get(1).clear();
+        list.get(1).sendKeys(lastName);
+        list.get(2).clear();
+        list.get(2).sendKeys(email);
+        list.get(3).clear();
+        list.get(3).sendKeys(pinCode);
+        list.get(4).clear();
+        list.get(4).sendKeys(salary);
+        list.get(5).clear();
+        list.get(5).sendKeys(phoneNumber);
     }
 
     public void setPasswordFields(String oldPassword, String newPassword, String repeatPassword) {
-        Utilities.numberOfElementsWait(driver, passwordDialogInputs, 3, 10);
-        Utilities.visibilityAllWait(driver, passwordDialogInputs, 10);
+        List<WebElement> list = Utilities.visibilityAllWait(driver, passwordDialogInputs, 5);
 
-        setInput(passwordDialogInputs.get(0), oldPassword);
-        setInput(passwordDialogInputs.get(1), newPassword);
-        setInput(passwordDialogInputs.get(2), repeatPassword);
+        list.get(0).sendKeys(oldPassword);
+        list.get(1).sendKeys(newPassword);
+        list.get(2).sendKeys(repeatPassword);
     }
 
     public void clickSelectedRow(int index) {
-        Utilities.clickableWait(driver, tableRows.get(index), 10).click();
+        WebElement el = Utilities.visibilityWait(driver, tableRows.get(index), 10);
+        Utilities.clickableWait(driver, el, 10).click();
     }
 
     public void clickButton(int index) {
-        Utilities.clickableWait(driver, buttons.get(index), 10).click();
+        WebElement el = Utilities.visibilityWait(driver, buttons.get(index), 10);
+        Utilities.clickableWait(driver, el, 10).click();
     }
 
     public void clickAddButton() {
@@ -134,7 +139,7 @@ public class SystemAdminWorkersPage {
 
     public void clickSaveButton() {
         Utilities.clickableWait(driver, dialogButtons.get(1), 10).click();
-        Utilities.invisibilityWait(driver, dialogButtons.get(1), 10);
+        Utilities.invisibilityAllWait(driver, dialogButtons, 10);
     }
 
     public void clickPasswordButton() {
@@ -147,7 +152,22 @@ public class SystemAdminWorkersPage {
     }
 
     public void deleteRow(int index) {
-        Utilities.clickableWait(driver, tableRows.get(index).findElement(By.xpath("td[5]/button")), 10).click();
+        WebElement el = Utilities.visibilityWait(driver, tableRows.get(index).findElement(By.xpath("td[5]/button")), 10);
+        clickButtonUntilItIsClicked(el);
     }
 
+    private void clickButtonUntilItIsClicked(WebElement button) {
+        while (true) {
+            try {
+                button.click();
+                return;
+            } catch (Exception ignored) {
+            }
+            try {
+                Thread.sleep(50);
+            } catch (Exception ignored) {
+            }
+        }
+
+    }
 }
