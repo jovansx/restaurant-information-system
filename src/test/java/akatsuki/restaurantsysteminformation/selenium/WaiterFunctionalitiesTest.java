@@ -78,7 +78,7 @@ public class WaiterFunctionalitiesTest {
         waiterPage.getDialogOkButton().click();
         Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
         assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/1", 10));
-        Utilities.numberOfElementsWait(browser, waiterPage.getAllItems(), 12, 10);
+        Utilities.numberOfElementsWait(browser, waiterPage.getAllItems(), 11, 10);
     }
 
 }

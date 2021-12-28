@@ -66,7 +66,8 @@ public class ChefFunctionalitiesTest {
         Assertions.assertEquals(1, chefPage.getRowsFromTable(0).size());
         Assertions.assertEquals(1, chefPage.getRowsFromTable(1).size());
         Assertions.assertThrows(NoSuchElementException.class, () -> chefPage.getDetailsDiv().isDisplayed());
-        chefPage.getRowsFromTable(0).get(0).click();
+        Utilities.clickableWait(browser, chefPage.getRowsFromTable(0).get(0), 10).click();
+//        chefPage.getRowsFromTable(0).get(0).click();
         Utilities.visibilityWait(browser, chefPage.getPrepareButton(), 10);
         Assertions.assertTrue(chefPage.getDetailsDiv().isDisplayed());
         chefPage.getPrepareButton().click();

@@ -53,7 +53,7 @@ public class SystemAdminWorkersPage {
     }
 
     public List<WebElement> getTableRows(int numberOfRows) {
-        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), numberOfRows, 10);
+        Utilities.numberOfElementsWait(driver, tableRows, numberOfRows, 10);
         return Utilities.visibilityAllWait(driver, tableRows, 10);
     }
 
@@ -153,21 +153,6 @@ public class SystemAdminWorkersPage {
 
     public void deleteRow(int index) {
         WebElement el = Utilities.visibilityWait(driver, tableRows.get(index).findElement(By.xpath("td[5]/button")), 10);
-        clickButtonUntilItIsClicked(el);
-    }
-
-    private void clickButtonUntilItIsClicked(WebElement button) {
-        while (true) {
-            try {
-                button.click();
-                return;
-            } catch (Exception ignored) {
-            }
-            try {
-                Thread.sleep(50);
-            } catch (Exception ignored) {
-            }
-        }
-
+        Utilities.clickButtonUntilItIsClicked(el);
     }
 }

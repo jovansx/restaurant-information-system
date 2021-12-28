@@ -50,9 +50,6 @@ public class SystemAdminMenuPage {
     @FindBy(xpath = "/html/body/div[2]/div[4]/div/div/div/mat-option[1]")  // juices option
     private WebElement juicesOption;
 
-    @FindBy(xpath = "/html/body/div[2]/div[4]/div/div/div/mat-option[2]")  // meat option
-    private WebElement meatOption;
-
     public SystemAdminMenuPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -83,14 +80,6 @@ public class SystemAdminMenuPage {
         Utilities.invisibilityWait(driver, el2, 10);
     }
 
-    public void setDishItemCategory() {
-        WebElement el = Utilities.clickableWait(driver, categorySelect, 10);
-        el.click();
-        WebElement el2 = Utilities.visibilityWait(driver, meatOption, 10);
-        el2.click();
-        Utilities.invisibilityWait(driver, el2, 10);
-    }
-
     public void setPrice(String price) {
         WebElement el = Utilities.visibilityWait(driver, priceInput, 10);
         el.clear();
@@ -98,11 +87,7 @@ public class SystemAdminMenuPage {
     }
 
     public void clickAddDrinkButton() {
-        Utilities.clickableWait(driver, addDrinkBtn, 10).click();
-    }
-
-    public void clickAddDishButton() {
-        Utilities.clickableWait(driver, addDishBtn, 10).click();
+        Utilities.clickButtonUntilItIsClicked(addDrinkBtn);
     }
 
     public void clickDiscardButton() {
@@ -134,11 +119,5 @@ public class SystemAdminMenuPage {
         Utilities.visibilityWait(driver, drinkCards.get(index), 10);
         Utilities.clickableWait(driver,
                 drinkCards.get(index).findElement(By.xpath("button[1]")), 10).click();
-    }
-
-    public void editDish(int index) {
-        Utilities.visibilityWait(driver, dishesCards.get(index).findElement(By.xpath("button[1]")), 10);
-        Utilities.clickableWait(driver,
-                dishesCards.get(index).findElement(By.xpath("button[1]")), 10).click();
     }
 }

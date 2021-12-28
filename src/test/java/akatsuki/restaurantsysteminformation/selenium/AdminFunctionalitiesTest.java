@@ -64,6 +64,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(3)
     public void successfulEditing() {
         assertEquals(1, adminPage.getTableRows(1).size());
         assertTrue(Utilities.elementDisabledWait(browser, adminPage.getFirstNameInput(), 10)); // Check inputs are disabled
@@ -95,6 +96,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(4)
     public void failEditing_BadFirstName() {
         assertEquals(1, adminPage.getTableRows(1).size());
         assertTrue(Utilities.elementDisabledWait(browser, adminPage.getFirstNameInput(), 10)); // Check inputs are disabled
@@ -121,6 +123,7 @@ public class AdminFunctionalitiesTest {
     }
 
     @Test
+    @Order(5)
     public void successfulAddingAndDeletingOfSystemAdmin() {
         adminPage.clickAddButton();
         adminPage.setFields("Lucian", "List", "lucian@gmail.com", "lucian_stronger",
@@ -188,7 +191,7 @@ public class AdminFunctionalitiesTest {
     public void successfullyDeletingRoom_RoomDeleted() {
         Assertions.assertEquals(3, restaurantPage.getRooms().size());
         restaurantPage.getSecondTab().click();
-        restaurantPage.clickButtonUntilItIsClicked(restaurantPage.getDeleteRoomButton());
+        Utilities.clickButtonUntilItIsClicked(restaurantPage.getDeleteRoomButton());
         Utilities.numberOfElementsWait(browser, restaurantPage.getRooms(), 2, 10);
         Assertions.assertEquals(2, restaurantPage.getRooms().size());
     }
@@ -198,7 +201,7 @@ public class AdminFunctionalitiesTest {
     public void failingRenameRoom_RoomNamAlreadyExist() {
         Assertions.assertEquals(2, restaurantPage.getRooms().size());
         restaurantPage.getSecondTab().click();
-        restaurantPage.clickButtonUntilItIsClicked(restaurantPage.getRenameRoomButton());
+        Utilities.clickButtonUntilItIsClicked(restaurantPage.getRenameRoomButton());
         Utilities.visibilityWait(browser, restaurantPage.getDialogNameInput(), 10);
         restaurantPage.writeToInput(restaurantPage.getDialogNameInput(), "Room 1");
         restaurantPage.getDialogAddButton().click();
@@ -211,7 +214,7 @@ public class AdminFunctionalitiesTest {
     @Order(11)
     public void successfullyRenameRoom_RoomNameIsUpdated() {
         Assertions.assertEquals(2, restaurantPage.getRooms().size());
-        restaurantPage.clickButtonUntilItIsClicked(restaurantPage.getRenameRoomButton());
+        Utilities.clickButtonUntilItIsClicked(restaurantPage.getRenameRoomButton());
         Utilities.visibilityWait(browser, restaurantPage.getDialogNameInput(), 10);
         restaurantPage.writeToInput(restaurantPage.getDialogNameInput(), "Room 2");
         restaurantPage.getDialogAddButton().click();
@@ -289,7 +292,7 @@ public class AdminFunctionalitiesTest {
     @Test
     @Order(15)
     public void successfullyEditingTable_TableUpdated() {
-        restaurantPage.clickButtonUntilItIsClicked(restaurantPage.getEditRoomButton());
+        Utilities.clickButtonUntilItIsClicked(restaurantPage.getEditRoomButton());
         Utilities.elementEnabledWait(browser, restaurantPage.getSaveButton(), 10);
         restaurantPage.getButtonWithCordinates00().click();
         Utilities.visibilityWait(browser, restaurantPage.getTableDialogOkButton(), 10);
@@ -299,9 +302,9 @@ public class AdminFunctionalitiesTest {
         restaurantPage.getSquareButton().click();
         restaurantPage.writeToInput(restaurantPage.getTableNameInput(), "T2");
         restaurantPage.getTableDialogOkButton().click();
-        Utilities.numberOfElementsWait(browser, restaurantPage.getTables(), 1, 10);
+        Utilities.invisibilityWait(browser, restaurantPage.getTableDialogOkButton(), 10);
         Assertions.assertEquals(1, restaurantPage.getTables().size());
-        restaurantPage.clickButtonUntilItIsClicked(restaurantPage.getSaveButton());
+        Utilities.clickButtonUntilItIsClicked(restaurantPage.getSaveButton());
         Assertions.assertEquals(1, restaurantPage.getTables().size());
         Assertions.assertEquals("T2", restaurantPage.getNameOfTable(restaurantPage.getTables().get(0)));
     }
@@ -327,7 +330,7 @@ public class AdminFunctionalitiesTest {
     @Test
     @Order(17)
     public void successfullyChangingLayoutOfTable_TableLayoutUpdated() {
-        restaurantPage.clickButtonUntilItIsClicked(restaurantPage.getEditRoomButton());
+        Utilities.clickButtonUntilItIsClicked(restaurantPage.getEditRoomButton());
         Utilities.elementEnabledWait(browser, restaurantPage.getSaveButton(), 10);
         restaurantPage.writeToInput(restaurantPage.getRowInput(), "3");
         restaurantPage.writeToInput(restaurantPage.getColInput(), "3");

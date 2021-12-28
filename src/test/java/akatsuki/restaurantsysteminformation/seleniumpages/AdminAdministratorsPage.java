@@ -43,7 +43,7 @@ public class AdminAdministratorsPage {
     }
 
     public List<WebElement> getTableRows(int numberOfRows) {
-        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), numberOfRows, 10);
+        Utilities.numberOfElementsWait(driver, tableRows, numberOfRows, 10);
         return Utilities.visibilityAllWait(driver, tableRows, 10);
     }
 

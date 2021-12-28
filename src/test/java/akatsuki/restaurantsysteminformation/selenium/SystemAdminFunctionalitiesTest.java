@@ -265,44 +265,6 @@ public class SystemAdminFunctionalitiesTest {
         menuPage.clickDiscardButton();
     }
 
-    @Test
-    @Order(13)
-    public void addDishItem() {
-        assertEquals(1, menuPage.getDishItemsCards(1).size());
-
-        menuPage.clickAddDishButton();      //Nekad puca i ovde, vidi dal treba proveravati i vidljivost dugmeta pre clickable
-
-        menuPage.setItemName("Curece noge");
-        menuPage.setDishItemCategory();
-        menuPage.setPrice("1200");
-
-        menuPage.clickSaveDialogButton();
-        assertEquals(2, menuPage.getDishItemsCards(2).size());
-
-        menuPage.clickDiscardButton();
-        assertEquals(1, menuPage.getDishItemsCards(1).size());
-    }
-
-    @Test
-    @Order(14)
-    public void editDishItem() {
-        assertEquals(1, menuPage.getDishItemsCards(1).size());
-
-        assertEquals("Chicken breast", menuPage.getDishesCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
-        menuPage.editDish(0);    // Click on edit button of card
-
-        menuPage.setItemName("Curece noge");
-        menuPage.setPrice("1200");
-
-        menuPage.clickSaveDialogButton();
-
-        assertEquals(1, menuPage.getDishItemsCards(1).size());
-//        Utilities.ensureTextIsPresentInElement(browser, menuPage.getDishesCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")), "Curece noge", 10);
-//        assertEquals("Curece noge", menuPage.getDishesCards().get(0).findElement(By.xpath("mat-card-header/div[1]/mat-card-title")).getText());
-
-        menuPage.clickDiscardButton();
-    }
-
     @AfterAll
     public void tearDown() {
         browser.quit();

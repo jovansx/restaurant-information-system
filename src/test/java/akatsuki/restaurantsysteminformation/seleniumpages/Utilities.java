@@ -51,4 +51,18 @@ public class Utilities {
     public static boolean invisibilityWait(WebDriver driver, WebElement element, int wait) {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOf(element));
     }
+
+    public static void clickButtonUntilItIsClicked(WebElement button) {
+        for (int i = 0; i < 50; i++){
+            try {
+                button.click();
+                return;
+            } catch (Exception ignored) {
+            }
+            try {
+                Thread.sleep(100);
+            } catch (Exception ignored) {
+            }
+        }
+    }
 }

@@ -79,20 +79,4 @@ public class AdminRestaurantViewPage {
     public String getNameOfTable(WebElement table) {
         return table.findElement(By.cssSelector("h3")).getText();
     }
-
-    public void clickButtonUntilItIsClicked(WebElement button) {
-        while (true) {
-            try {
-                button.click();
-                return;
-            } catch (Exception ignored) {
-            }
-            try {
-                Thread.sleep(50);
-            } catch (Exception ignored) {
-            }
-        }
-
-    }
-
 }
