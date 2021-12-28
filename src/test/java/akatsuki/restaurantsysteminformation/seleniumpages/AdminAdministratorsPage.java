@@ -7,10 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
 @Data
@@ -34,9 +31,9 @@ public class AdminAdministratorsPage {
     @FindBy(css = ".add-button")
     private WebElement addBtn;
 
-    @FindBy(xpath = "//mat-dialog-content/form/mat-form-field")
-    // List of mat-form-field, 8 when manager dialog is opened and 7 when employee dialog is opened
-    private List<WebElement> dialogFields;
+    @FindBy(xpath = "//mat-dialog-content/form/mat-form-field/div/div[1]/div/input")
+    // List of mat-form-field, 8 when manager dialog is opened and 6 when employee dialog is opened
+    private List<WebElement> dialogInputs;
 
     @FindBy(xpath = "//mat-dialog-actions/button")     // Cancel Save
     private List<WebElement> dialogButtons;
@@ -45,37 +42,33 @@ public class AdminAdministratorsPage {
         this.driver = driver;
     }
 
-    public List<WebElement> getTableRows(int number) {
-        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), number, 10);
-        return tableRows;
+    public List<WebElement> getTableRows(int numberOfRows) {
+        Utilities.numberOfElementsWait(driver, By.xpath("//table[1]/tbody/tr"), numberOfRows, 10);
+        return Utilities.visibilityAllWait(driver, tableRows, 10);
     }
 
     public WebElement getFirstNameInput() {
-        Utilities.visibilityWait(driver, firstNameInput, 10);
-        return firstNameInput;
-    }
-
-    public void setFirstNameInput(String firstName) {
-        Utilities.visibilityWait(driver, firstNameInput, 10);
-        firstNameInput.clear();
-        firstNameInput.sendKeys(firstName);
+        return Utilities.visibilityWait(driver, firstNameInput, 10);
     }
 
     public WebElement getPhoneNumberInput() {
-        Utilities.visibilityWait(driver, phoneNumberInput, 10);
-        return phoneNumberInput;
+        return Utilities.visibilityWait(driver, phoneNumberInput, 10);
+    }
+
+    public void setFirstNameInput(String firstName) {
+        WebElement el = Utilities.visibilityWait(driver, firstNameInput, 10);
+        el.clear();
+        el.sendKeys(firstName);
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        Utilities.visibilityWait(driver, phoneNumberInput, 10);
-        phoneNumberInput.clear();
-        phoneNumberInput.sendKeys(phoneNumber);
+        WebElement el = Utilities.visibilityWait(driver, phoneNumberInput, 10);
+        el.clear();
+        el.sendKeys(phoneNumber);
     }
 
     public void clickButton(int index) {
-        WebElement button = (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.elementToBeClickable(buttons.get(index)));
-        button.click();
+        Utilities.clickableWait(driver, buttons.get(index), 10).click();
     }
 
     public void clickAddButton() {
@@ -87,15 +80,15 @@ public class AdminAdministratorsPage {
     }
 
     public void setFields(String name, String lastName, String email, String username, String password1, String password2, String salary, String phoneNumber) {
-        Utilities.numberOfElementsWait(driver, dialogFields, 8, 10);
+        List<WebElement> list = Utilities.visibilityAllWait(driver, dialogInputs, 5);
 
-        dialogFields.get(0).findElement(By.xpath("div/div[1]/div/input")).sendKeys(name);
-        dialogFields.get(1).findElement(By.xpath("div/div[1]/div/input")).sendKeys(lastName);
-        dialogFields.get(2).findElement(By.xpath("div/div[1]/div/input")).sendKeys(email);
-        dialogFields.get(3).findElement(By.xpath("div/div[1]/div/input")).sendKeys(username);
-        dialogFields.get(4).findElement(By.xpath("div/div[1]/div/input")).sendKeys(password1);
-        dialogFields.get(5).findElement(By.xpath("div/div[1]/div/input")).sendKeys(password2);
-        dialogFields.get(6).findElement(By.xpath("div/div[1]/div/input")).sendKeys(salary);
-        dialogFields.get(7).findElement(By.xpath("div/div[1]/div/input")).sendKeys(phoneNumber);
+        list.get(0).sendKeys(name);
+        list.get(1).sendKeys(lastName);
+        list.get(2).sendKeys(email);
+        list.get(3).sendKeys(username);
+        list.get(4).sendKeys(password1);
+        list.get(5).sendKeys(password2);
+        list.get(6).sendKeys(salary);
+        list.get(7).sendKeys(phoneNumber);
     }
 }
