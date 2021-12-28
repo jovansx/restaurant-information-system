@@ -55,4 +55,8 @@ public class Utilities {
     public static boolean ensureTextIsPresentInElement(WebDriver driver, WebElement element, String text, int wait) {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.textToBePresentInElement(element, text));
     }
+
+    public static boolean invisibilityWait(WebDriver driver, WebElement element, int wait) {
+        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOf(element));
+    }
 }

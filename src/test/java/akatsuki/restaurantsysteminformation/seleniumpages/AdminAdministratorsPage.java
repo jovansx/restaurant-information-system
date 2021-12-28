@@ -71,7 +71,6 @@ public class AdminAdministratorsPage {
         Utilities.clickableWait(driver, buttons.get(index), 10).click();
     }
 
-
     public void clickAddButton() {
         Utilities.clickableWait(driver, addBtn, 10).click();
     }

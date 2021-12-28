@@ -172,6 +172,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO getOrderByRestaurantTableIdIfWaiterValid(Long tableId, String pinCode) {
         RestaurantTable table = restaurantTableService.getOneWithOrder(tableId);
         OrderDTO orderDTO = new OrderDTO();
+
+//        TODO proveri pin da li je od konobara
+
         if (table.getActiveOrder() != null) {
             Order order = getOneWithAll(table.getActiveOrder().getId());
             UnregisteredUser waiter = order.getWaiter();
