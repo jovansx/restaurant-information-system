@@ -34,15 +34,15 @@ public class LoginPage {
     }
 
     private void setUsernameInput(String username) {
-        Utilities.visibilityWait(driver, usernameInput, 10);
-        usernameInput.clear();
-        usernameInput.sendKeys(username);
+        WebElement el = Utilities.visibilityWait(driver, usernameInput, 10);
+        el.clear();
+        el.sendKeys(username);
     }
 
     private void setPasswordInput(String password) {
-        Utilities.visibilityWait(driver, passwordInput, 10);
-        passwordInput.clear();
-        passwordInput.sendKeys(password);
+        WebElement el = Utilities.visibilityWait(driver, passwordInput, 10);
+        el.clear();
+        el.sendKeys(password);
     }
 
     private void clickLoginButton() {

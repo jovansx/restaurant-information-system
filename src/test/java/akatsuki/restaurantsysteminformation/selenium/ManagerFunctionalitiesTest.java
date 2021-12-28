@@ -12,7 +12,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -63,10 +64,8 @@ public class ManagerFunctionalitiesTest {
     @Test
     public void successfulEditing() {
         assertEquals(8, managerPage.getTableRows(8).size());
-        Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertFalse(managerPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10);
-        assertFalse(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10)); // Check inputs are disabled
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10));
         assertEquals("John", managerPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
         assertEquals("0611111111", managerPage.getPhoneNumberInput().getAttribute("value"));
 
@@ -75,20 +74,16 @@ public class ManagerFunctionalitiesTest {
         assertEquals("0611111119", managerPage.getPhoneNumberInput().getAttribute("value"));
 
         managerPage.clickButton(0);  // Enable editing
-        Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertTrue(managerPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-        Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertTrue(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10));  // Check inputs are enabled
+        assertTrue(Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10));
         managerPage.setFirstNameInput("Ela"); // Enter new values
         managerPage.setPhoneNumber("0622222222");
         assertEquals("Ela", managerPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
         assertEquals("0622222222", managerPage.getPhoneNumberInput().getAttribute("value"));
 
         managerPage.clickButton(1);  // Click on save button
-        Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertFalse(managerPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10);
-        assertFalse(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10)); // Check inputs are disabled
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10));
         assertEquals("Ela Muskila", managerPage.getTableRows().get(5).findElement(By.xpath("td[2]")).getText()); // Check if new values are updated in the table
         assertEquals("0622222222", managerPage.getTableRows().get(5).findElement(By.xpath("td[3]")).getText());
 
@@ -105,33 +100,25 @@ public class ManagerFunctionalitiesTest {
     @Test
     public void failEditing_BadFirstName() {
         assertEquals(8, managerPage.getTableRows(8).size());
-        Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertFalse(managerPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10);
-        assertFalse(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10)); // Check inputs are disabled
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10));
         assertEquals("John", managerPage.getFirstNameInput().getAttribute("value"));  // Check inputs values set to initially selected row
         assertEquals("0611111111", managerPage.getPhoneNumberInput().getAttribute("value"));
 
         managerPage.clickButton(0);  // Enable editing
-        Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertTrue(managerPage.getFirstNameInput().isEnabled());  // Check inputs are enabled
-        Utilities.elementEnabledWait(browser, managerPage.getPhoneNumberInput(), 10);
-        assertTrue(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10));  // Check inputs are enabled
+        assertTrue(Utilities.elementEnabledWait(browser, managerPage.getPhoneNumberInput(), 10));
         managerPage.setFirstNameInput("dasdjakjsdkasdkasdklajskdaksdklasdklaskldlfsdgsdfsdfsd"); // Enter new value for first name
         assertEquals("dasdjakjsdkasdkasdklajskdaksdklasdklaskldlfsdgsdfsdfsd", managerPage.getFirstNameInput().getAttribute("value"));    // Check if new values are set to inputs
 
         managerPage.clickButton(1);  // Click on save button
-        Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertTrue(managerPage.getFirstNameInput().isEnabled()); // Check inputs are enabled, save should not be triggered if inputs are not valid
-        Utilities.elementEnabledWait(browser, managerPage.getPhoneNumberInput(), 10);
-        assertTrue(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementEnabledWait(browser, managerPage.getFirstNameInput(), 10)); // Check inputs are enabled, save should not be triggered if inputs are not valid
+        assertTrue(Utilities.elementEnabledWait(browser, managerPage.getPhoneNumberInput(), 10));
         assertEquals("John Cena", managerPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText()); // Check if new value is not saved
 
         managerPage.clickButton(0);  // Click on cancel button
-        Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10);
-        assertFalse(managerPage.getFirstNameInput().isEnabled()); // Check inputs are disabled
-        Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10);
-        assertFalse(managerPage.getPhoneNumberInput().isEnabled());
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getFirstNameInput(), 10)); // Check inputs are disabled
+        assertTrue(Utilities.elementDisabledWait(browser, managerPage.getPhoneNumberInput(), 10));
         assertEquals("John Cena", managerPage.getTableRows().get(0).findElement(By.xpath("td[2]")).getText());
         assertEquals("0611111111", managerPage.getTableRows().get(0).findElement(By.xpath("td[3]")).getText());
     }
@@ -146,7 +133,7 @@ public class ManagerFunctionalitiesTest {
 
         for (WebElement el : managerPage.getTableRows()) {
             if (el.findElement(By.xpath("td[2]")).getText().equals("Luka List")) {
-                el.findElement(By.xpath("td[5]/button")).click();
+                Utilities.clickableWait(browser, el.findElement(By.xpath("td[5]/button")), 10).click();
                 break;
             }
         }
@@ -159,10 +146,9 @@ public class ManagerFunctionalitiesTest {
     public void deletionFails() {
         assertEquals(8, managerPage.getTableRows(8).size());
 
-        managerPage.getTableRows().get(1).findElement(By.xpath("td[5]/button")).click();
+        Utilities.clickableWait(browser, managerPage.getTableRows().get(1).findElement(By.xpath("td[5]/button")), 10).click();
 
         assertEquals(8, managerPage.getTableRows().size());
-
     }
 
     @AfterAll
