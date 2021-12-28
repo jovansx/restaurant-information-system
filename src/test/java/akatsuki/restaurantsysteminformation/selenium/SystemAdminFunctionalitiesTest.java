@@ -28,10 +28,10 @@ public class SystemAdminFunctionalitiesTest {
     @BeforeAll
     public void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
-//        ChromeOptions options = new ChromeOptions();
-//        options.setHeadless(true);
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
 
-        browser = new ChromeDriver();
+        browser = new ChromeDriver(options);
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/login");
 

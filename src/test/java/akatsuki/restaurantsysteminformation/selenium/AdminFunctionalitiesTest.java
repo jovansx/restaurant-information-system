@@ -130,7 +130,8 @@ public class AdminFunctionalitiesTest {
         assertEquals(2, adminPage.getTableRows(2).size());
 
         for (WebElement el : adminPage.getTableRows()) {
-            if (el.findElement(By.xpath("td[2]")).getText().equals("Lucian List")) {
+            WebElement td = Utilities.visibilityWait(browser, el.findElement(By.xpath("td[2]")), 10);
+            if (td.getText().equals("Lucian List")) {
                 Utilities.clickableWait(browser, el.findElement(By.xpath("td[5]/button")), 10).click();
                 break;
             }

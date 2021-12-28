@@ -32,10 +32,6 @@ public class Utilities {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.visibilityOfAllElements(elements));
     }
 
-    public static boolean invisibilityWait(WebDriver driver, WebElement element, int wait) {
-        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOf(element));
-    }
-
     public static boolean invisibilityAllWait(WebDriver driver, List<WebElement> elements, int wait) {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.invisibilityOfAllElements(elements));
     }
@@ -50,10 +46,6 @@ public class Utilities {
 
     public static WebElement clickableWait(WebDriver driver, WebElement element, int wait) {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.elementToBeClickable(element));
-    }
-
-    public static boolean ensureTextIsPresentInElement(WebDriver driver, WebElement element, String text, int wait) {
-        return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 
     public static boolean invisibilityWait(WebDriver driver, WebElement element, int wait) {
