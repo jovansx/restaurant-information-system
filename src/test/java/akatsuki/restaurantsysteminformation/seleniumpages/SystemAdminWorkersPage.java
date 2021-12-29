@@ -125,7 +125,7 @@ public class SystemAdminWorkersPage {
 
     public void clickSelectedRow(int index) {
         WebElement el = Utilities.visibilityWait(driver, tableRows.get(index), 10);
-        Utilities.clickableWait(driver, el, 10).click();
+        Utilities.clickButtonUntilItIsClicked(el);
     }
 
     public void clickButton(int index) {
