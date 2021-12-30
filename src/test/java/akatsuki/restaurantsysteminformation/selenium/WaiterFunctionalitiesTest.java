@@ -44,42 +44,42 @@ public class WaiterFunctionalitiesTest {
 //        browser.quit();
     }
 
-//    @Order(1)
-//    @Test
-//    public void changingTabs() {
-//        Utilities.numberOfElementsWait(browser, waiterPage.getTables(), 2, 10);
-//        waiterPage.getSecondTab().click();
-//        Utilities.numberOfElementsWait(browser, waiterPage.getTables(), 0, 10);
-//        waiterPage.getFirstTab().click();
-//        Utilities.numberOfElementsWait(browser, waiterPage.getTables(), 2, 10);
-//    }
-//
-//    @Order(2)
-//    @Test
-//    public void failingToOpenTable_WrongPin() {
-//        waiterPage.getButtonWithCordinates01().click();
-//        Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
-//        waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1112");
-//        waiterPage.getDialogOkButton().click();
-//        Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
-//        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
-//    }
-//
-//    @Order(3)
-//    @Test
-//    public void succesfullyOpeningEmptyTable_TableIsShown() {
-//        waiterPage.getButtonWithCordinates10().click();
-//        Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
-//        waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1111");
-//        waiterPage.getDialogOkButton().click();
-//        Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
-//        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/2", 10));
-//        Utilities.numberOfElementsWait(browser, waiterPage.getAllItems(), 0, 10);
-//        waiterPage.getBackToRoomButton().click();
-//        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
-//    }
-
     @Order(1)
+    @Test
+    public void changingTabs() {
+        Utilities.numberOfElementsWait(browser, waiterPage.getTables(), 2, 10);
+        waiterPage.getSecondTab().click();
+        Utilities.numberOfElementsWait(browser, waiterPage.getTables(), 0, 10);
+        waiterPage.getFirstTab().click();
+        Utilities.numberOfElementsWait(browser, waiterPage.getTables(), 2, 10);
+    }
+
+    @Order(2)
+    @Test
+    public void failingToOpenTable_WrongPin() {
+        waiterPage.getButtonWithCordinates01().click();
+        Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
+        waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1112");
+        waiterPage.getDialogOkButton().click();
+        Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
+    }
+
+    @Order(3)
+    @Test
+    public void succesfullyOpeningEmptyTable_TableIsShown() {
+        waiterPage.getButtonWithCordinates10().click();
+        Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
+        waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1111");
+        waiterPage.getDialogOkButton().click();
+        Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/2", 10));
+        Utilities.numberOfElementsWait(browser, waiterPage.getAllItems(), 0, 10);
+        waiterPage.getBackToRoomButton().click();
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
+    }
+
+    @Order(4)
     @Test
     public void succesfullyOpeningBusyTable_TableIsShown() {
         Utilities.clickButtonUntilItIsClicked(waiterPage.getButtonWithCordinates01());
@@ -91,7 +91,7 @@ public class WaiterFunctionalitiesTest {
         Utilities.numberOfElementsWait(browser, waiterPage.getAllItems(), 11, 10);
     }
 
-    @Order(2)
+    @Order(5)
     @Test
     public void successfullyDeliverDrinkItems() throws InterruptedException {
         Utilities.visibilityWait(browser, waiterTableDetailsPage.getDeliverDrinkItemsButton(), 10);
@@ -101,7 +101,7 @@ public class WaiterFunctionalitiesTest {
         assertEquals(0, browser.findElements(By.xpath("/html/body/app-root/app-table-details/div/div[2]/div[1]/div[1]/div[1]/mat-list/mat-list-item[5]/div/div[3]/div/button")).size());
     }
 
-    @Order(3)
+    @Order(6)
     @Test
     public void successfullyDeliverAllDishItems() throws InterruptedException {
         Utilities.visibilityWait(browser, waiterTableDetailsPage.getDeliverAllDishItems(), 10);
@@ -111,7 +111,7 @@ public class WaiterFunctionalitiesTest {
         assertEquals(0, browser.findElements(By.xpath("/html/body/app-root/app-table-details/div/div[2]/div[1]/div[2]/div[1]/mat-list/mat-list-item[4]/div/div[3]/div/button")).size());
     }
 
-    @Order(3)
+    @Order(7)
     @Test
     public void successfullyDiscardOrder_BackToWaiterHomepage() {
 
@@ -127,27 +127,27 @@ public class WaiterFunctionalitiesTest {
         assertTrue(isNoneState);
     }
 
-    @Order(4)
+    @Order(8)
     @Test
     public void successfullyAddDrinkItems() {
         Utilities.clickButtonUntilItIsClicked(waiterPage.getButtonWithCordinates01());
         Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
         waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1111");
-        waiterPage.getDialogOkButton().click();
+        Utilities.clickButtonUntilItIsClicked(waiterPage.getDialogOkButton());
         Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
         assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/1", 10));
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getAddDrinkItemsButton());
         Utilities.clickableWait(browser, waiterTableDetailsPage.getAddDrinkItemToListButton(), 10);
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getAddDrinkItemToListButton());
         Utilities.clickableWait(browser, waiterTableDetailsPage.getIncrementDrinkItemButton(), 10);
-        waiterTableDetailsPage.getIncrementDrinkItemButton().click();
+        Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getIncrementDrinkItemButton());
         Utilities.visibilityWait(browser, waiterTableDetailsPage.getDoneButton(), 10);
-        waiterTableDetailsPage.getDoneButton().click();
+        Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getDoneButton());
         Utilities.numberOfElementsWait(browser, waiterPage.getDrinkItems(), 1, 10);
         assertEquals(1, waiterPage.getDrinkItems().size());
     }
 
-    @Order(5)
+    @Order(9)
     @Test
     public void successfullyEditDrinkItems() throws InterruptedException {
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getEditDrinkButton());
@@ -161,7 +161,7 @@ public class WaiterFunctionalitiesTest {
         waiterTableDetailsPage.getDoneButton().click();
     }
 
-    @Order(6)
+    @Order(10)
     @Test
     public void cancelEditDrinkItems() {
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getEditDrinkButton());
@@ -174,7 +174,7 @@ public class WaiterFunctionalitiesTest {
         waiterTableDetailsPage.getDoneButton().click();
     }
 
-    @Order(7)
+    @Order(11)
     @Test
     public void successfullyAddDishItem() throws InterruptedException {
         waiterTableDetailsPage.getAddDishItemButton().click();
@@ -199,7 +199,7 @@ public class WaiterFunctionalitiesTest {
         assertEquals(3, waiterPage.getAllItems().size());
     }
 
-    @Order(8)
+    @Order(12)
     @Test
     public void successfullyDeleteDishItem() throws InterruptedException {
         Thread.sleep(1000);
@@ -209,7 +209,7 @@ public class WaiterFunctionalitiesTest {
         assertEquals(2, waiterPage.getAllItems().size());
     }
 
-    @Order(9)
+    @Order(13)
     @Test
     public void successfullyChangeDishItemState() throws InterruptedException {
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getPrepareDishItemButton());
