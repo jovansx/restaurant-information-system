@@ -77,6 +77,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getAllWithAll() {
         List<Long> indexes = orderRepository.findAllIndexes();
+        try {
+            return indexes.stream().map(this::getOneWithAll).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return indexes.stream().map(this::getOneWithAll).collect(Collectors.toList());
     }
 

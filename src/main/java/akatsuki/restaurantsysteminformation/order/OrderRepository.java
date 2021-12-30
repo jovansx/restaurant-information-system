@@ -20,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findAllByActiveIsTrueAndWaiter(UnregisteredUser waiter);
 
-    @Query("select o.id from Order o")
+    @Query("select o.id from Order o where o.active = true")
     List<Long> findAllIndexes();
 
     List<Order> findAllByCreatedAtBetween(LocalDateTime first, LocalDateTime second);

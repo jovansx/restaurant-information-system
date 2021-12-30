@@ -239,15 +239,15 @@ public class DbConfiguration {
 
 //          Order
             Order order1 = new Order(8, LocalDateTime.of(2021, 1, 31, 0, 0, 0), false, true, waiter1, Arrays.asList(dishItem1, dishItem2, dishItem3, dishItem4, dishItem5), Arrays.asList(drinkItems1, drinkItems2, drinkItems3, drinkItems4, drinkItems5, drinkItems6));
-            Order order2 = new Order(1100, LocalDateTime.of(2021, 1, 1, 0, 0), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order3 = new Order(1000, LocalDateTime.of(2021, 2, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order4 = new Order(1200, LocalDateTime.of(2021, 3, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order5 = new Order(1200, LocalDateTime.of(2021, 3, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order6 = new Order(1200, LocalDateTime.of(2021, 3, 31, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order7 = new Order(1200, LocalDateTime.of(2021, 5, 1, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order8 = new Order(1200, LocalDateTime.of(2021, 5, 20, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order9 = new Order(1200, LocalDateTime.of(2021, 5, 15, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
-            Order order10 = new Order(1200, LocalDateTime.of(2020, 12, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order2 = new Order(1100, LocalDateTime.of(2021, 1, 1, 0, 0), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order3 = new Order(1000, LocalDateTime.of(2021, 2, 1, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order4 = new Order(1200, LocalDateTime.of(2021, 3, 1, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order5 = new Order(1200, LocalDateTime.of(2021, 3, 10, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order6 = new Order(1200, LocalDateTime.of(2021, 3, 31, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order7 = new Order(1200, LocalDateTime.of(2021, 5, 1, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order8 = new Order(1200, LocalDateTime.of(2021, 5, 20, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+            Order order9 = new Order(1200, LocalDateTime.of(2021, 5, 15, 2, 2), true, false, waiter1, new ArrayList<>(), new ArrayList<>());
+//            Order order10 = new Order(1200, LocalDateTime.of(2020, 12, 10, 2, 2), false, true, waiter1, new ArrayList<>(), new ArrayList<>());
 
             orderRepository.save(order1);
             orderRepository.save(order2);
@@ -258,7 +258,7 @@ public class DbConfiguration {
             orderRepository.save(order7);
             orderRepository.save(order8);
             orderRepository.save(order9);
-            orderRepository.save(order10);
+//            orderRepository.save(order10);
 //          RestaurantTable
             RestaurantTable restaurantTable1 = new RestaurantTable("T1", TableState.TAKEN, TableShape.CIRCLE, false, order1, 0, 1);
             restaurantTableRepository.save(restaurantTable1);
