@@ -42,7 +42,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     @Override
     public DrinkItems findOneWithItems(long id) {
         return drinkItemsRepository.findOneWithItems(id).orElseThrow(
-                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " is not found in the database.")
         );
     }
 
