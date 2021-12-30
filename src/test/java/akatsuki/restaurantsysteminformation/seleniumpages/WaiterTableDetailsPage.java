@@ -13,13 +13,10 @@ import org.openqa.selenium.support.FindBy;
 public class WaiterTableDetailsPage {
     private WebDriver driver;
 
-    // discard dugme
     @FindBy(id = "discardOrderButton")
     private WebElement discardButton;
-    // charge dugme
-    @FindBy(css = "#chargeOrderButton")
-    private WebElement chargeButton;
-    // edit drink
+    @FindBy(xpath = "/html/body/app-root/app-table-details/div/div[1]/div[2]/button[2]")
+    private WebElement chargeOrderButton;
     @FindBy(xpath = "/html/body/app-root/app-table-details/div/div[2]/div[1]/div[1]/div[1]/mat-list/mat-list-item/div/div[3]/div/button[1]")
     private WebElement editDrinkButton;
     // delete drink
@@ -62,6 +59,10 @@ public class WaiterTableDetailsPage {
 
     @FindBy(xpath = "/html/body/app-root/app-table-details/div/div[2]/div[1]/div[2]/div[2]/button[1]")
     private WebElement deliverAllDishItems;
+
+    @FindBy(xpath = "/html/body/app-root/app-table-details/div/div[2]/div[2]/button")
+    private WebElement backToRoomButton;
+
 
     // edit dish
     // delete dish

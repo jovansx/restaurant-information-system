@@ -130,12 +130,12 @@ public class WaiterFunctionalitiesTest {
     @Order(8)
     @Test
     public void successfullyAddDrinkItems() {
-        Utilities.clickButtonUntilItIsClicked(waiterPage.getButtonWithCordinates01());
+        Utilities.clickButtonUntilItIsClicked(waiterPage.getButtonWithCordinates10());
         Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
         waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1111");
         Utilities.clickButtonUntilItIsClicked(waiterPage.getDialogOkButton());
         Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
-        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/1", 10));
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/2", 10));
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getAddDrinkItemsButton());
         Utilities.clickableWait(browser, waiterTableDetailsPage.getAddDrinkItemToListButton(), 10);
         Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getAddDrinkItemToListButton());
@@ -217,5 +217,33 @@ public class WaiterFunctionalitiesTest {
         Thread.sleep(1000);
         String text = waiterTableDetailsPage.getPrepareDishItemButton().getText();
         assertNotEquals("prepare", text);
+    }
+    
+    @Order(14)
+    @Test
+    public void successfullyChargeOrder_BackToWaiterHomepage() {
+        Utilities.clickButtonUntilItIsClicked(waiterTableDetailsPage.getChargeOrderButton());
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
+        String classes = waiterPage.getButtonWithCordinates10().getAttribute("class");
+        boolean isNoneState = true;
+        for(String c: classes.split(" ")) {
+            if(c.equals("TAKEN") || c.equals("CHANGED")) {
+                isNoneState = false;
+            }
+        }
+        assertTrue(isNoneState);
+    }
+
+    @Order(15)
+    @Test
+    public void successfullyBackToRoom() {
+        waiterPage.getButtonWithCordinates10().click();
+        Utilities.visibilityWait(browser, waiterPage.getDialogOkButton(), 10);
+        waiterPage.writeToInput(waiterPage.getPinCodeInput(), "1111");
+        waiterPage.getDialogOkButton().click();
+        Utilities.invisibilityWait(browser, waiterPage.getDialogOkButton(), 10);
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter/2", 10));
+        waiterTableDetailsPage.getBackToRoomButton().click();
+        assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
     }
 }
