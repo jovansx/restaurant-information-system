@@ -11,6 +11,68 @@ import java.time.Duration;
 import java.util.List;
 
 public class Utilities {
+	
+	@FindBy(xpath = "//*[@class='product_list grid row']//*[@class='product-name']")
+	private List<WebElement> productTitles;
+	
+	public boolean productContainsText(String text) {
+		for (WebElement element : productTitles) {
+			if (!element.getText().contains(text))
+				return false;
+		}
+
+		return true;
+	}
+	
+	@Test
+	public void searchTest() {
+	// try empty search
+	homePage.submitSearchBtnClick();
+
+	assertEquals(
+			"http://automationpractice.com/index.php?controller=search&orderby=position&orderway=desc&search_query=&submit_search=",
+			driver.getCurrentUrl());
+
+	assertTrue(searchResultsPage.errorMessagePresent("Please enter a search keyword"));
+	assertTrue(searchResultsPage.resultMessagePresent("0 results have been found."));
+
+	// try non existing search
+	homePage.setSearchInput("Non existing term");
+	homePage.submitSearchBtnClick();
+
+	assertEquals(
+			"http://automationpractice.com/index.php?controller=search&orderby=position&orderway=desc&search_query=Non+existing+term&submit_search=",
+			driver.getCurrentUrl());
+
+	assertTrue(
+			searchResultsPage.errorMessagePresent("No results were found for your search \"Non existing term\""));
+	assertTrue(searchResultsPage.resultMessagePresent("0 results have been found."));
+
+	// try existing term
+	homePage.setSearchInput("dress");
+	homePage.submitSearchBtnClick();
+
+	assertEquals(
+			"http://automationpractice.com/index.php?controller=search&orderby=position&orderway=desc&search_query=dress&submit_search=",
+			driver.getCurrentUrl());
+
+	assertTrue(searchResultsPage.productContainsText("dress"));
+
+	}
+	
+	public boolean errorMessagePresent(String text) {
+		return Utilities.textWait(driver, this.searchAlertDiv, text, 10);
+	}
+	
+	public WebElement getEmailInput() {
+		return Utilities.visibilityWait(driver, this.emailInput, 10);
+	}
+
+	public void setEmailInput(String value) {
+		WebElement el = getEmailInput();
+		el.clear();
+		el.sendKeys(value);
+	}
     
     public static boolean titleWait(WebDriver driver, String title, int wait) {
 		return new WebDriverWait(driver, wait).until(ExpectedConditions.titleIs(title));
