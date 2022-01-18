@@ -11,6 +11,28 @@ import java.time.Duration;
 import java.util.List;
 
 public class Utilities {
+    
+    public static boolean titleWait(WebDriver driver, String title, int wait) {
+		return new WebDriverWait(driver, wait).until(ExpectedConditions.titleIs(title));
+	}
+
+	public static boolean textWait(WebDriver driver, WebElement element, String text, int wait) {
+		return new WebDriverWait(driver, wait).until(ExpectedConditions.textToBePresentInElement(element, text));
+	}
+    
+    public static WebElement presenceWait(WebDriver driver, By locator, int wait) {
+		return new WebDriverWait(driver, wait).until(ExpectedConditions.presenceOfElementLocated(locator));
+	}
+    
+    public static boolean isPresent(WebDriver driver, By locator) {
+
+		try {
+			return driver.findElement(locator).isDisplayed();
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+
+    }
 
     public static boolean urlWait(WebDriver driver, String url, int wait) {
         return new WebDriverWait(driver, Duration.ofSeconds(wait)).until(ExpectedConditions.urlToBe(url));
