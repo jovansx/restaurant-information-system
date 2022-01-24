@@ -139,7 +139,7 @@ public class AdminFunctionalitiesTest {
                 break;
             }
         }
-
+//        TODO ovaj ne radi test
         assertEquals(1, adminPage.getTableRows(1).size());
 
     }

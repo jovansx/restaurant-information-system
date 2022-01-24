@@ -3,7 +3,6 @@ package akatsuki.restaurantsysteminformation.registereduser;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
-import akatsuki.restaurantsysteminformation.user.User;
 
 import java.util.List;
 

@@ -2,9 +2,7 @@ package akatsuki.restaurantsysteminformation.registereduser;
 
 import akatsuki.restaurantsysteminformation.dto.LoginDTO;
 import akatsuki.restaurantsysteminformation.dto.TokenDTO;
-import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.itemcategory.dto.ItemCategoryDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserChangePasswordDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDTO;
 import akatsuki.restaurantsysteminformation.registereduser.dto.RegisteredUserDetailsDTO;
@@ -218,7 +216,7 @@ class RegisteredUserControllerIntegrationTest {
 
     @Test
     public void delete_ValidId_SavedObject() {
-        RegisteredUser user = registeredUserService.create(new RegisteredUserDTO("Marko", "Savic", "markos@gmail.com", "0611141111", 13, UserType.SYSTEM_ADMIN, "username", "password"));
+        RegisteredUser user = registeredUserService.create(new RegisteredUserDTO("Marko", "Savic", "narkos@gmail.com", "0611141119", 13, UserType.SYSTEM_ADMIN, "username", "password"));
         int size = registeredUserService.getAll().size();
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(URL_PREFIX + "/" + user.getId(),

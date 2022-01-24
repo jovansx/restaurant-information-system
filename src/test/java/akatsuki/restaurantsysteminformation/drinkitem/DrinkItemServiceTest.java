@@ -1,6 +1,5 @@
 package akatsuki.restaurantsysteminformation.drinkitem;
 
-import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemUpdateDTO;
 import akatsuki.restaurantsysteminformation.drinkitem.exception.DrinkItemNotFoundException;
 import akatsuki.restaurantsysteminformation.item.Item;

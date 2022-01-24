@@ -6,14 +6,10 @@ import akatsuki.restaurantsysteminformation.drinkitems.DrinkItemsService;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsActionRequestDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsUpdateDTO;
-import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsInvalidStateException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
-import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
-import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,7 +258,6 @@ public class DrinkItemsStreamControllerIntegrationTest {
         assertEquals("User with the id 2 is not a waiter.", returnDTO.getMessage());
     }
 
-    //TODO: Videti, zasto sa ovom metodom 2 testa padnu, sama radi
     @Test
     public void delete_Valid_DeletedObject() throws Exception {
 

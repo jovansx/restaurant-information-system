@@ -115,7 +115,7 @@ class DishItemServiceIntegrationTest {
 
     @Test
     public void delete_ValidId_SavedObject() {
-        DishItem dishItem = dishItemService.delete(1L);
+        DishItem dishItem = dishItemService.delete(10L);
 
         Assertions.assertTrue(dishItem.isDeleted());
         Assertions.assertFalse(dishItem.isActive());
