@@ -3,7 +3,6 @@ package akatsuki.restaurantsysteminformation.seleniumpages;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -51,14 +50,14 @@ public class AdminAdministratorsPage {
         return Utilities.visibilityWait(driver, firstNameInput, 10);
     }
 
-    public WebElement getPhoneNumberInput() {
-        return Utilities.visibilityWait(driver, phoneNumberInput, 10);
-    }
-
     public void setFirstNameInput(String firstName) {
         WebElement el = Utilities.visibilityWait(driver, firstNameInput, 10);
         el.clear();
         el.sendKeys(firstName);
+    }
+
+    public WebElement getPhoneNumberInput() {
+        return Utilities.visibilityWait(driver, phoneNumberInput, 10);
     }
 
     public void setPhoneNumber(String phoneNumber) {

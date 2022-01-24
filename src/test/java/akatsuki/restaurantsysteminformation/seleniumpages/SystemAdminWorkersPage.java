@@ -61,14 +61,14 @@ public class SystemAdminWorkersPage {
         return Utilities.visibilityWait(driver, firstNameInput, 10);
     }
 
-    public WebElement getPhoneNumberInput() {
-        return Utilities.visibilityWait(driver, phoneNumberInput, 10);
-    }
-
     public void setFirstNameInput(String firstName) {
         WebElement el = Utilities.visibilityWait(driver, firstNameInput, 10);
         el.clear();
         el.sendKeys(firstName);
+    }
+
+    public WebElement getPhoneNumberInput() {
+        return Utilities.visibilityWait(driver, phoneNumberInput, 10);
     }
 
     public void setPhoneNumber(String phoneNumber) {

@@ -6,16 +6,11 @@ import akatsuki.restaurantsysteminformation.seleniumpages.WaiterTableDetailsPage
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WaiterFunctionalitiesTest {
@@ -29,9 +24,9 @@ public class WaiterFunctionalitiesTest {
     @BeforeAll
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
-//        ChromeOptions options = new ChromeOptions();
-//        options.setHeadless(true);
-        browser = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
+        browser = new ChromeDriver(options);
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/home/waiter");
 
@@ -41,7 +36,7 @@ public class WaiterFunctionalitiesTest {
 
     @AfterAll
     public static void tearDown() {
-//        browser.quit();
+        browser.quit();
     }
 
     @Order(1)
@@ -111,6 +106,7 @@ public class WaiterFunctionalitiesTest {
         assertEquals(0, browser.findElements(By.xpath("/html/body/app-root/app-table-details/div/div[2]/div[1]/div[2]/div[1]/mat-list/mat-list-item[4]/div/div[3]/div/button")).size());
     }
 
+    //    TODO ni ovaj ne radi kako treba fajl
     @Order(7)
     @Test
     public void successfullyDiscardOrder_BackToWaiterHomepage() {
@@ -119,8 +115,8 @@ public class WaiterFunctionalitiesTest {
         assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
         String classes = waiterPage.getButtonWithCordinates10().getAttribute("class");
         boolean isNoneState = true;
-        for(String c: classes.split(" ")) {
-            if(c.equals("TAKEN") || c.equals("CHANGED")) {
+        for (String c : classes.split(" ")) {
+            if (c.equals("TAKEN") || c.equals("CHANGED")) {
                 isNoneState = false;
             }
         }
@@ -218,7 +214,7 @@ public class WaiterFunctionalitiesTest {
         String text = waiterTableDetailsPage.getPrepareDishItemButton().getText();
         assertNotEquals("prepare", text);
     }
-    
+
     @Order(14)
     @Test
     public void successfullyChargeOrder_BackToWaiterHomepage() {
@@ -226,8 +222,8 @@ public class WaiterFunctionalitiesTest {
         assertTrue(Utilities.urlWait(browser, "http://localhost:4200/home/waiter", 10));
         String classes = waiterPage.getButtonWithCordinates10().getAttribute("class");
         boolean isNoneState = true;
-        for(String c: classes.split(" ")) {
-            if(c.equals("TAKEN") || c.equals("CHANGED")) {
+        for (String c : classes.split(" ")) {
+            if (c.equals("TAKEN") || c.equals("CHANGED")) {
                 isNoneState = false;
             }
         }

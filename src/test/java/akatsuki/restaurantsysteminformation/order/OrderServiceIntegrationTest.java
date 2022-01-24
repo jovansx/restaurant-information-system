@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -39,7 +37,7 @@ class OrderServiceIntegrationTest {
         Assertions.assertEquals(8.0, foundOrderDTO.getTotalPrice());
         Assertions.assertEquals("2021-01-31 00:00:00", foundOrderDTO.getCreatedAt());
         Assertions.assertEquals("John Cena", foundOrderDTO.getWaiter());
-        Assertions.assertEquals(4, foundOrderDTO.getDishItemList().size());
+        Assertions.assertEquals(5, foundOrderDTO.getDishItemList().size());
         Assertions.assertEquals(5, foundOrderDTO.getDrinkItemsList().size());
     }
 
@@ -90,7 +88,7 @@ class OrderServiceIntegrationTest {
     @Test
     public void getAllWithAll_FetchOrders_ReturnedList() {
         List<Order> orders = orderService.getAllWithAll();
-        Assertions.assertEquals(10, orders.size());
+        Assertions.assertEquals(8, orders.size());
     }
 
     @Test
@@ -112,7 +110,7 @@ class OrderServiceIntegrationTest {
         List<Order> orders = orderService.getAllWithAll();
 
         Assertions.assertNotNull(deletedOrder);
-        Assertions.assertEquals(9, orders.size());
+        Assertions.assertEquals(7, orders.size());
     }
 
     @Test
@@ -128,6 +126,7 @@ class OrderServiceIntegrationTest {
 
         DishItem dishItem = new DishItem();
         dishItem.setId(1L);
+        dishItem.setAmount(1);
         dishItem.setItem(sandwich);
 
         DrinkItems drinkItems = new DrinkItems();
@@ -138,7 +137,7 @@ class OrderServiceIntegrationTest {
 
         Order updatedOrder = orderService.updateTotalPriceAndSave(order);
 
-        Assertions.assertEquals(24, updatedOrder.getTotalPrice());
+        Assertions.assertEquals(158, updatedOrder.getTotalPrice());
     }
 
     @Test

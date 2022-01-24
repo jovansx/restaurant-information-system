@@ -254,13 +254,4 @@ public class ItemControllerIntegrationTest {
         itemService.save(item);
     }
 
-    //TODO: vidi isto
-//    @Test
-//    public void delete_CopyAlreadyDeleted_ExceptionThrown() {
-//        ResponseEntity<String> responseEntity = restTemplate.exchange(URL_PREFIX + "/4",
-//                HttpMethod.DELETE, new HttpEntity<>(headers), String.class);
-//        Assertions.assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-//    }
-
-    //TODO: za endpointe saveChanges i discardChanges, nzm kako bih jednostavno vratio na predjasnje stanje
 }

@@ -53,7 +53,7 @@ public class Utilities {
     }
 
     public static void clickButtonUntilItIsClicked(WebElement button) {
-        for (int i = 0; i < 50; i++){
+        for (int i = 0; i < 50; i++) {
             try {
                 button.click();
                 return;

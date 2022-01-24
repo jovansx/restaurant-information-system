@@ -5,14 +5,10 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItemService;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemActionRequestDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemCreateDTO;
 import akatsuki.restaurantsysteminformation.dishitem.dto.DishItemUpdateDTO;
-import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemInvalidStateException;
-import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemNotFoundException;
-import akatsuki.restaurantsysteminformation.dishitem.exception.DishItemOrderException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
 import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,8 +102,6 @@ public class DishItemStreamControllerIntegrationTest {
         assertFalse(returnDTO.isSuccessfullyFinished());
     }
 
-    // TODO napravi i za kreiran order
-
     @Test
     public void update_Valid_UpdatedObject() throws Exception {
 
@@ -131,13 +125,13 @@ public class DishItemStreamControllerIntegrationTest {
 
     @Test
     public void update_ItemNotExist_ExceptionThrown() throws Exception {
-        DishItemUpdateDTO dto = new DishItemUpdateDTO(15L, 10, "New note.", 1L);
-        session.send("/app/dish-item/update/15", dto);
+        DishItemUpdateDTO dto = new DishItemUpdateDTO(16L, 10, "New note.", 1L);
+        session.send("/app/dish-item/update/16", dto);
         SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
 
         assertNotNull(returnDTO);
+        assertEquals("Dish item with the id 16 is not found in the database.", returnDTO.getMessage());
         assertFalse(returnDTO.isSuccessfullyFinished());
-        assertEquals("Dish item with the id 15 is not found in the database.", returnDTO.getMessage());
     }
 
     @Test
@@ -257,27 +251,6 @@ public class DishItemStreamControllerIntegrationTest {
         assertNotNull(returnDTO);
         assertFalse(returnDTO.isSuccessfullyFinished());
         assertEquals("User with the id 3 is not a waiter.", returnDTO.getMessage());
-    }
-
-    @Test
-    public void delete_Valid_DeletedObject() throws Exception {
-
-        DishItem dishItem = dishItemService.findOneActiveAndFetchItemAndChef(1L);
-        session.send("/app/dish-item/delete/1", null);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        assertNotNull(returnDTO);
-        assertTrue(returnDTO.isSuccessfullyFinished());
-        assertEquals("Dish item state is successfully deleted!", returnDTO.getMessage());
-
-        Order order = orderService.getOneWithAll(1L);
-        dishItem.setActive(true);
-        dishItem.setDeleted(false);
-        dishItemService.save(dishItem);
-        order.getDishes().add(dishItem);
-        order.setTotalPrice(8);
-        orderService.save(order);
     }
 
     @Test

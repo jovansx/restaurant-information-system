@@ -6,14 +6,12 @@ import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableExistsException;
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
-import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableStateNotValidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,12 +45,6 @@ class RestaurantTableServiceIntegrationTest {
     @Test
     void getOneWithOrder_InvalidId_ExceptionThrown() {
         Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> restaurantTableService.getOneWithOrder(8000L));
-    }
-
-    @Test
-    void getAll_ObjectsExist_ReturnedAsList() {
-        List<RestaurantTable> list = restaurantTableService.getAll();
-        Assertions.assertEquals(4, list.size());
     }
 
     @Test

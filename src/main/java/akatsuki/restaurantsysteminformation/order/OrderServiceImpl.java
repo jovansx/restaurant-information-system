@@ -178,8 +178,6 @@ public class OrderServiceImpl implements OrderService {
         RestaurantTable table = restaurantTableService.getOneWithOrder(tableId);
         OrderDTO orderDTO = new OrderDTO();
 
-//        TODO proveri pin da li je od konobara
-
         if (table.getActiveOrder() != null) {
             Order order = getOneWithAll(table.getActiveOrder().getId());
             UnregisteredUser waiter = order.getWaiter();
@@ -189,6 +187,8 @@ public class OrderServiceImpl implements OrderService {
             orderDTO = new OrderDTO(order);
             restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
         }
+
+        unregisteredUserService.checkPinCode(pinCode, UserType.WAITER);
 
         orderDTO.getDishItemList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
         orderDTO.getDrinkItemsList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);

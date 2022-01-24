@@ -1,8 +1,6 @@
 package akatsuki.restaurantsysteminformation.sockets;
 
-import akatsuki.restaurantsysteminformation.order.Order;
 import akatsuki.restaurantsysteminformation.order.OrderService;
-import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
 import akatsuki.restaurantsysteminformation.sockets.dto.SocketResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OrderStreamControllerIntegrationTest {
@@ -39,35 +38,6 @@ public class OrderStreamControllerIntegrationTest {
     public void setup() {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(
                 List.of(new WebSocketTransport(new StandardWebSocketClient()))));
-    }
-
-    @Test
-    public void discard_Valid_DiscardObject() throws Exception {
-        Order order = orderService.create(new OrderCreateDTO(1L, 1L));
-
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-
-        session.send("/app/order/discard/" + order.getId(), null);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        order = orderService.getOneWithAll(order.getId());
-
-        assertNotNull(returnDTO);
-        assertTrue(order.isDiscarded());
-        assertTrue(returnDTO.isSuccessfullyFinished());
-        assertEquals("Order with id " + order.getId() + " is successfully discarded!", returnDTO.getMessage());
-
-        orderService.delete(order.getId());
     }
 
     @Test
@@ -131,35 +101,6 @@ public class OrderStreamControllerIntegrationTest {
 
         assertNotNull(returnDTO);
         assertFalse(returnDTO.isSuccessfullyFinished());
-    }
-
-    @Test
-    public void charge_Valid_DiscardObject() throws Exception {
-        Order order = orderService.create(new OrderCreateDTO(1L, 1L));
-
-        BlockingQueue<SocketResponseDTO> blockingQueue = new ArrayBlockingQueue(1);
-        webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession session = webSocketStompClient
-                .connect(String.format("ws://localhost:%d/app/stomp", port), new StompSessionHandlerAdapter() {
-                })
-                .get(1, SECONDS);
-
-        session.subscribe("/topic/order", new MyStompFrameHandler(blockingQueue));
-
-        session.send("/app/order/charge/" + order.getId(), null);
-        Thread.sleep(100);
-
-        SocketResponseDTO returnDTO = blockingQueue.poll(1, SECONDS);
-
-        order = orderService.getOneWithAll(order.getId());
-
-        assertNotNull(returnDTO);
-        assertFalse(order.isActive());
-        assertTrue(returnDTO.isSuccessfullyFinished());
-        assertEquals("Order with id " + order.getId() + " is successfully charged!", returnDTO.getMessage());
-
-        orderService.delete(order.getId());
     }
 
     @Test
