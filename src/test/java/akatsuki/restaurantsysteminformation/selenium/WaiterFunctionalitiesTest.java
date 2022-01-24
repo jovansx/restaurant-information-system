@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.PageFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +27,8 @@ public class WaiterFunctionalitiesTest {
         System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
+        options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+
         browser = new ChromeDriver(options);
         browser.manage().window().maximize();
         browser.navigate().to("http://localhost:4200/home/waiter");
