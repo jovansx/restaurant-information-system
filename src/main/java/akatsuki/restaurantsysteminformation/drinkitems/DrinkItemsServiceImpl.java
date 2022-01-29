@@ -42,7 +42,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     @Override
     public DrinkItems findOneWithItems(long id) {
         return drinkItemsRepository.findOneWithItems(id).orElseThrow(
-                () -> new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.")
+                () -> new DrinkItemsNotFoundException("Drink items with the id " + id + " is not found in the database.")
         );
     }
 
@@ -202,9 +202,7 @@ public class DrinkItemsServiceImpl implements DrinkItemsService {
     private void checkDrinksForUpdate(List<DrinkItemUpdateDTO> drinkItemsDTOList) {
         drinkItemsDTOList.forEach(drinkItem -> {
             if (drinkItem.getId() != -1) {
-                Item item = drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
-                if (item.getType() != ItemType.DRINK)
-                    throw new ItemNotFoundException("Not correct type of drink item!");
+                drinkItemService.findByIdAndFetchItem(drinkItem.getId()).getItem();
             }
         });
     }

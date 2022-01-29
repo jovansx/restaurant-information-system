@@ -8,5 +8,4 @@ import java.util.Optional;
 @Repository
 public interface UnregisteredUserRepository extends JpaRepository<UnregisteredUser, Long> {
     Optional<UnregisteredUser> findByPinCode(String pinCode);
-
 }

@@ -1,15 +1,24 @@
 package akatsuki.restaurantsysteminformation.drinkitems;
 
-import akatsuki.restaurantsysteminformation.drinkitem.DrinkItemService;
+import akatsuki.restaurantsysteminformation.drinkitem.DrinkItem;
+import akatsuki.restaurantsysteminformation.drinkitem.DrinkItemServiceImpl;
+import akatsuki.restaurantsysteminformation.drinkitem.dto.DrinkItemUpdateDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsCreateDTO;
+import akatsuki.restaurantsysteminformation.drinkitems.dto.DrinkItemsUpdateDTO;
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsInvalidStateException;
 import akatsuki.restaurantsysteminformation.drinkitems.exception.DrinkItemsNotFoundException;
 import akatsuki.restaurantsysteminformation.enums.ItemState;
+import akatsuki.restaurantsysteminformation.enums.ItemType;
 import akatsuki.restaurantsysteminformation.enums.UserType;
-import akatsuki.restaurantsysteminformation.item.ItemService;
+import akatsuki.restaurantsysteminformation.item.Item;
+import akatsuki.restaurantsysteminformation.item.ItemServiceImpl;
+import akatsuki.restaurantsysteminformation.item.exception.ItemNotFoundException;
+import akatsuki.restaurantsysteminformation.itemcategory.ItemCategory;
 import akatsuki.restaurantsysteminformation.order.Order;
-import akatsuki.restaurantsysteminformation.order.OrderService;
+import akatsuki.restaurantsysteminformation.order.OrderServiceImpl;
+import akatsuki.restaurantsysteminformation.restauranttable.RestaurantTableServiceImpl;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
-import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserService;
+import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUserServiceImpl;
 import akatsuki.restaurantsysteminformation.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,13 +42,15 @@ class DrinkItemsServiceTest {
     @Mock
     DrinkItemsRepository drinkItemsRepositoryMock;
     @Mock
-    UnregisteredUserService unregisteredUserServiceMock;
+    UnregisteredUserServiceImpl unregisteredUserServiceMock;
     @Mock
-    OrderService orderServiceMock;
+    OrderServiceImpl orderServiceMock;
     @Mock
-    ItemService itemServiceMock;
+    ItemServiceImpl itemServiceMock;
     @Mock
-    DrinkItemService drinkItemServiceMock;
+    DrinkItemServiceImpl drinkItemServiceMock;
+    @Mock
+    RestaurantTableServiceImpl restaurantTableServiceMock;
 
     @Test
     public void findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered_NegativeId_ExceptionThrown() {
@@ -70,97 +81,85 @@ class DrinkItemsServiceTest {
         Assertions.assertEquals(foundList.size(), 2);
     }
 
+    @Test
+    public void create_ValidDto_SavedObject() {
+        List<DrinkItemUpdateDTO> drinkItemList = new ArrayList<>();
+        drinkItemList.add(new DrinkItemUpdateDTO(2, 1L, 1L, 3));
+        DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, drinkItemList, "Notes", null);
+        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
+        Item item = new Item("Coca Cola", "Nice",
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", ItemType.DRINK), new ArrayList<>());
+        DrinkItems drinkItems = new DrinkItems();
+        order.getDrinks().add(drinkItems);
 
-//    @Test
-//    public void create_ValidDto_SavedObject() {
-//        List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
-//        DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
-//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
-//        Item item = new Item("Coca Cola", "Nice",
-//                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
-//
-//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-//        Mockito.when(drinkItemServiceMock.create(Mockito.any(DrinkItem.class))).thenReturn(new DrinkItem());
-//        Mockito.when(drinkItemsRepositoryMock.save(Mockito.any(DrinkItems.class))).thenReturn(new DrinkItems());
-//
-//        drinkItemsService.create(drinkItemsCreateDTO);
-//
-//        Assertions.assertEquals(order.getDrinks().size(), 1);
-//        Mockito.verify(drinkItemsRepositoryMock, Mockito.times(1)).save(Mockito.any(DrinkItems.class));
-//        Mockito.verify(orderServiceMock, Mockito.times(1)).updateTotalPriceAndSave(order);
-//    }
+        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
 
-//    @Test
-//    public void create_InvalidItemTypeDto_ExceptionThrown() {
-//        List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
-//        DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, list, "Notes");
-//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
-//        Item item = new Item("Coca Cola", "Nice",
-//                null, true, false, ItemType.DISH, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
-//
-//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-//
-//        Assertions.assertThrows(ItemNotFoundException.class, () -> drinkItemsService.create(drinkItemsCreateDTO));
-//    }
+        drinkItemsService.create(drinkItemsCreateDTO);
+        Mockito.verify(drinkItemsRepositoryMock, Mockito.times(1)).save(Mockito.any(DrinkItems.class));
+    }
 
-//    @Test
-//    public void update_ValidDtoAndId_ChangedObject() {
-//        List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
-//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
-//        Item item = new Item("Coca Cola", "Nice",
-//                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
-//        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
-//        drinkItems.setId(1L);
-//        drinkItems.getDrinkItemList().add(new DrinkItem());
-//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));
-//
-//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-//        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-//        Mockito.when(drinkItemServiceMock.create(Mockito.any(DrinkItem.class))).thenReturn(new DrinkItem());
-//        Mockito.when(drinkItemsRepositoryMock.save(Mockito.any(DrinkItems.class))).thenReturn(new DrinkItems());
-//
-//        drinkItemsService.update(dto, 1L);
-//
-//        Assertions.assertEquals(drinkItems.getDrinkItemList().size(), 1);
-//        Mockito.verify(orderServiceMock, Mockito.times(1)).updateTotalPriceAndSave(order);
-//    }
+    @Test
+    public void create_InvalidItemTypeDto_ExceptionThrown() {
+        List<DrinkItemUpdateDTO> drinkItemList = new ArrayList<>();
+        drinkItemList.add(new DrinkItemUpdateDTO(2, 1L, 1L, 3));
+        DrinkItemsCreateDTO drinkItemsCreateDTO = new DrinkItemsCreateDTO(1, drinkItemList, "Notes", null);
+        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
+        Item item = new Item();
+        item.setType(ItemType.DISH);
 
-//    @Test
-//    public void update_InvalidItemType_ExceptionThrown() {
-//        List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
-//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
-//        Item item = new Item("Coca Cola", "Nice",
-//                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
-//        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
-//        drinkItems.setId(1L);
-//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));
-//
-//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-//        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-//
-//        Assertions.assertThrows(DrinkItemsInvalidStateException.class, () -> drinkItemsService.update(dto, 1L));
-//    }
+        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
 
-//    @Test
-//    public void update_InvalidOrderId_ExceptionThrown() {
-//        List<DrinkItemCreateDTO> list = Collections.singletonList(new DrinkItemCreateDTO(1, 1L));
-//        DrinkItemsCreateDTO dto = new DrinkItemsCreateDTO(1, list, "Notes");
-//        Item item = new Item("Coca Cola", "Nice",
-//                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", CategoryType.DRINK), new ArrayList<>());
-//        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
-//        drinkItems.setId(1L);
-//        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), new ArrayList<>());
-//
-//        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
-//        Mockito.when(itemServiceMock.getOne(1L)).thenReturn(item);
-//        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
-//
-//        Assertions.assertThrows(DrinkItemsNotContainedException.class, () -> drinkItemsService.update(dto, 1L));
-//    }
+        Assertions.assertThrows(ItemNotFoundException.class, () -> drinkItemsService.create(drinkItemsCreateDTO));
+    }
+
+    @Test
+    public void update_ValidDtoAndId_ChangedObject() {
+        List<DrinkItemUpdateDTO> drinkItemsUpdate = new ArrayList<>();
+        DrinkItemUpdateDTO diuDTO = new DrinkItemUpdateDTO(14, 1L, 3L, 1);
+        drinkItemsUpdate.add(diuDTO);
+        DrinkItemsUpdateDTO dto = new DrinkItemsUpdateDTO(1, drinkItemsUpdate, "Notes");
+        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.ON_HOLD, null, new ArrayList<>(), true);
+        drinkItems.setId(6L);
+        List<DrinkItems> di = new ArrayList<>();
+        di.add(drinkItems);
+        drinkItems.getDrinkItemList().add(new DrinkItem());
+        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), di);
+        Item item = new Item("Coca Cola", "Nice",
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", ItemType.DRINK), new ArrayList<>());
+        DrinkItem drinkItem = new DrinkItem();
+        drinkItem.setItem(item);
+
+        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+        Mockito.when(drinkItemServiceMock.findByIdAndFetchItem(3L)).thenReturn(drinkItem);
+        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(6L)).thenReturn(Optional.of(drinkItems));
+        Mockito.when(drinkItemServiceMock.update(diuDTO, 3L)).thenReturn(new DrinkItem());
+
+        drinkItemsService.update(dto, 6L);
+        Mockito.verify(drinkItemsRepositoryMock, Mockito.times(1)).save(Mockito.any(DrinkItems.class));
+    }
+
+    @Test
+    public void update_InvalidItemType_ExceptionThrown() {
+        List<DrinkItemUpdateDTO> drinkItemsUpdate = new ArrayList<>();
+        DrinkItemUpdateDTO diuDTO = new DrinkItemUpdateDTO(14, 1L, 3L, 1);
+        drinkItemsUpdate.add(diuDTO);
+        DrinkItemsUpdateDTO dto = new DrinkItemsUpdateDTO(1, drinkItemsUpdate, "Notes");
+        Item item = new Item("Coca Cola", "Nice",
+                null, true, false, ItemType.DRINK, new ArrayList<>(), new ItemCategory("soda", ItemType.DRINK), new ArrayList<>());
+        DrinkItem drinkItem = new DrinkItem();
+        drinkItem.setItem(item);
+        DrinkItems drinkItems = new DrinkItems("Old note.", LocalDateTime.now(), false, ItemState.READY, null, new ArrayList<>(), true);
+        drinkItems.setId(1L);
+        Order order = new Order(400, LocalDateTime.now(), false, true, null, new ArrayList<>(), Collections.singletonList(drinkItems));
+
+        Mockito.when(orderServiceMock.getOneWithAll(1L)).thenReturn(order);
+        Mockito.when(drinkItemServiceMock.findByIdAndFetchItem(3L)).thenReturn(drinkItem);
+        Mockito.when(drinkItemsRepositoryMock.findOneActiveAndFetchBartenderAndItemsAndStateIsNotNewOrDelivered(1L)).thenReturn(Optional.of(drinkItems));
+
+        Assertions.assertThrows(DrinkItemsInvalidStateException.class, () -> drinkItemsService.update(dto, 1L));
+    }
 
     @Test
     void changeStateOfDrinkItems_ValidIds_FromOnHoldToPreparation() {

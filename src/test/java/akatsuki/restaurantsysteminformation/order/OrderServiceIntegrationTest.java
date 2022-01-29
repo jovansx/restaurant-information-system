@@ -4,10 +4,9 @@ import akatsuki.restaurantsysteminformation.dishitem.DishItem;
 import akatsuki.restaurantsysteminformation.drinkitems.DrinkItems;
 import akatsuki.restaurantsysteminformation.item.Item;
 import akatsuki.restaurantsysteminformation.order.dto.OrderCreateDTO;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDeletionException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderDiscardNotActiveException;
-import akatsuki.restaurantsysteminformation.order.exception.OrderNotFoundException;
+import akatsuki.restaurantsysteminformation.order.dto.OrderDTO;
+import akatsuki.restaurantsysteminformation.order.exception.*;
+import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.unregistereduser.UnregisteredUser;
 import akatsuki.restaurantsysteminformation.user.exception.UserTypeNotValidException;
 import org.junit.jupiter.api.Assertions;
@@ -31,6 +30,68 @@ class OrderServiceIntegrationTest {
     OrderServiceImpl orderService;
 
     @Test
+    public void getOrderByRestaurantTableIdIfWaiterValid_Valid_ReturnedObject() {
+        OrderDTO foundOrderDTO = orderService.getOrderByRestaurantTableIdIfWaiterValid(1L, "1111");
+        Assertions.assertNotNull(foundOrderDTO);
+        Assertions.assertEquals(1, foundOrderDTO.getId());
+        Assertions.assertEquals(8.0, foundOrderDTO.getTotalPrice());
+        Assertions.assertEquals("2021-01-31 00:00:00", foundOrderDTO.getCreatedAt());
+        Assertions.assertEquals("John Cena", foundOrderDTO.getWaiter());
+        Assertions.assertEquals(5, foundOrderDTO.getDishItemList().size());
+        Assertions.assertEquals(5, foundOrderDTO.getDrinkItemsList().size());
+    }
+
+    @Test
+    public void getOneByRestaurantTableId_InvalidRestaurantTableId_ExceptionThrown() {
+        Assertions.assertThrows(RestaurantTableNotFoundException.class, () -> orderService.getOrderByRestaurantTableIdIfWaiterValid(8000L, "1111"));
+    }
+
+    @Test
+    public void getOneByRestaurantTableId_InvalidPinCode_ExceptionThrown() {
+        Assertions.assertThrows(OrderWaiterNotValidException.class, () -> orderService.getOrderByRestaurantTableIdIfWaiterValid(1L, "1113"));
+    }
+
+    @Test
+    public void getOneByOrderItem_DishItem_ReturnedObject() {
+        DishItem dishItem = new DishItem();
+        dishItem.setId(1L);
+
+        Order foundOrder = orderService.getOneByOrderItem(dishItem);
+
+        Assertions.assertNotNull(foundOrder);
+    }
+
+    @Test
+    public void getOneByOrderItem_DrinkItems_ReturnedObject() {
+        DrinkItems drinkItems = new DrinkItems();
+        drinkItems.setId(6L);
+
+        Order foundOrder = orderService.getOneByOrderItem(drinkItems);
+
+        Assertions.assertNotNull(foundOrder);
+    }
+
+    @Test
+    public void getOneByOrderItem_DrinkItems_ExceptionThrown() {
+        DrinkItems drinkItems = new DrinkItems();
+        drinkItems.setId(60L);
+
+        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneByOrderItem(drinkItems));
+    }
+
+    @Test
+    public void getOneWithAll_ValidId_ReturnedList() {
+        Order foundOrder = orderService.getOneWithAll(1L);
+        Assertions.assertNotNull(foundOrder);
+    }
+
+    @Test
+    public void getAllWithAll_FetchOrders_ReturnedList() {
+        List<Order> orders = orderService.getAllWithAll();
+        Assertions.assertEquals(8, orders.size());
+    }
+
+    @Test
     public void create_ValidDto_SavedObject() {
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L, 1L);
         Order order = orderService.create(orderCreateDTO);
@@ -45,8 +106,11 @@ class OrderServiceIntegrationTest {
 
     @Test
     public void delete_ValidId_SavedObject() {
-        Order deletedOrder = orderService.delete(2L);
+        Order deletedOrder = orderService.delete(8L);
+        List<Order> orders = orderService.getAllWithAll();
+
         Assertions.assertNotNull(deletedOrder);
+        Assertions.assertEquals(7, orders.size());
     }
 
     @Test
@@ -62,6 +126,7 @@ class OrderServiceIntegrationTest {
 
         DishItem dishItem = new DishItem();
         dishItem.setId(1L);
+        dishItem.setAmount(1);
         dishItem.setItem(sandwich);
 
         DrinkItems drinkItems = new DrinkItems();
@@ -72,7 +137,7 @@ class OrderServiceIntegrationTest {
 
         Order updatedOrder = orderService.updateTotalPriceAndSave(order);
 
-        Assertions.assertEquals(24, updatedOrder.getTotalPrice());
+        Assertions.assertEquals(158, updatedOrder.getTotalPrice());
     }
 
     @Test
@@ -132,44 +197,5 @@ class OrderServiceIntegrationTest {
         assertTrue(isActive);
     }
 
-    @Test
-    public void getOneWithAll_ValidId_ReturnedList() {
-        Order foundOrder = orderService.getOneWithAll(1L);
-        Assertions.assertNotNull(foundOrder);
-    }
 
-    @Test
-    public void getAllWithAll_FetchOrders_ReturnedList() {
-        List<Order> orders = orderService.getAllWithAll();
-        Assertions.assertEquals(10, orders.size());
-    }
-
-
-    @Test
-    public void getOneByOrderItem_DishItem_ReturnedObject() {
-        DishItem dishItem = new DishItem();
-        dishItem.setId(1L);
-
-        Order foundOrder = orderService.getOneByOrderItem(dishItem);
-
-        Assertions.assertNotNull(foundOrder);
-    }
-
-    @Test
-    public void getOneByOrderItem_DrinkItems_ReturnedObject() {
-        DrinkItems drinkItems = new DrinkItems();
-        drinkItems.setId(6L);
-
-        Order foundOrder = orderService.getOneByOrderItem(drinkItems);
-
-        Assertions.assertNotNull(foundOrder);
-    }
-
-    @Test
-    public void getOneByOrderItem_DrinkItems_ExceptionThrown() {
-        DrinkItems drinkItems = new DrinkItems();
-        drinkItems.setId(60L);
-
-        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneByOrderItem(drinkItems));
-    }
 }

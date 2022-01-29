@@ -22,4 +22,5 @@ public interface UnregisteredUserService {
     void save(UnregisteredUser unregisteredUser);
 
     UnregisteredUser checkPinCode(String pinCode, UserType type);
+
 }

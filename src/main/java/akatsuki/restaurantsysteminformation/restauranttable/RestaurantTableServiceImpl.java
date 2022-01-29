@@ -6,7 +6,6 @@ import akatsuki.restaurantsysteminformation.restauranttable.exception.Restaurant
 import akatsuki.restaurantsysteminformation.restauranttable.exception.RestaurantTableNotFoundException;
 import akatsuki.restaurantsysteminformation.room.Room;
 import akatsuki.restaurantsysteminformation.room.RoomService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

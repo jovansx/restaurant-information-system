@@ -160,9 +160,4 @@ class ItemServiceIntegrationTest {
         Assertions.assertNotNull(deletedItem);
     }
 
-    // TODO: Vidi ovaj nesto nece da vrati kako treba
-//    @Test
-//    void delete_AlreadyDeleted_ExceptionThrown() {
-//        Assertions.assertThrows(ItemAlreadyDeletedException.class, () -> itemService.delete(4L));
-//    }
 }

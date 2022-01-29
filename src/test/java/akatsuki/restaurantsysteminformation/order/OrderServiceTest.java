@@ -58,6 +58,77 @@ class OrderServiceTest {
     ItemService itemServiceMock;
 
     @Test
+    public void getOneByOrderItem_DishItem_ReturnedObject() {
+        DishItem dishItem = new DishItem(1L, "Old note.", LocalDateTime.now(), false, ItemState.READY, true, 2, null, null);
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(di));
+        Order order2 = new Order(2L, 500, LocalDateTime.now(), false, false, null, List.of(dishItem), List.of(di));
+
+
+        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
+
+        Order foundOrder = orderService.getOneByOrderItem(dishItem);
+
+        Assertions.assertEquals(foundOrder, order2);
+    }
+
+    @Test
+    public void getOneByOrderItem_DrinkItems_ReturnedObject() {
+        DrinkItems drinkItems = new DrinkItems(2L, "He want good apple joice!", LocalDateTime.now().minusMinutes(5),
+                false, ItemState.PREPARATION, true, null, null);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(drinkItems));
+        Order order2 = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(drinkItems));
+
+        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(2L)).thenReturn(drinkItems);
+
+        Order foundOrder = orderService.getOneByOrderItem(drinkItems);
+
+        Assertions.assertEquals(foundOrder, order2);
+    }
+
+    @Test
+    public void getOneByOrderItem_DrinkItems_ExceptionThrown() {
+        DrinkItems drinkItems = new DrinkItems(2L, "He want good apple joice!", LocalDateTime.now().minusMinutes(5),
+                false, ItemState.PREPARATION, true, null, null);
+        Order order = new Order(8000L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
+
+        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(8000L));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(8000L)).thenReturn(Optional.of(order));
+
+        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneByOrderItem(drinkItems));
+    }
+
+    @Test
+    public void getAllWithAll_FetchOrders_ReturnedList() {
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(di));
+        Order order2 = new Order(2L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(di));
+
+        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
+
+        List<Order> orders = orderService.getAllWithAll();
+
+        Assertions.assertEquals(orders.size(), 2);
+    }
+
+    @Test
     public void create_ValidDto_SavedObject() {
         OrderCreateDTO orderCreateDTO = new OrderCreateDTO(1L, 1L);
         UnregisteredUser user = new UnregisteredUser("Per", "Peri", "perperi@gmail.com",
@@ -134,10 +205,13 @@ class OrderServiceTest {
 
     @Test
     public void charge_ValidId_SavedObject() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(di));
 
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
 
         orderService.charge(1L);
 
@@ -149,30 +223,39 @@ class OrderServiceTest {
 
     @Test
     public void charge_OrderDiscarded_ExceptionThrown() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), true, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), true, true, null, List.of(new DishItem()), List.of(di));
 
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
 
         Assertions.assertThrows(OrderDiscardException.class, () -> orderService.charge(1L));
     }
 
     @Test
     public void charge_OrderNotActive_ExceptionThrown() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(new DrinkItems()));
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(di));
 
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
 
         Assertions.assertThrows(OrderDiscardNotActiveException.class, () -> orderService.charge(1L));
     }
 
     @Test
     public void discard_ValidId_SavedObject() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(di));
 
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
 
         orderService.discard(1L);
 
@@ -185,20 +268,26 @@ class OrderServiceTest {
 
     @Test
     public void discard_OrderDiscarded_ExceptionThrown() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), true, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), true, true, null, List.of(new DishItem()), List.of(di));
 
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
 
         Assertions.assertThrows(OrderDiscardException.class, () -> orderService.discard(1L));
     }
 
     @Test
     public void discard_OrderNotActive_ExceptionThrown() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(new DrinkItems()));
+        DrinkItems di = new DrinkItems();
+        di.setId(1L);
+        Order order = new Order(1L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(di));
 
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
+        Mockito.when(drinkItemsServiceMock.findOneWithItems(1L)).thenReturn(di);
 
         Assertions.assertThrows(OrderDiscardNotActiveException.class, () -> orderService.discard(1L));
     }
@@ -225,71 +314,5 @@ class OrderServiceTest {
         assertTrue(isActive);
     }
 
-    @Test
-    public void getAllWithAll_FetchOrders_ReturnedList() {
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
-        Order order2 = new Order(2L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
 
-        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
-
-        List<Order> orders = orderService.getAllWithAll();
-
-        Assertions.assertEquals(orders.size(), 2);
-    }
-
-
-    @Test
-    public void getOneByOrderItem_DishItem_ReturnedObject() {
-        DishItem dishItem = new DishItem(1L, "Old note.", LocalDateTime.now(), false, ItemState.READY, true, 2, null, null);
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
-        Order order2 = new Order(2L, 500, LocalDateTime.now(), false, false, null, List.of(dishItem), List.of(new DrinkItems()));
-
-        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
-
-        Order foundOrder = orderService.getOneByOrderItem(dishItem);
-
-        Assertions.assertEquals(foundOrder, order2);
-    }
-
-    @Test
-    public void getOneByOrderItem_DrinkItems_ReturnedObject() {
-        DrinkItems drinkItems = new DrinkItems(2L, "He want good apple joice!", LocalDateTime.now().minusMinutes(5),
-                false, ItemState.PREPARATION, true, null, null);
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
-        Order order2 = new Order(2L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(drinkItems));
-
-        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
-
-        Order foundOrder = orderService.getOneByOrderItem(drinkItems);
-
-        Assertions.assertEquals(foundOrder, order2);
-    }
-
-    @Test
-    public void getOneByOrderItem_DrinkItems_ExceptionThrown() {
-        DrinkItems drinkItems = new DrinkItems(2L, "He want good apple joice!", LocalDateTime.now().minusMinutes(5),
-                false, ItemState.PREPARATION, true, null, null);
-        Order order = new Order(1L, 500, LocalDateTime.now(), false, true, null, List.of(new DishItem()), List.of(new DrinkItems()));
-        Order order2 = new Order(2L, 500, LocalDateTime.now(), false, false, null, List.of(new DishItem()), List.of(new DrinkItems()));
-
-        Mockito.when(orderRepositoryMock.findAllIndexes()).thenReturn(List.of(1L, 2L));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndDrinks(2L)).thenReturn(Optional.of(order2));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(1L)).thenReturn(Optional.of(order));
-        Mockito.when(orderRepositoryMock.findByIdAndFetchWaiterAndFetchDishesAndItems(2L)).thenReturn(Optional.of(order2));
-
-        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOneByOrderItem(drinkItems));
-    }
 }

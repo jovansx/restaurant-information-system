@@ -77,6 +77,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getAllWithAll() {
         List<Long> indexes = orderRepository.findAllIndexes();
+        try {
+            return indexes.stream().map(this::getOneWithAll).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return indexes.stream().map(this::getOneWithAll).collect(Collectors.toList());
     }
 
@@ -172,6 +177,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO getOrderByRestaurantTableIdIfWaiterValid(Long tableId, String pinCode) {
         RestaurantTable table = restaurantTableService.getOneWithOrder(tableId);
         OrderDTO orderDTO = new OrderDTO();
+
         if (table.getActiveOrder() != null) {
             Order order = getOneWithAll(table.getActiveOrder().getId());
             UnregisteredUser waiter = order.getWaiter();
@@ -181,6 +187,8 @@ public class OrderServiceImpl implements OrderService {
             orderDTO = new OrderDTO(order);
             restaurantTableService.changeStateOfTableWithOrder(order, TableState.TAKEN);
         }
+
+        unregisteredUserService.checkPinCode(pinCode, UserType.WAITER);
 
         orderDTO.getDishItemList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);
         orderDTO.getDrinkItemsList().sort((d1, d2) -> d1.getState().ordinal() < d2.getState().ordinal() ? -1 : 0);

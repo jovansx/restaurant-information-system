@@ -72,9 +72,7 @@ public class DishItemServiceImpl implements DishItemService {
         if (dishItemMaybe.isEmpty()) {
             throw new DishItemNotFoundException("Dish item with the id " + id + " is not found in the database.");
         }
-        Item item = dishItemMaybe.get().getItem();
-        if (!item.getType().equals(ItemType.DISH))
-            throw new DishItemInvalidTypeException("Item type is not DISH.");
+
         DishItem dishItem = null;
         for (DishItem di : order.getDishes()) {
             if (di.getId().equals(id)) {
